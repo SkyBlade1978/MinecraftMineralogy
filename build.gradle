@@ -104,6 +104,9 @@ java {
 tasks.named('sourcesJar', Jar) {
     includeEmptyDirs = false
     exclude 'com/mcmoddev/mineralogy/**'
+    filesMatching(['**/*.java', '**/*.json', '**/*.mcmeta', '**/*.toml']) {
+        filter(FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance('lf'))
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
