@@ -87,6 +87,9 @@ public class WorkflowContractTest {
         assertTrue(build.contains("def releaseJar = tasks.named('jar', Jar)"));
         assertTrue(build.contains("preserveFileTimestamps = false"));
         assertTrue(build.contains("reproducibleFileOrder = true"));
+        assertTrue(build.contains("filesMatching(['**/*.java', '**/*.json', '**/*.mcmeta', '**/*.toml'])"));
+        assertTrue(build.contains("ForgeGradle merged main output has multiple producers"));
+        assertTrue(build.contains("'zone/moddev/mc/mineralogy/Mineralogy.class'"));
         assertTrue(build.contains("def preparedReleaseDir = project.findProperty('preparedReleaseDir')"));
         assertTrue(build.contains("tasks.register('verifyPreparedReleaseArtifacts')"));
         assertTrue(build.contains("tasks.withType(PublishToMavenRepository).configureEach"));
