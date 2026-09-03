@@ -1,29 +1,23 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:slate_relief_hammer"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "zxz",
-                    "zyz",
-                    "zzz"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:slate_smooth"
-                      },
-                "y":  {
-                          "item":  "minecraft:stick"
-                      },
-                "z":  {
-                          "item":  "mineralogy:slate_relief_blank"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:slate_relief_hammer",
-                   "count":  7
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:slate_relief_hammer"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "zxz",
+    "zyz",
+    "zzz"
+  ],
+  "key": {
+    "x": "mineralogy:slate_smooth",
+    "y": "minecraft:stick",
+    "z": "mineralogy:slate_relief_blank"
+  },
+  "result": {
+    "id": "mineralogy:slate_relief_hammer",
+    "count": 7
+  },
+  "show_notification": true
 }

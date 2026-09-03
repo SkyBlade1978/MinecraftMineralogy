@@ -1,13 +1,19 @@
-Mineralogy 6.1.1.121011 for Minecraft 1.21.1
+Mineralogy 6.1.1.121111 for Minecraft 1.21.11
 
 - Delegated terrain, strata, ore, and covered fluid-deposit generation to the
-  released OreSpawn 4.0.16.121011 provider engine, retaining the supported
+  released OreSpawn 4.0.16.121111 provider engine, retaining the supported
   `[4.0.6,5.0.0)` range; removed Mineralogy's parallel
   geology, geome, ore, noise, and stone-replacement generators.
+- Retained all four ore host families plus explicit vanilla stone and
+  deepslate hosts, avoiding Forge 61's unbound-tag phase during OreSpawn's
+  packaged-provider discovery.
+- Preserved established OreSpawn profiles containing tag-backed ore hosts by
+  deferring their pre-tag common-setup lookup; the same unchanged profile is
+  rebaked normally after server tags load.
 - Preserved all world-facing registry, tile, NBT, recipe, asset, patch, and
   pre-flattening conversion identities while moving production packages to
   zone.moddev.mc.mineralogy. Existing 1.10/1.12 chunks are protected during
-  1.21.1's flattening conversion. Legacy rock-furnace IDs are established
+  1.21.11's flattening conversion. Legacy rock-furnace IDs are established
   before Mojang data fixing, then all pre-namespaced tile IDs are made safe
   before Forge constructs tile entities, so inventories and progress survive
   and an uppercase vanilla ID cannot abort the complete chunk load.
@@ -25,12 +31,12 @@ Mineralogy 6.1.1.121011 for Minecraft 1.21.1
 - Made the historical `COBBLESTONE_EQUIVILENT` option functional through
   target-native per-family block and item tags, including vanilla aliases,
   reapplied after data reloads by updating the exact immutable tag objects
-  retained by already-parsed Forge 52 recipe ingredients. Canonical `c:` tags
+  retained by already-parsed Forge 61 recipe ingredients. Canonical `c:` tags
   and legacy `forge:` aliases are updated together; chert and pumice
   remain unconditional cobblestone equivalents.
 - Added isolated Mineralogy crude-oil source and flowing fluids, block, bucket,
   rendering resources, and the covered Ocean deposit declaration.
-- Uses Minecraft 1.21.1's native granite, diorite, andesite, basalt, and tuff for
+- Uses Minecraft 1.21.11's native granite, diorite, andesite, basalt, and tuff for
   new OreSpawn terrain while retaining Mineralogy's historical registrations
   and conversion aliases. Native smooth basalt joins Mineralogy's smooth-basalt
   family without replacing Minecraft's basalt-smelting route. Deepslate remains
@@ -47,8 +53,8 @@ Mineralogy 6.1.1.121011 for Minecraft 1.21.1
 - Reconciled Minecraft's native andesite, basalt, diorite, granite, and expanded
   tuff family with
   their retained Mineralogy world-compatibility blocks. Native blocks now
-  unlock and feed every non-conflicting matching Mineralogy recipe. The four
-  five vanilla polished-block recipes are replaced by block-plus-sand routes so
+  unlock and feed every non-conflicting matching Mineralogy recipe. The five
+  vanilla polished-block recipes are replaced by block-plus-sand routes so
   the 2x2 recipes remain available for Mineralogy bricks. The six shared
   andesite, diorite, granite, and tuff slab recipes plus all fifteen matching
   stonecutter routes now produce Mineralogy's more capable slabs, while the
@@ -59,7 +65,7 @@ Mineralogy 6.1.1.121011 for Minecraft 1.21.1
   blocks retain their vanilla routes; reversible slab bridges preserve access
   to the chiseled recipes. Recipe advancements use the same exact item or
   family tag as the recipe they reveal.
-- Extended Minecraft 1.21.1's native stone crafting and tool-material tags so
+- Extended Minecraft 1.21.11's native stone crafting and tool-material tags so
   every enabled cobblestone equivalent, including all 27 legacy rock families
   and target-native aliases, works in the complete vanilla contract. Nineteen
   conditional JSON overrides cover furnaces, brewing stands, redstone and
@@ -68,13 +74,17 @@ Mineralogy 6.1.1.121011 for Minecraft 1.21.1
   ingredients and keeps blackstone, chert and pumice valid. Matching-slab
   rock-furnace upgrades and vanilla cobblestone construction recipes remain
   distinct.
+- Kept Minecraft's new stone-spear recipe and advancement authoritative. Its
+  native stone-tool-material tag automatically accepts enabled Mineralogy rock
+  families, while disabled mode retains vanilla materials plus unconditional
+  chert and pumice; no recipe or advancement override is shipped for it.
 - Added conditional overrides for the coast, sentry, and vex armor-trim
   template duplication recipes. Enabled mode accepts the Mineralogy
   cobblestone union; disabled mode restores exact vanilla cobblestone. Their
   existing template-owned advancements remain untouched.
 - Added `sends_telemetry_event: false` to every generated recipe advancement,
   including all conditional Minecraft advancement branches.
-- Prevented Forge 52 from silently reducing optional carbon- or coal-dust
+- Prevented Forge 61 from silently reducing optional carbon- or coal-dust
   gunpowder recipes to nitrate plus sulfur when their compatibility tag is
   empty; every loaded gunpowder recipe now requires all three components.
 - Added 17 reviewed UTF-8 JSON locales with the same 938 ordered keys, including
@@ -82,8 +92,8 @@ Mineralogy 6.1.1.121011 for Minecraft 1.21.1
   Russian.
 - Added first-start player, developer, content, provider, and version guides,
   plus an exact provider example. Existing exported guides are never
-  overwritten. Forge 52 Eclipse launches keep their required merged
-  `bin/main` mod output; if Eclipse removes Gradle's staged guide copies, the
+  overwritten. Forge 61 Eclipse launches use disjoint `bin/default`,
+  `bin/main`, and `bin/test` outputs; if Eclipse removes staged guide copies, the
   exporter reads the authoritative source-checkout guides without weakening
   packaged-jar validation.
 - Added independent, atomic migration of valid non-default legacy ore settings
@@ -97,12 +107,17 @@ Mineralogy 6.1.1.121011 for Minecraft 1.21.1
 - Converted every data registry to Minecraft 1.21's singular `recipe`,
   `advancement`, `loot_table`, and `tags/item|block|fluid` directories; release
   audits reject stale plural registry paths.
-- Preserved 1.21.1-native wall tall-side blockstates and models, wall/item tags,
-  loot tables, fluid APIs, rendering setup, and pack format 34 resources.
+- Replaced the removed JavaScript coremod service with required Mixins for the
+  legacy state tables, selected-world level data, chunk conversion, and
+  populated-boundary protection. Legacy block states are written through the
+  target-native NBT operations while preserving all 18,192 mappings.
+- Preserved 1.21.11-native wall tall-side blockstates and models, wall/item tags,
+  loot tables, fluid APIs, rendering setup, resource format 75.0, and data
+  format 94.1 resources.
 - Added reproducible Java 21 main, sources, and Javadoc artifacts, exact released
-  OreSpawn dependency verification, guarded 1.21.1 CI, and the four-component
-  release tag `6.1.1.121011`.
-- Kept ForgeGradle 7 while sealing Forge 52's audited zero-repair Mavenizer
+  OreSpawn dependency verification, guarded 1.21.11 CI, and the four-component
+  release tag `6.1.1.121111`.
+- Kept ForgeGradle 7 while sealing Forge 61's audited zero-repair Mavenizer
   fixture by SHA-256. The build-only tool runs on Java 25; Mineralogy compiles
   and ships exclusively as Java 21, and release audits reject fixture leakage.
 - Isolated CI's verified OreSpawn artifact in an exclusive Gradle repository so

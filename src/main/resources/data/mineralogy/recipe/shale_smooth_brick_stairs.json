@@ -1,23 +1,21 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:shale_smooth_brick_stairs"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "x  ",
-                    "xx ",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/shale/smooth_brick"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:shale_smooth_brick_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:shale_smooth_brick_stairs"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "x  ",
+    "xx ",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:stones/shale/smooth_brick"
+  },
+  "result": {
+    "id": "mineralogy:shale_smooth_brick_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }

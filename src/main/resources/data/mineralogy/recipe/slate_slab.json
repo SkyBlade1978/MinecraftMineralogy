@@ -1,21 +1,19 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:slate_slab"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:slate"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:slate_slab",
-                   "count":  6
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:slate_slab"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx"
+  ],
+  "key": {
+    "x": "mineralogy:slate"
+  },
+  "result": {
+    "id": "mineralogy:slate_slab",
+    "count": 6
+  },
+  "show_notification": true
 }

@@ -28,8 +28,8 @@ import zone.moddev.mc.mineralogy.data.MaterialData;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.resources.Identifier;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -453,7 +453,7 @@ public class Blocks {
 		if (path == null || path.isEmpty()) {
 			throw new IllegalArgumentException("Mineralogy block has an empty registry path: " + block.getClass());
 		}
-		registry.register(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, path), block);
+		registry.register(Identifier.fromNamespaceAndPath(Mineralogy.MODID, path), block);
 		bindLegacyBlockField(path, block);
 		return block;
 	}

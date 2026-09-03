@@ -1,31 +1,29 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:rock_salt_wall"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:rock_salt_brick_wall"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:rock_salt_wall"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:rock_salt_brick_wall",
-                   "count":  4
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:and",
+    "values": [
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:rock_salt_wall"
+      },
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:rock_salt_brick_wall"
+      }
+    ]
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": "mineralogy:rock_salt_wall"
+  },
+  "result": {
+    "id": "mineralogy:rock_salt_brick_wall",
+    "count": 4
+  },
+  "show_notification": true
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  * Converts pre-namespaced tile-entity identifiers into values Forge 36 can
- * safely parse. Minecraft 1.14 and 1.15 construct a ResourceLocation before looking
+ * safely parse. Minecraft 1.14 and 1.15 construct a Identifier before looking
  * up the tile type, so an otherwise harmless missing legacy tile such as
  * {@code Chest} aborts the complete chunk future because of its uppercase
  * character.

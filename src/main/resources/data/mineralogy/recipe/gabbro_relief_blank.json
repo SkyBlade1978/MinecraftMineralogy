@@ -1,23 +1,21 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:gabbro_relief_blank"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx",
-                    "xxx",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:gabbro_smooth"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:gabbro_relief_blank",
-                   "count":  16
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:gabbro_relief_blank"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx",
+    "xxx",
+    "xxx"
+  ],
+  "key": {
+    "x": "mineralogy:gabbro_smooth"
+  },
+  "result": {
+    "id": "mineralogy:gabbro_relief_blank",
+    "count": 16
+  },
+  "show_notification": true
 }

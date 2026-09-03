@@ -9,18 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
-import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -48,13 +50,13 @@ public final class RecipeIntegrationProbe {
     };
 
     public RecipeIntegrationProbe() {
-        MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
+        ServerStartedEvent.BUS.addListener(this::serverStarted);
     }
 
     private void serverStarted(ServerStartedEvent event) {
         boolean enabled = Boolean.parseBoolean(System.getProperty(
                 "mineralogy.recipeProbe.equivalence", "true"));
-        Level level = event.getServer().overworld();
+        ServerLevel level = event.getServer().overworld();
         Item basalt = requireItem("mineralogy", "basalt");
 
         for (String name : RECIPE_NAMES) {
@@ -92,19 +94,56 @@ public final class RecipeIntegrationProbe {
                     name + " produced count " + result.getCount());
         }
 
+        verifyStoneSpear(level, enabled);
         verifySlabRoutes(level);
         verifyAdvancements(event);
         writeMarker(enabled);
         event.getServer().halt(false);
     }
 
-    private static void verifySlabRoutes(Level level) {
+    private static void verifyStoneSpear(ServerLevel level, boolean enabled) {
+        CraftingRecipe recipe = requireCraftingRecipe(level, "stone_spear");
+        Item expected = requireItem("minecraft", "stone_spear");
+        if (enabled) {
+            for (String rockName : LEGACY_ROCKS) {
+                assertStoneSpearInput(level, recipe, requireItem("mineralogy", rockName), expected);
+            }
+            for (Item nativeRock : new Item[] { Blocks.BASALT.asItem(), Blocks.TUFF.asItem(),
+                    Blocks.ANDESITE.asItem(), Blocks.DIORITE.asItem(),
+                    Blocks.GRANITE.asItem() }) {
+                assertStoneSpearInput(level, recipe, nativeRock, expected);
+            }
+        } else {
+            require(!recipe.matches(stoneSpearInput(requireItem("mineralogy", "basalt")), level),
+                    "stone spear accepted ordinary Mineralogy basalt while disabled");
+            assertStoneSpearInput(level, recipe, Blocks.COBBLESTONE.asItem(), expected);
+            assertStoneSpearInput(level, recipe, requireItem("mineralogy", "chert"), expected);
+            assertStoneSpearInput(level, recipe, requireItem("mineralogy", "pumice"), expected);
+        }
+    }
+
+    private static void assertStoneSpearInput(ServerLevel level, CraftingRecipe recipe,
+            Item material, Item expected) {
+        CraftingInput input = stoneSpearInput(material);
+        require(recipe.matches(input, level), "stone spear rejected "
+                + ForgeRegistries.ITEMS.getKey(material));
+        ItemStack output = recipe.assemble(input, level.registryAccess());
+        require(output.getItem() == expected && output.getCount() == 1,
+                "stone spear produced the wrong result");
+    }
+
+    private static CraftingInput stoneSpearInput(Item material) {
+        return shaped(new String[] { "  X", " # ", "#  " },
+                Map.of('X', material, '#', Items.STICK));
+    }
+
+    private static void verifySlabRoutes(ServerLevel level) {
         for (String family : new String[] { "andesite", "diorite", "granite" }) {
             Item nativeRock = requireItem("minecraft", family);
             CraftingRecipe slab = requireCraftingRecipe(level, family + "_slab");
             CraftingInput slabInput = shaped(new String[] { "###" }, Map.of('#', nativeRock));
             require(slab.matches(slabInput, level), family + " slab override does not match");
-            require(ResourceLocation.fromNamespaceAndPath("mineralogy", family + "_slab").equals(
+            require(Identifier.fromNamespaceAndPath("mineralogy", family + "_slab").equals(
                     ForgeRegistries.ITEMS.getKey(slab.assemble(slabInput, level.registryAccess()).getItem())),
                     family + " slab override did not produce Mineralogy's slab");
 
@@ -134,7 +173,7 @@ public final class RecipeIntegrationProbe {
         verifyTuffSlabRoutes(level);
     }
 
-    private static void verifyTuffSlabRoutes(Level level) {
+    private static void verifyTuffSlabRoutes(ServerLevel level) {
         String[][] forms = {
                 { "tuff", "tuff_slab", "tuff_slab" },
                 { "polished_tuff", "polished_tuff_slab", "tuff_smooth_slab" },
@@ -173,7 +212,7 @@ public final class RecipeIntegrationProbe {
         assertNativeTuffStonecutting(level);
     }
 
-    private static void assertNativeTuffCrafting(Level level) {
+    private static void assertNativeTuffCrafting(ServerLevel level) {
         assertCrafting(level, "polished_tuff", shapeless(Blocks.TUFF.asItem(), Blocks.SAND.asItem()),
                 Blocks.POLISHED_TUFF.asItem(), 1);
         assertCrafting(level, "tuff_stairs", shaped(new String[] { "#  ", "## ", "###" },
@@ -196,7 +235,7 @@ public final class RecipeIntegrationProbe {
                 Map.of('#', Blocks.TUFF_BRICK_SLAB.asItem())), Blocks.CHISELED_TUFF_BRICKS.asItem(), 1);
     }
 
-    private static void assertNativeTuffStonecutting(Level level) {
+    private static void assertNativeTuffStonecutting(ServerLevel level) {
         Object[][] routes = {
                 { "chiseled_tuff_from_tuff_stonecutting", Blocks.TUFF, Blocks.CHISELED_TUFF },
                 { "chiseled_tuff_bricks_from_tuff_stonecutting", Blocks.TUFF, Blocks.CHISELED_TUFF_BRICKS },
@@ -225,14 +264,13 @@ public final class RecipeIntegrationProbe {
         }
     }
 
-    private static void assertStonecutting(Level level, String name, Item source, Item expected) {
+    private static void assertStonecutting(ServerLevel level, String name, Item source, Item expected) {
         assertStonecutting(level, name, source, expected, 2);
     }
 
-    private static void assertStonecutting(Level level, String name, Item source,
+    private static void assertStonecutting(ServerLevel level, String name, Item source,
             Item expected, int expectedCount) {
-        RecipeHolder<?> holder = level.getRecipeManager().byKey(
-                ResourceLocation.fromNamespaceAndPath("minecraft", name)).orElseThrow(() ->
+        RecipeHolder<?> holder = level.recipeAccess().byKey(recipeKey("minecraft", name)).orElseThrow(() ->
                         new IllegalStateException("Missing loaded stonecutting recipe minecraft:" + name));
         require(holder.value() instanceof StonecutterRecipe,
                 "minecraft:" + name + " is not a stonecutting recipe");
@@ -244,7 +282,7 @@ public final class RecipeIntegrationProbe {
                 name + " produced the wrong stonecutting result");
     }
 
-    private static void assertCrafting(Level level, String name, CraftingInput input,
+    private static void assertCrafting(ServerLevel level, String name, CraftingInput input,
             Item expected, int expectedCount) {
         CraftingRecipe recipe = requireCraftingRecipe(level, name);
         require(recipe.matches(input, level), name + " does not match its native inputs");
@@ -253,7 +291,7 @@ public final class RecipeIntegrationProbe {
                 name + " produced the wrong native result");
     }
 
-    private static void assertBridge(Level level, String name, Item source, Item expected) {
+    private static void assertBridge(ServerLevel level, String name, Item source, Item expected) {
         CraftingRecipe recipe = requireCraftingRecipe(level, name, "mineralogy");
         CraftingInput input = shapeless(source);
         require(recipe.matches(input, level), name + " does not match its exact source");
@@ -266,31 +304,39 @@ public final class RecipeIntegrationProbe {
         for (String name : RECIPE_NAMES) {
             if (isTrimTemplateRecipe(name)) continue;
             String category = advancementCategory(name);
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+            Identifier id = Identifier.fromNamespaceAndPath(
                     "minecraft", "recipes/" + category + "/" + name);
             require(event.getServer().getAdvancements().get(id) != null,
                     "Missing loaded advancement " + id);
         }
+        Identifier spear = Identifier.fromNamespaceAndPath(
+                "minecraft", "recipes/combat/stone_spear");
+        require(event.getServer().getAdvancements().get(spear) != null,
+                "Missing loaded advancement " + spear);
         for (String id : new String[] { "basalt_slab", "basalt_smooth_stairs",
                 "basalt_furnace", "basalt_relief_blank", "basalt_relief_pickaxe" }) {
-            ResourceLocation advancement = ResourceLocation.fromNamespaceAndPath(
+            Identifier advancement = Identifier.fromNamespaceAndPath(
                     "mineralogy", "recipes/" + id);
             require(event.getServer().getAdvancements().get(advancement) != null,
                     "Missing progressive advancement " + advancement);
         }
     }
 
-    private static CraftingRecipe requireCraftingRecipe(Level level, String name) {
+    private static CraftingRecipe requireCraftingRecipe(ServerLevel level, String name) {
         return requireCraftingRecipe(level, name, "minecraft");
     }
 
-    private static CraftingRecipe requireCraftingRecipe(Level level, String name, String namespace) {
-        RecipeHolder<?> holder = level.getRecipeManager().byKey(
-                ResourceLocation.fromNamespaceAndPath(namespace, name)).orElseThrow(() ->
+    private static CraftingRecipe requireCraftingRecipe(ServerLevel level, String name, String namespace) {
+        RecipeHolder<?> holder = level.recipeAccess().byKey(recipeKey(namespace, name)).orElseThrow(() ->
                         new IllegalStateException("Missing loaded recipe " + namespace + ':' + name));
         require(holder.value() instanceof CraftingRecipe,
                 namespace + ':' + name + " is not a crafting recipe");
         return (CraftingRecipe) holder.value();
+    }
+
+    private static ResourceKey<Recipe<?>> recipeKey(String namespace, String name) {
+        return ResourceKey.create(Registries.RECIPE,
+                Identifier.fromNamespaceAndPath(namespace, name));
     }
 
     private static CraftingInput inventory(String name, Item rock) {
@@ -404,14 +450,14 @@ public final class RecipeIntegrationProbe {
 
     private static Item requireItem(String namespace, String path) {
         Item result = ForgeRegistries.ITEMS.getValue(
-                ResourceLocation.fromNamespaceAndPath(namespace, path));
+                Identifier.fromNamespaceAndPath(namespace, path));
         if (result == null) throw new IllegalStateException("Missing item " + namespace + ':' + path);
         return result;
     }
 
-    private static ResourceLocation expectedOutput(String name) {
+    private static Identifier expectedOutput(String name) {
         String path = name.startsWith("mossy_cobblestone_from_") ? "mossy_cobblestone" : name;
-        return ResourceLocation.fromNamespaceAndPath("minecraft", path);
+        return Identifier.fromNamespaceAndPath("minecraft", path);
     }
 
     private static int expectedCount(String name) {
@@ -435,6 +481,7 @@ public final class RecipeIntegrationProbe {
         String result = "forge_recipe_manager_loaded=true\n"
                 + "equivalence_enabled=" + enabled + "\n"
                 + "covered_vanilla_recipes=19\n"
+                + "native_stone_spear_verified=true\n"
                 + "legacy_rock_families=27\n"
                 + "native_rock_aliases=5\n"
                 + "shared_stonecutting_routes=15\n"

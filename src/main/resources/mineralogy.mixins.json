@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8.7",
+  "package": "zone.moddev.mc.mineralogy.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "BlockStateDataAccessor",
+    "BlockStateDataMixin",
+    "ForgeHooksMixin",
+    "OreSpawnEarlyTagCompatibilityMixin",
+    "ReloadableServerResourcesMixin",
+    "SimpleRegionStorageMixin",
+    "WorldGenRegionMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

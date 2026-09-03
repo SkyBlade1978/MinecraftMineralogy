@@ -6,7 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -18,9 +19,8 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.fml.common.Mod;
@@ -59,19 +59,23 @@ public final class HistoricalOilCompatibilityProbe {
     private static final RegistryObject<LiquidBlock> BLOCK = BLOCKS.register("crude_oil",
             () -> new LiquidBlock(HistoricalOilCompatibilityProbe::source,
                     BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable()
-                            .noCollission().strength(100.0F).noLootTable().liquid()
+                            .noCollision().strength(100.0F).noLootTable().liquid()
+                            .setId(ResourceKey.create(Registries.BLOCK,
+                                    Identifier.fromNamespaceAndPath(MODID, "crude_oil")))
                             .pushReaction(PushReaction.DESTROY)));
     private static final RegistryObject<Item> BUCKET = ITEMS.register("crude_oil_bucket",
             () -> new BucketItem(HistoricalOilCompatibilityProbe::source,
-                    new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+                    new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)
+                            .setId(ResourceKey.create(Registries.ITEM,
+                                    Identifier.fromNamespaceAndPath(MODID, "crude_oil_bucket")))));
 
     public HistoricalOilCompatibilityProbe(FMLJavaModLoadingContext context) {
-        IEventBus modBus = context.getModEventBus();
-        FLUID_TYPES.register(modBus);
-        FLUIDS.register(modBus);
-        BLOCKS.register(modBus);
-        ITEMS.register(modBus);
-        MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
+        BusGroup modBusGroup = context.getModBusGroup();
+        FLUID_TYPES.register(modBusGroup);
+        FLUIDS.register(modBusGroup);
+        BLOCKS.register(modBusGroup);
+        ITEMS.register(modBusGroup);
+        ServerStartedEvent.BUS.addListener(this::serverStarted);
     }
 
     private void serverStarted(ServerStartedEvent event) {
@@ -80,9 +84,9 @@ public final class HistoricalOilCompatibilityProbe {
         Item mineralogyBucket = requireItem("mineralogy", "crude_oil_bucket");
         Item historicalBucket = requireItem(MODID, "crude_oil_bucket");
         TagKey<Fluid> oilTag = TagKey.create(Registries.FLUID,
-                ResourceLocation.fromNamespaceAndPath("forge", "crude_oil"));
+                Identifier.fromNamespaceAndPath("forge", "crude_oil"));
         TagKey<Item> bucketTag = TagKey.create(Registries.ITEM,
-                ResourceLocation.fromNamespaceAndPath("forge", "buckets/crude_oil"));
+                Identifier.fromNamespaceAndPath("forge", "buckets/crude_oil"));
 
         boolean distinctFluids = mineralogy != historical;
         boolean distinctBuckets = mineralogyBucket != historicalBucket;
@@ -115,7 +119,7 @@ public final class HistoricalOilCompatibilityProbe {
 
     private static Fluid requireFluid(String namespace, String path) {
         Fluid result = ForgeRegistries.FLUIDS.getValue(
-                ResourceLocation.fromNamespaceAndPath(namespace, path));
+                Identifier.fromNamespaceAndPath(namespace, path));
         if (result == null) {
             throw new IllegalStateException("Missing fluid " + namespace + ':' + path);
         }
@@ -124,7 +128,7 @@ public final class HistoricalOilCompatibilityProbe {
 
     private static Item requireItem(String namespace, String path) {
         Item result = ForgeRegistries.ITEMS.getValue(
-                ResourceLocation.fromNamespaceAndPath(namespace, path));
+                Identifier.fromNamespaceAndPath(namespace, path));
         if (result == null) {
             throw new IllegalStateException("Missing item " + namespace + ':' + path);
         }

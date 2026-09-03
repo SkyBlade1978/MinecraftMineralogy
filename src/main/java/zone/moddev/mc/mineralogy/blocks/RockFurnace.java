@@ -6,6 +6,7 @@ import com.mojang.serialization.MapCodec;
 
 import zone.moddev.mc.mineralogy.Mineralogy;
 import zone.moddev.mc.mineralogy.init.TileEntities;
+import zone.moddev.mc.mineralogy.init.RegistrationProperties;
 import zone.moddev.mc.mineralogy.tileentity.TileEntityRockFurnace;
 
 import net.minecraft.world.level.block.Block;
@@ -29,11 +30,12 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Mirror;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.BlockHitResult;
@@ -46,7 +48,7 @@ import net.minecraft.world.level.storage.loot.LootParams.Builder;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class RockFurnace extends BaseEntityBlock implements NamedMineralogyBlock {
-	public static final net.minecraft.world.level.block.state.properties.DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+	public static final net.minecraft.world.level.block.state.properties.EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 	private static boolean keepInventory;
 
 	private final boolean burning;
@@ -56,8 +58,10 @@ public class RockFurnace extends BaseEntityBlock implements NamedMineralogyBlock
 
 	public RockFurnace(float hardness, float blastResistance, int toolHardnessLevel, boolean burning,
 			float burnModifier, String name) {
-		super(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.STONE).strength(hardness, blastResistance)
-				.sound(SoundType.STONE).lightLevel(state -> burning ? 14 : 0).requiresCorrectToolForDrops());
+		super(RegistrationProperties.block(
+				BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.STONE)
+						.strength(hardness, blastResistance).sound(SoundType.STONE)
+						.lightLevel(state -> burning ? 14 : 0).requiresCorrectToolForDrops(), name));
 		this.burning = burning;
 		this.burnModifier = burnModifier;
 		this.toolHardnessLevel = toolHardnessLevel;
@@ -98,7 +102,7 @@ public class RockFurnace extends BaseEntityBlock implements NamedMineralogyBlock
 	@Override
 	protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player,
 			BlockHitResult hit) {
-		if (world.isClientSide) {
+		if (world.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
 
@@ -139,7 +143,7 @@ public class RockFurnace extends BaseEntityBlock implements NamedMineralogyBlock
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state,
 			BlockEntityType<T> blockEntityType) {
-		return world.isClientSide ? null
+		return world.isClientSide() ? null
 				: createTickerHelper(blockEntityType, TileEntities.rock_furnace, TileEntityRockFurnace::serverTick);
 	}
 
@@ -149,33 +153,23 @@ public class RockFurnace extends BaseEntityBlock implements NamedMineralogyBlock
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (state.getBlock() != newState.getBlock()) {
-			if (!keepInventory) {
-				BlockEntity tileEntity = world.getBlockEntity(pos);
-				if (tileEntity instanceof TileEntityRockFurnace) {
-					Containers.dropContents(world, pos, (TileEntityRockFurnace) tileEntity);
-					world.updateNeighbourForOutputSignal(pos, this);
-				}
-			}
-
-			super.onRemove(state, world, pos, newState, isMoving);
-		}
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel world, BlockPos pos,
+			boolean isMoving) {
+		Containers.updateNeighboursAfterDestroy(state, world, pos);
 	}
 
 	@Override
-	public boolean hasAnalogOutputSignal(BlockState state) {
+	protected boolean hasAnalogOutputSignal(BlockState state) {
 		return true;
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos) {
+	protected int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos, Direction direction) {
 		return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(world.getBlockEntity(pos));
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader world, BlockPos pos,
-			Player player) {
+	protected ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state, boolean includeData) {
 		return new ItemStack(getUnlitBlock(state.getBlock()));
 	}
 
@@ -235,8 +229,12 @@ public class RockFurnace extends BaseEntityBlock implements NamedMineralogyBlock
 		return burning;
 	}
 
+	public static boolean isKeepingInventory() {
+		return keepInventory;
+	}
+
 	private static Block getStateBlock(Block block, boolean active) {
-		ResourceLocation name = ForgeRegistries.BLOCKS.getKey(block);
+		Identifier name = ForgeRegistries.BLOCKS.getKey(block);
 		if (name == null) {
 			return block;
 		}
@@ -248,7 +246,7 @@ public class RockFurnace extends BaseEntityBlock implements NamedMineralogyBlock
 			path = path.substring(4);
 		}
 
-		Block stateBlock = ForgeRegistries.BLOCKS.getValue(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, path));
+		Block stateBlock = ForgeRegistries.BLOCKS.getValue(Identifier.fromNamespaceAndPath(Mineralogy.MODID, path));
 		return stateBlock == null ? block : stateBlock;
 	}
 

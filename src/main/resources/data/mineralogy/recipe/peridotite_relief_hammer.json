@@ -1,29 +1,23 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:peridotite_relief_hammer"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "zxz",
-                    "zyz",
-                    "zzz"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:peridotite_smooth"
-                      },
-                "y":  {
-                          "item":  "minecraft:stick"
-                      },
-                "z":  {
-                          "item":  "mineralogy:peridotite_relief_blank"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:peridotite_relief_hammer",
-                   "count":  7
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:peridotite_relief_hammer"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "zxz",
+    "zyz",
+    "zzz"
+  ],
+  "key": {
+    "x": "mineralogy:peridotite_smooth",
+    "y": "minecraft:stick",
+    "z": "mineralogy:peridotite_relief_blank"
+  },
+  "result": {
+    "id": "mineralogy:peridotite_relief_hammer",
+    "count": 7
+  },
+  "show_notification": true
 }

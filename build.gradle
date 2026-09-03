@@ -36,18 +36,18 @@ def mavenizerLicense = mavenizerToolsDirectory.file('LICENSE-MAVENIZER.txt')
 def mavenizerReadme = mavenizerToolsDirectory.file('README.md')
 def mavenizerFixtureChecksums = [
         (mavenizerCompatibilityJar.asFile):
-                '019032A4A26ECB473D403EF017054D5892CE59A9904E8831B452287CD756397E',
+                'B36CA046DB72E30F27BD38E02B4AE34274ADB51AE1D65BAF9E1D07763755682E',
         (mavenizerRuleManifest.asFile):
-                '7F669F225520D0382E76991A8A3E5E4020840F0FA975F7DCB86681D7E7C3F766',
+                '88F2EE4C6B7C903EB1C7D693C0BEEFC0EFC601C1023FB197F7CBA187B1142DB7',
         (mavenizerSourcePatch.asFile):
-                '84FEA234619CC2D1931E609B22B6E5D96F59366F7D6C2783C3BEE0F726F3E876',
+                '88F9035C8545CF1CBC7342C14F2F95076C4E415EDB7A74D585409CFC3F1BDD5C',
         (mavenizerLicense.asFile):
                 '20C17D8B8C48A600800DFD14F95D5CB9FF47066A9641DDEAB48DC54AEC96E331',
         (mavenizerReadme.asFile):
-                '45C527DD0EDF0E366F585D0E46F2E572CA8AD9CA9D798D03D27A92438FA6AF8E'
+                'E09DC0CC6CBF830E9E3E68C6B507B59786705ABAEA29D48EDAC7D3538428A453'
 ]
 
-// ForgeGradle invokes Mavenizer while configuring Forge 52. Verify the exact
+// ForgeGradle invokes Mavenizer while configuring Forge 61. Verify the exact
 // target-aware build-only tool and rule manifest before any fixture code runs.
 [mavenizerCompatibilityJar.asFile, mavenizerRuleManifest.asFile].each { fixture ->
     if (!fixture.isFile()) {
@@ -88,8 +88,8 @@ def versionParts = project.mod_version.toString().tokenize('.')
 if (versionParts.size() != 4 || !versionParts.every { it ==~ /\d+/ }) {
     throw new GradleException("mod_version must use Major.Minor.Bug.Target numeric form: ${project.mod_version}")
 }
-if (versionParts[3] != '121011') {
-    throw new GradleException("Mineralogy 1.21.1 Forge releases must use target 121011: ${project.mod_version}")
+if (versionParts[3] != '121111') {
+    throw new GradleException("Mineralogy 1.21.11 Forge releases must use target 121111: ${project.mod_version}")
 }
 
 java {
@@ -145,14 +145,14 @@ minecraft {
 def developmentModOutput = layout.buildDirectory.dir('forge-run-mod-classes/main')
 def prepareDevelopmentMod = tasks.register('prepareDevelopmentMod', Sync) {
     group = 'ide'
-    description = 'Merges production classes and resources for Forge 52 development discovery.'
+    description = 'Merges production classes and resources for Forge 61 development discovery.'
     dependsOn tasks.named('classes')
     from sourceSets.main.output.classesDirs
     from sourceSets.main.output.resourcesDir
     into developmentModOutput
 }
 
-def configureForge52Run = { JavaExec runTask, String launchTarget ->
+def configureForge61Run = { JavaExec runTask, String launchTarget ->
     runTask.dependsOn prepareDevelopmentMod
     runTask.doFirst {
         Set<String> splitOutputs = sourceSets.main.output.files.collect {
@@ -174,7 +174,7 @@ def configureForge52Run = { JavaExec runTask, String launchTarget ->
 
 tasks.withType(JavaExec).configureEach { JavaExec runTask ->
     String launchTarget = [runClient: 'fmluserdevclient', runServer: 'fmluserdevserver'][runTask.name]
-    if (launchTarget != null) configureForge52Run(runTask, launchTarget)
+    if (launchTarget != null) configureForge61Run(runTask, launchTarget)
 }
 
 def orespawnModule = "mmd-orespawn-${project.orespawn_curse_project_id}"
@@ -212,7 +212,7 @@ configurations {
 
 dependencies {
     implementation minecraft.dependency("net.minecraftforge:forge:${project.mc_version}-${project.forge_version}")
-    // Forge 52 uses official names in both development and production, so the
+    // Forge 61 uses official names in both development and production, so the
     // exact released OreSpawn artifact is suitable for ordinary runtime use.
     runtimeOnly "curse.maven:mmd-orespawn-${project.orespawn_curse_project_id}:${project.orespawn_curse_file_id}"
     orespawnRelease "curse.maven:mmd-orespawn-${project.orespawn_curse_project_id}:${project.orespawn_curse_file_id}"
@@ -235,6 +235,7 @@ javadoc {
 }
 
 tasks.withType(AbstractArchiveTask).configureEach {
+    includeEmptyDirs = false
     preserveFileTimestamps = false
     reproducibleFileOrder = true
 }
@@ -259,6 +260,11 @@ processResources {
     }
 }
 
+def processedMainResourcesDirectory = { sourceSets.main.output.resourcesDir }
+def processedMainResourcesPath = {
+    project.relativePath(processedMainResourcesDirectory()).replace('\\', '/')
+}
+
 tasks.named('jar', Jar) {
     archiveClassifier = ''
     destinationDirectory = layout.buildDirectory.dir('libs')
@@ -272,7 +278,8 @@ tasks.named('jar', Jar) {
                 'Implementation-Version': project.version,
                 'Implementation-Vendor' : 'SkyBlade1978',
                 'Built-On-Java'         : '21',
-                'Built-On'              : "${project.mc_version}-${project.forge_version}"
+                'Built-On'              : "${project.mc_version}-${project.forge_version}",
+                'MixinConfigs'          : 'mineralogy.mixins.json'
         ])
     }
 }
@@ -373,18 +380,28 @@ eclipse {
     classpath {
         downloadSources = true
         downloadJavadoc = true
+        defaultOutputDir = file('bin/default')
         file.whenMerged { classpath ->
-            // Eclipse must consume processResources output. If it copies the
-            // raw source tree, ${version} in mods.toml becomes the exploded
-            // directory name "main" and Forge can no longer identify its
-            // Minecraft system mod.
+            classpath.entries.findAll { entry ->
+                entry instanceof org.gradle.plugins.ide.eclipse.model.Output
+            }.each { entry -> entry.path = 'bin/default' }
             classpath.entries.removeAll { entry ->
                 entry instanceof org.gradle.plugins.ide.eclipse.model.SourceFolder
-                        && entry.path == 'src/main/resources'
+                        && ['src/main/resources', 'src/generated/resources'].contains(entry.path)
             }
-            if (!classpath.entries.any { entry -> entry.path == 'build/resources/main' }) {
+            String resourcesPath = processedMainResourcesPath()
+            if (!classpath.entries.any { entry -> entry.path == resourcesPath }) {
                 classpath.entries.add(new org.gradle.plugins.ide.eclipse.model.SourceFolder(
-                        'build/resources/main', 'bin/main'))
+                        resourcesPath, 'bin/main'))
+            }
+            classpath.entries.findAll { entry ->
+                entry instanceof org.gradle.plugins.ide.eclipse.model.SourceFolder
+            }.each { entry ->
+                if (entry.path == 'src/main/java' || entry.path == resourcesPath) {
+                    entry.output = 'bin/main'
+                } else if (entry.path.startsWith('src/test/')) {
+                    entry.output = 'bin/test'
+                }
             }
         }
     }
@@ -508,12 +525,12 @@ tasks.register('verifyMavenizerCompatibilityFixture') {
 
         def parsed = new JsonSlurper().parse(mavenizerRuleManifest.asFile)
         if (parsed.schema != 1 || parsed.targets.keySet() !=
-                ['net.minecraftforge:forge:1.21.1-52.1.0'] as Set) {
+                ['net.minecraftforge:forge:1.21.11-61.1.0'] as Set) {
             throw new GradleException('Mavenizer target-rule manifest has unexpected targets or schema')
         }
-        def forgeRules = parsed.targets['net.minecraftforge:forge:1.21.1-52.1.0']
+        def forgeRules = parsed.targets['net.minecraftforge:forge:1.21.11-61.1.0']
         if (forgeRules.expectedApplications != 0 || !forgeRules.rules.isEmpty()) {
-            throw new GradleException('Forge 52 Mavenizer target must be an explicit zero-rule qualification')
+            throw new GradleException('Forge 61 Mavenizer target must be an explicit zero-rule qualification')
         }
 
         ZipFile fixtureJar = new ZipFile(mavenizerCompatibilityJar.asFile)
@@ -561,7 +578,7 @@ tasks.register('verifyMavenizerCompatibilityFixture') {
         String licenseText = mavenizerLicense.asFile.getText('UTF-8')
         if (!readme.contains('6968241ce7a0a902cdc1c534b976e8373a423091')
                 || !readme.contains('Temurin `25.0.3+9`')
-                || !readme.contains('1.21.1-52.1.0')) {
+                || !readme.contains('1.21.11-61.1.0')) {
             throw new GradleException('Mavenizer provenance, target, or Java 25 build instructions are incomplete')
         }
         if (!patchText.contains('SourceCompatibilityPatcher.java')
@@ -576,16 +593,16 @@ tasks.register('verifyMavenizerCompatibilityFixture') {
 
 tasks.register('verifyReleaseConfiguration') {
     group = 'verification'
-    description = 'Verifies the exact Mineralogy 1.21.1 release identity.'
+    description = 'Verifies the exact Mineralogy 1.21.11 release identity.'
     dependsOn tasks.named('verifyMavenizerCompatibilityFixture')
     doLast {
-        if (project.mod_version != '6.1.1.121011'
+        if (project.mod_version != '6.1.1.121111'
                 || project.mod_group != expectedMavenGroup
-                || project.minecraft_version != '1.21.1'
-                || project.forge_version != '52.1.0'
+                || project.minecraft_version != '1.21.11'
+                || project.forge_version != '61.1.0'
                 || project.mcp_mappings_channel != 'official'
-                || project.mcp_mappings_version != '1.21.1') {
-            throw new GradleException('Unexpected Mineralogy 1.21.1 release identity')
+                || project.mcp_mappings_version != '1.21.11') {
+            throw new GradleException('Unexpected Mineralogy 1.21.11 release identity')
         }
     }
 }
@@ -594,9 +611,9 @@ tasks.register('verifyReleaseDependencies') {
     group = 'verification'
     description = 'Resolves and verifies the exact released OreSpawn dependency.'
     doLast {
-        if (project.mod_version != '6.1.1.121011'
+        if (project.mod_version != '6.1.1.121111'
                 || project.minecraft_version != project.mc_version
-                || project.mc_version != '1.21.1'
+                || project.mc_version != '1.21.11'
                 || project.loader_name != 'forge'
                 || project.loader_code != '1'
                 || project.java_version != '21'
@@ -605,9 +622,9 @@ tasks.register('verifyReleaseDependencies') {
                 || project.curseforge_project_id != '240974') {
             throw new GradleException('Unexpected generic release dispatcher metadata')
         }
-        if (project.orespawn_version != '4.0.16.121011' ||
+        if (project.orespawn_version != '4.0.16.121111' ||
                 project.orespawn_curse_project_id != '245586' ||
-                project.orespawn_curse_file_id != '8791317') {
+                project.orespawn_curse_file_id != '8791659') {
             throw new GradleException('Unexpected OreSpawn release coordinates')
         }
         File artifact = configurations.orespawnRelease.resolvedConfiguration.resolvedArtifacts
@@ -645,6 +662,7 @@ tasks.register('verifyReleaseArtifacts') {
                         it.startsWith('zone/moddev/mc/mineralogy/test/') ||
                         it.startsWith('ci-fixtures/') || it.contains('minecraft-mavenizer') ||
                         it.startsWith('src/test/') ||
+                        it == 'META-INF/coremods.json' || it.startsWith('coremods/') ||
                         it == 'AGENTS.md' || it.contains('/agent-notes/') }) {
                     throw new GradleException("${artifactName} contains a retired, test, probe, or agent-only path")
                 }
@@ -659,6 +677,7 @@ tasks.register('verifyReleaseArtifacts') {
             def names = zip.entries().collect { it.name } as Set
             [
                     'META-INF/mods.toml',
+                    'mineralogy.mixins.json',
                     'data/mineralogy/orespawn/provider.json',
                     'META-INF/mineralogy/docs/README.md',
                     'META-INF/mineralogy/docs/examples/mineralogy-provider.json',
@@ -675,6 +694,9 @@ tasks.register('verifyReleaseArtifacts') {
                 if (actualMavenCoordinate != expectedMavenCoordinate) {
                     throw new GradleException("Expected manifest Maven-Artifact ${expectedMavenCoordinate}, found ${actualMavenCoordinate}")
                 }
+                if (manifest.mainAttributes.getValue('MixinConfigs') != 'mineralogy.mixins.json') {
+                    throw new GradleException('Release jar does not declare the required Mineralogy mixin configuration')
+                }
             }
             finally {
                 manifestStream.close()
@@ -685,6 +707,7 @@ tasks.register('verifyReleaseArtifacts') {
                     it.startsWith('zone/moddev/mc/mineralogy/fixture/') ||
                     it.startsWith('zone/moddev/mc/mineralogy/test/') ||
                     it.startsWith('ci-fixtures/') || it.contains('minecraft-mavenizer') ||
+                    it == 'META-INF/coremods.json' || it.startsWith('coremods/') ||
                     it == 'AGENTS.md' || it.contains('/agent-notes/') }) {
                 throw new GradleException('Release jar contains a retired, test, probe, or agent-only path')
             }
@@ -721,7 +744,7 @@ tasks.register('verifyReleaseArtifacts') {
                     ?.dimensions?.get('minecraft:overworld')
             if (!provider.rocks.values().every { it.min_y == -64 && it.max_y == 319 }
                     || oil?.min_y != -48 || oil?.max_y != 48) {
-                throw new GradleException('Packaged provider does not use Minecraft 1.21.1 world heights')
+                throw new GradleException('Packaged provider does not use Minecraft 1.21.11 world heights')
             }
             if (provider.rocks['mineralogy:rock/minecraft/basalt']?.block != 'minecraft:basalt' ||
                     provider.rocks['mineralogy:rock/minecraft/tuff']?.block != 'minecraft:tuff' ||
@@ -734,10 +757,11 @@ tasks.register('verifyReleaseArtifacts') {
                     ] || provider.profile_defaults?.terrain_dimensions?.get('minecraft:overworld')?.host_blocks !=
                             ['minecraft:stone', 'minecraft:deepslate'] ||
                     !provider.ores.values().every { ore ->
-                        ore.dimensions?.get('minecraft:overworld')?.host_tags ==
-                                ['minecraft:stone_ore_replaceables', 'minecraft:deepslate_ore_replaceables']
+                        def dimension = ore.dimensions?.get('minecraft:overworld')
+                        dimension?.host_blocks == ['minecraft:stone', 'minecraft:deepslate'] &&
+                                dimension?.host_tags == []
                     }) {
-                throw new GradleException('Packaged provider does not use the Minecraft 1.21.1 native-rock and deepslate contract')
+                throw new GradleException('Packaged provider does not use the Minecraft 1.21.11 native-rock and deepslate contract')
             }
             byte[] providerBytes = zip.getInputStream(
                     zip.getEntry('data/mineralogy/orespawn/provider.json')).bytes
@@ -759,7 +783,7 @@ tasks.register('verifyReleaseArtifacts') {
                     'data/mineralogy/advancement/mineralogy/all_the_rocks.json')))
             if (allTheRocks.display?.icon?.id != 'mineralogy:basalt'
                     || allTheRocks.display.icon.containsKey('item')) {
-                throw new GradleException('Custom advancement icon must use the Minecraft 1.21.1 item-stack id field')
+                throw new GradleException('Custom advancement icon must use the Minecraft 1.21.11 item-stack id field')
             }
             def verifyAdvancementPredicates = { advancement, String source ->
                 advancement.criteria?.each { criterionName, criterion ->
@@ -772,7 +796,7 @@ tasks.register('verifyReleaseArtifacts') {
                                     ? holderSet.isEmpty() || holderSet.any { !(it instanceof String) || it.isEmpty() }
                                     : !(holderSet instanceof String) || holderSet.isEmpty()
                         }) {
-                            throw new GradleException("Invalid Minecraft 1.21.1 item predicate in ${source}: ${criterionName}")
+                            throw new GradleException("Invalid Minecraft 1.21.11 item predicate in ${source}: ${criterionName}")
                         }
                     }
                 }
@@ -783,7 +807,7 @@ tasks.register('verifyReleaseArtifacts') {
             }.each { entryName ->
                 def advancement = new JsonSlurper().parse(zip.getInputStream(zip.getEntry(entryName)))
                 if (advancement.sends_telemetry_event != false) {
-                    throw new GradleException("Minecraft 1.21.1 recipe advancement must disable telemetry: ${entryName}")
+                    throw new GradleException("Minecraft 1.21.11 recipe advancement must disable telemetry: ${entryName}")
                 }
                 if (advancement.criteria != null) verifyAdvancementPredicates(advancement, entryName)
             }
@@ -808,7 +832,7 @@ tasks.register('verifyReleaseArtifacts') {
                 def advancement = new JsonSlurper().parse(zip.getInputStream(zip.getEntry(
                         "data/mineralogy/advancement/recipes/${bridge.name}.json")))
                 if (recipe.type != 'minecraft:crafting_shapeless' || recipe.ingredients?.size() != 1 ||
-                        recipe.ingredients[0].item != bridge.source || recipe.result?.id != bridge.result ||
+                        recipe.ingredients[0] != bridge.source || recipe.result?.id != bridge.result ||
                         recipe.result?.count != 1 || recipe['forge:condition']?.type != 'forge:and' ||
                         recipe['forge:condition']?.values?.size() != 2 ||
                         advancement['forge:condition'] != recipe['forge:condition'] ||
@@ -863,12 +887,12 @@ tasks.register('verifyReleaseArtifacts') {
                 def data = new JsonSlurper().parse(zip.getInputStream(zip.getEntry(
                         "data/minecraft/recipe/${recipeName}.json")))
                 String result = "minecraft:${recipeName}"
-                if (data.recipes[0].recipe?.key?.C?.tag != 'mineralogy:cobblestone_equivalents'
-                        || data.recipes[1].recipe?.key?.C?.item != 'minecraft:cobblestone'
+                if (data.recipes[0].recipe?.key?.C != '#mineralogy:cobblestone_equivalents'
+                        || data.recipes[1].recipe?.key?.C != 'minecraft:cobblestone'
                         || !data.recipes.every { branch ->
                             branch.recipe?.pattern == ['#S#', '#C#', '###']
-                                    && branch.recipe?.key?.S?.item == result
-                                    && branch.recipe?.key?.get('#')?.item == 'minecraft:diamond'
+                                    && branch.recipe?.key?.S == result
+                                    && branch.recipe?.key?.get('#') == 'minecraft:diamond'
                                     && branch.recipe?.result?.id == result
                                     && branch.recipe?.result?.count == 2
                                     && branch.recipe?.category == 'misc'
@@ -889,10 +913,10 @@ tasks.register('verifyReleaseArtifacts') {
                     if (recipe.endsWith('_stonecutting')) {
                         if (!(nested.result instanceof Map) || nested.result.id == null
                                 || nested.result.count != 2 || nested.containsKey('count')) {
-                            throw new GradleException("Invalid Minecraft 1.21.1 stonecutting result: ${recipe}")
+                            throw new GradleException("Invalid Minecraft 1.21.11 stonecutting result: ${recipe}")
                         }
                     } else if (nested.result?.id == null) {
-                        throw new GradleException("Invalid Minecraft 1.21.1 slab result: ${recipe}")
+                        throw new GradleException("Invalid Minecraft 1.21.11 slab result: ${recipe}")
                     }
                 }
             }
@@ -939,12 +963,13 @@ tasks.register('verifyReleaseArtifacts') {
             advancementCategories.each { recipe, category ->
                 def data = new JsonSlurper().parse(zip.getInputStream(zip.getEntry(
                         "data/minecraft/advancement/recipes/${category}/${recipe}.json")))
-                if (data.advancements?.size() != 2 ||
-                        data.advancements[0]['forge:condition']?.type != 'mineralogy:config' ||
-                        data.advancements[1]['forge:condition']?.type != 'forge:not') {
+                def branches = data['forge:conditional']
+                if (branches?.size() != 2 ||
+                        branches[0]['forge:condition']?.type != 'mineralogy:config' ||
+                        branches[1]['forge:condition']?.type != 'forge:not') {
                     throw new GradleException("Invalid conditional advancement override: ${recipe}")
                 }
-                data.advancements.eachWithIndex { branch, index ->
+                branches.eachWithIndex { branch, index ->
                     if (branch.sends_telemetry_event != false) {
                         throw new GradleException("Conditional advancement must disable telemetry: ${recipe}")
                     }
@@ -963,7 +988,7 @@ tasks.register('verifyReleaseArtifacts') {
             def wallBlockstates = names.findAll { it ==~ /assets\/mineralogy\/blockstates\/.+_wall\.json/ }
             def tallWallModels = names.findAll { it ==~ /assets\/mineralogy\/models\/block\/.+_wall_side_tall\.json/ }
             if (wallBlockstates.size() != 108 || tallWallModels.size() != 108) {
-                throw new GradleException("Release jar must contain all 108 Forge 52 wall blockstates and tall-side models")
+                throw new GradleException("Release jar must contain all 108 Forge 61 wall blockstates and tall-side models")
             }
         }
         finally {
@@ -1056,9 +1081,10 @@ tasks.withType(PublishToMavenRepository).configureEach {
             : tasks.named('verifyPreparedReleaseArtifacts'))
 }
 
-tasks.register('syncForge52EclipseLaunches') {
+tasks.register('syncForge61EclipseLaunches') {
     group = 'ide'
     dependsOn tasks.named('processResources')
+    mustRunAfter tasks.named('genEclipseRuns')
     doLast {
         String mainClass = 'net.minecraftforge.userdev.LaunchTesting'
         String mainOutput = new File(projectDir, 'bin/main').absolutePath
@@ -1089,13 +1115,13 @@ tasks.register('syncForge52EclipseLaunches') {
                 'show.executions.view=false',
                 ''
         ].join('\r\n'), 'UTF-8')
-        // Forge 52 loads the mod solely from Eclipse's merged bin/main output.
+        // Forge 61 loads the mod solely from Eclipse's merged bin/main output.
         // Copy the processed production resources as a normal doLast action so
         // token-expanded metadata and externally edited JSON cannot lag behind
         // the source tree without making bin/main a Gradle-owned task output.
         // Eclipse rewrites sourceSets.main.output.resourcesDir to bin/main.
         // Always copy from Gradle's actual processResources destination.
-        File processedResources = layout.buildDirectory.dir('resources/main').get().asFile
+        File processedResources = processedMainResourcesDirectory()
         copy {
             from processedResources
             into mainOutput
@@ -1156,7 +1182,7 @@ tasks.register('syncForge52EclipseLaunches') {
 
             // Some ForgeGradle/Slime Launcher combinations emit this VM
             // argument and some do not. Quote it when present, without making
-            // the Forge 52 launch depend on an obsolete argument.
+            // the Forge 61 launch depend on an obsolete argument.
             String legacyClassPathPrefix = '-DlegacyClassPath.file='
             int legacyClassPathStart = text.indexOf(legacyClassPathPrefix)
             if (legacyClassPathStart >= 0) {
@@ -1188,7 +1214,9 @@ tasks.register('syncForge52EclipseLaunches') {
 
 tasks.register('verifyEclipseProductionClasspath') {
     group = 'verification'
-    dependsOn tasks.named('syncForge52EclipseLaunches')
+    dependsOn tasks.named('eclipseClasspath')
+    dependsOn tasks.named('eclipseProject')
+    dependsOn tasks.named('isolateEclipseProductionRuns')
     doLast {
         File classpath = file('.classpath')
         if (!classpath.isFile()) throw new GradleException('Eclipse .classpath was not generated')
@@ -1209,9 +1237,30 @@ tasks.register('verifyEclipseProductionClasspath') {
         def classpathXml = new XmlSlurper(false, false).parse(classpath)
         def sourcePaths = classpathXml.classpathentry.findAll { it.@kind.text() == 'src' }
                 .collect { it.@path.text() }
+        String resourcesPath = processedMainResourcesPath()
         if (sourcePaths.contains('src/main/resources')
-                || !sourcePaths.contains('build/resources/main')) {
+                || sourcePaths.contains('src/generated/resources')
+                || !sourcePaths.contains(resourcesPath)) {
             throw new GradleException('Eclipse must use processed production resources, not raw src/main/resources')
+        }
+        String defaultOutput = classpathXml.classpathentry.find { it.@kind.text() == 'output' }?.@path?.text()
+        Map<String, String> expectedOutputs = [
+                'src/main/java': 'bin/main',
+                (resourcesPath): 'bin/main',
+                'src/test/java': 'bin/test',
+                'src/test/resources': 'bin/test'
+        ]
+        def invalidOutputs = classpathXml.classpathentry.findAll { it.@kind.text() == 'src' }
+                .collect { [it.@path.text(), it.@output.text()] }
+                .findAll { pair -> expectedOutputs[pair[0]] != null && expectedOutputs[pair[0]] != pair[1] }
+        boolean nestedOutput = classpathXml.classpathentry
+                .findAll { it.@kind.text() == 'src' && !it.@output.text().isEmpty() }
+                .any { entry -> entry.@output.text() == defaultOutput
+                        || entry.@output.text().startsWith(defaultOutput + '/') }
+        if (defaultOutput != 'bin/default' || !invalidOutputs.isEmpty() || nestedOutput
+                || cp.contains('output="build/sourceSets')) {
+            throw new GradleException("Eclipse outputs must be disjoint bin/default, bin/main and bin/test; " +
+                    "default=${defaultOutput}, invalid=${invalidOutputs}")
         }
         classpathXml.classpathentry.each { entry ->
             String path = entry.@path.text()
@@ -1241,7 +1290,7 @@ tasks.register('verifyEclipseProductionClasspath') {
             String mainOutput = new File(projectDir, 'bin/main').absolutePath
             String expectedModClasses = "mineralogy%%${mainOutput}"
             if (!launch.contains(expectedModClasses)) {
-                throw new GradleException("Eclipse launch is not using Forge 52's merged production output: ${name}")
+                throw new GradleException("Eclipse launch is not using Forge 61's merged production output: ${name}")
             }
             ['cache', 'metadata', 'to-srg', 'to-obf'].each { flag ->
                 if (!launch.contains("--${flag} &quot;")) {
@@ -1266,7 +1315,7 @@ tasks.register('verifyEclipseProductionClasspath') {
                 throw new GradleException("Eclipse output is missing bundled documentation: ${name}")
             }
         }
-        File processedResources = layout.buildDirectory.dir('resources/main').get().asFile
+        File processedResources = processedMainResourcesDirectory()
         File processedProvider = new File(processedResources,
                 'data/mineralogy/orespawn/provider.json')
         File eclipseProvider = new File(projectDir,
@@ -1282,24 +1331,20 @@ tasks.register('verifyEclipseProductionClasspath') {
             throw new GradleException('Eclipse output contains stale or unexpanded mods.toml metadata')
         }
         String eclipseMetadata = eclipseModsToml.getText('UTF-8')
-        if (eclipseMetadata.contains('${') || !eclipseMetadata.contains('version="6.1.1.121011"')) {
+        if (eclipseMetadata.contains('${') || !eclipseMetadata.contains('version="6.1.1.121111"')) {
             throw new GradleException('Eclipse output contains unresolved or invalid Mineralogy version metadata')
         }
     }
 }
 
 tasks.matching { it.name == 'genEclipseRuns' }.configureEach {
-    finalizedBy tasks.named('syncForge52EclipseLaunches')
+    finalizedBy tasks.named('syncForge61EclipseLaunches')
 }
 
 tasks.register('isolateEclipseProductionRuns') {
     group = 'ide'
     dependsOn tasks.named('genEclipseRuns')
-    dependsOn tasks.named('syncForge52EclipseLaunches')
-}
-
-tasks.matching { it.name == 'eclipse' }.configureEach {
-    finalizedBy tasks.named('syncForge52EclipseLaunches')
+    dependsOn tasks.named('syncForge61EclipseLaunches')
 }
 
 tasks.named('check') {

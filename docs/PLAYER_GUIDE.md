@@ -2,8 +2,8 @@
 
 ## Installing
 
-Mineralogy 6 needs Minecraft 1.21.1, Forge 52.1.0, and OreSpawn
-4.0.16.121011.
+Mineralogy 6 needs Minecraft 1.21.11, Forge 61.1.0, and OreSpawn
+4.0.16.121111.
 Install matching Mineralogy and OreSpawn jars on both clients and servers. Do
 not open a world containing Mineralogy blocks without Mineralogy installed.
 
@@ -19,7 +19,7 @@ Cyano/`LEGACY` engine with their established family order and layer settings.
 It does not silently convert old terrain to Stable Layers. Back up an important
 world before changing its profile or upgrading mods.
 
-On the first 1.21.1 start, Mineralogy recognizes the old saved registry and
+On the first 1.21.11 start, Mineralogy recognizes the old saved registry and
 protects existing Overworld chunks while Minecraft converts them to flattened
 block states. Rock furnaces are converted when their chunk is first loaded;
 their inventory and cooking progress are retained. Old vanilla tile IDs are
@@ -44,6 +44,11 @@ Raw Mineralogy rocks work in broad stone recipes. With
 `cobblestone` tags for recipes such as levers, pistons, dispensers, and brewing stands.
 Exact Mineralogy rocks still make their matching Mineralogy slabs, stairs, and
 walls.
+
+Minecraft's stone spear uses its normal stone-tool-material tag. With
+`COBBLESTONE_EQUIVILENT=true`, eligible Mineralogy rocks can make and reveal
+the spear recipe without a Mineralogy override. With the option disabled, the
+native materials plus historical chert and pumice remain valid.
 
 Minecraft also has its own andesite, diorite, granite, polished-andesite,
 polished-diorite, and polished-granite slabs. Normal crafting and stonecutting
@@ -88,7 +93,7 @@ Its **Rock Settings** screen provides four altitude controls:
 - **Minimum Y** (`min_y`) and **Maximum Y** (`max_y`) are inclusive hard limits.
   The rock cannot replace terrain outside them.
 
-Minecraft 1.21.1 accepts Y `-64` through `319`; Depth Spread accepts `1` through
+Minecraft 1.21.11 accepts Y `-64` through `319`; Depth Spread accepts `1` through
 `512`. The saved fields are independent of the rock's geological family,
 overall weight, and geome weights, which also affect where it is selected.
 
@@ -116,7 +121,7 @@ terrain replacement through each dimension's `host_blocks` and `host_tags`.
 The packaged Mineralogy profile initially uses `minecraft:stone` and
 `minecraft:deepslate` in the Overworld.
 
-The terrain-host list is not exposed by OreSpawn's 1.21.1 graphical editor. Stop
+The terrain-host list is not exposed by OreSpawn's 1.21.11 graphical editor. Stop
 Minecraft or the server before editing the JSON. For defaults inherited by
 worlds created afterward, edit:
 
@@ -150,11 +155,11 @@ each natural terrain block that Mineralogy rock may replace:
 ```
 
 Use `host_tags` when an OreSpawn/pack-provided group is more appropriate; on
-Minecraft 1.21.1 these resolve through target-native block tags. Exact
+Minecraft 1.21.11 these resolve through target-native block tags. Exact
 `host_blocks` entries are the clearest choice for one
 modded stone.
 
-Minecraft 1.21.1 matches a `host_blocks` entry by flattened block registry
+Minecraft 1.21.11 matches a `host_blocks` entry by flattened block registry
 identity. Add only
 natural base-terrain blocks, not machines, containers, or construction blocks.
 Restart after editing. The change affects only chunks generated afterward;
@@ -163,11 +168,11 @@ OreSpawn never retro-generates Mineralogy rock strata into existing chunks.
 ### Enabling Mineralogy Geology In Another Dimension
 
 OreSpawn can apply Mineralogy rocks to a stone-based mod dimension without a
-separate Mineralogy dimension option. Minecraft 1.21.1 uses the dimension
+separate Mineralogy dimension option. Minecraft 1.21.11 uses the dimension
 type's registered ID. For example, use `examplemod:moon` when that is the ID
 documented by the installed dimension mod.
 
-The 1.21.1 graphical editor does not expose terrain-dimension or rock-membership
+The 1.21.11 graphical editor does not expose terrain-dimension or rock-membership
 fields. Stop Minecraft or the server and edit the appropriate OreSpawn JSON:
 `config/orespawn-worldgen.json` for defaults inherited by future worlds, or
 `<world>/serverconfig/orespawn-worldgen.json` for an established world.

@@ -20,9 +20,9 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -35,8 +35,8 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public final class MineralogyConfig {
     public static final String FILE_NAME = "mineralogy-common.toml";
-    private static final ResourceLocation CONFIG_CONDITION_ID =
-            ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "config");
+    private static final Identifier CONFIG_CONDITION_ID =
+            Identifier.fromNamespaceAndPath(Mineralogy.MODID, "config");
     private static DeferredRegister<MapCodec<? extends ICondition>> conditionCodecs;
 
     private static boolean smeltableGravel = true;
@@ -232,13 +232,13 @@ public final class MineralogyConfig {
         out.append('\t').append(key).append(" = ").append(value).append('\n');
     }
 
-    public static void registerRecipeConditions(IEventBus modEventBus) {
+    public static void registerRecipeConditions(BusGroup modBusGroup) {
         if (!recipeConditionsRegistered) {
             conditionCodecs = DeferredRegister.create(
                     ForgeRegistries.Keys.CONDITION_SERIALIZERS,
                     Mineralogy.MODID);
             conditionCodecs.register(CONFIG_CONDITION_ID.getPath(), () -> ConfigCondition.CODEC);
-            conditionCodecs.register(modEventBus);
+            conditionCodecs.register(modBusGroup);
             recipeConditionsRegistered = true;
         }
     }

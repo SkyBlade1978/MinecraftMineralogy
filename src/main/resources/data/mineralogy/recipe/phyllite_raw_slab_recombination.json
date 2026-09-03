@@ -1,29 +1,25 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:phyllite_slab"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:phyllite"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:phyllite_slab"
-                        },
-                        {
-                            "item":  "mineralogy:phyllite_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:phyllite",
-                   "count":  1
-               }
+  "forge:condition": {
+    "type": "forge:and",
+    "values": [
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:phyllite_slab"
+      },
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:phyllite"
+      }
+    ]
+  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:phyllite_slab",
+    "mineralogy:phyllite_slab"
+  ],
+  "result": {
+    "id": "mineralogy:phyllite",
+    "count": 1
+  }
 }

@@ -1,23 +1,21 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:quartzite_stairs"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "x  ",
-                    "xx ",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/quartzite"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:quartzite_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:quartzite_stairs"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "x  ",
+    "xx ",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:stones/quartzite"
+  },
+  "result": {
+    "id": "mineralogy:quartzite_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }

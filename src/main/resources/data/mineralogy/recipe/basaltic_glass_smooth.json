@@ -1,20 +1,16 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:basaltic_glass_smooth"
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "tag":  "mineralogy:stones/basaltic_glass"
-                        },
-                        {
-                            "item":  "minecraft:sand"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:basaltic_glass_smooth",
-                   "count":  1
-               }
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:basaltic_glass_smooth"
+  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "#mineralogy:stones/basaltic_glass",
+    "minecraft:sand"
+  ],
+  "result": {
+    "id": "mineralogy:basaltic_glass_smooth",
+    "count": 1
+  }
 }

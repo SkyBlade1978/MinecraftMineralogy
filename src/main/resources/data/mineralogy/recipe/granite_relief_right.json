@@ -1,20 +1,16 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:granite_relief_right"
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:granite_relief_left"
-                        },
-                        {
-                            "item":  "mineralogy:granite_relief_left"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:granite_relief_right",
-                   "count":  2
-               }
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:granite_relief_right"
+  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:granite_relief_left",
+    "mineralogy:granite_relief_left"
+  ],
+  "result": {
+    "id": "mineralogy:granite_relief_right",
+    "count": 2
+  }
 }

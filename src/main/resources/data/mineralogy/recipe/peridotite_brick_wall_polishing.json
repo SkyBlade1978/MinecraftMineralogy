@@ -1,29 +1,25 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:peridotite_brick_wall"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:peridotite_smooth_brick_wall"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:peridotite_brick_wall"
-                        },
-                        {
-                            "tag":  "forge:sand"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:peridotite_smooth_brick_wall",
-                   "count":  1
-               }
+  "forge:condition": {
+    "type": "forge:and",
+    "values": [
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:peridotite_brick_wall"
+      },
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:peridotite_smooth_brick_wall"
+      }
+    ]
+  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:peridotite_brick_wall",
+    "#forge:sand"
+  ],
+  "result": {
+    "id": "mineralogy:peridotite_smooth_brick_wall",
+    "count": 1
+  }
 }

@@ -1,31 +1,29 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:gabbro_stairs"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:gabbro_brick_stairs"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:gabbro_stairs"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:gabbro_brick_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:and",
+    "values": [
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:gabbro_stairs"
+      },
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:gabbro_brick_stairs"
+      }
+    ]
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": "mineralogy:gabbro_stairs"
+  },
+  "result": {
+    "id": "mineralogy:gabbro_brick_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }

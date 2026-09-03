@@ -21,7 +21,7 @@ public class GameplayContractTest {
     @Test
     public void reliefOpenCentreDoesNotCullItsSupportingBlockFace() throws Exception {
         String relief = text("src/main/java/zone/moddev/mc/mineralogy/blocks/RockRelief.java");
-        assertTrue(relief.contains("VoxelShape getOcclusionShape(BlockState state, BlockGetter world, BlockPos pos)"));
+        assertTrue(relief.contains("VoxelShape getOcclusionShape(BlockState state)"));
         assertTrue(relief.contains("VoxelShape getVisualShape(BlockState state, BlockGetter world, BlockPos pos,"));
         assertTrue(relief.contains("return Shapes.empty();"));
     }
@@ -52,6 +52,7 @@ public class GameplayContractTest {
         assertTrue(groups.contains("CreativeModeTabs.INGREDIENTS"));
         assertTrue(groups.contains(".withSearchBar()"));
         assertTrue(groups.contains("BuildCreativeModeTabContentsEvent"));
+        assertTrue(groups.contains("BuildCreativeModeTabContentsEvent.BUS.addListener"));
         assertTrue(groups.contains("Registries.CREATIVE_MODE_TAB"));
 
         CreativeTabPolicy grouped = new CreativeTabPolicy(true);
@@ -100,16 +101,39 @@ public class GameplayContractTest {
         assertTrue(policy.contains("rawRockHolders(blockRegistry"));
         assertTrue(policy.contains("rawRockHolders(itemRegistry"));
         assertTrue(policy.contains("\"chert\", \"pumice\""));
-        assertTrue(policy.contains("blockRegistry.bindTags(blockTags)"));
-        assertTrue(policy.contains("itemRegistry.bindTags(itemTags)"));
+        assertTrue(policy.contains("HolderSet.Named<T> tag"));
+        assertTrue(policy.contains("tag.bind(replacement)"));
+        assertTrue(policy.contains("reference.bindTags(tags)"));
         assertTrue(policy.contains("STONE_CRAFTING_MATERIALS"));
         assertTrue(policy.contains("STONE_TOOL_MATERIALS"));
-        assertTrue(policy.contains("ResourceLocation.fromNamespaceAndPath(\"c\", \"cobblestones\")"));
-        assertTrue(policy.contains("ResourceLocation.fromNamespaceAndPath(\"forge\", \"cobblestone\")"));
+        assertTrue(policy.contains("Identifier.fromNamespaceAndPath(\"c\", \"cobblestones\")"));
+        assertTrue(policy.contains("Identifier.fromNamespaceAndPath(\"forge\", \"cobblestone\")"));
         assertTrue(policy.contains("TagKey.create"));
         assertFalse(policy.contains("java.lang.reflect"));
-        assertTrue(policy.contains("Ingredient.invalidateAll()"));
+        assertFalse(policy.contains("Ingredient.invalidateAll()"));
+
+		String reloadMixin = text("src/main/java/zone/moddev/mc/mineralogy/mixin/ReloadableServerResourcesMixin.java");
+		assertTrue(reloadMixin.contains("method = \"updateStaticRegistryTags\""));
+		assertTrue(reloadMixin.contains("at = @At(\"TAIL\")"));
+		assertTrue(reloadMixin.contains("CobblestoneTagPolicy.apply"));
+
+		String earlyOreTagMixin = text("src/main/java/zone/moddev/mc/mineralogy/mixin/OreSpawnEarlyTagCompatibilityMixin.java");
+		assertTrue(earlyOreTagMixin.contains("zone.moddev.mc.orespawn.worldgen.OreSpawnOreGeneration"));
+		assertTrue(earlyOreTagMixin.contains("method = \"resolveTag\""));
+		assertTrue(earlyOreTagMixin.contains("catch (IllegalStateException unboundTags)"));
+		assertTrue(earlyOreTagMixin.contains("callback.setReturnValue(Collections.emptySet())"));
+		assertTrue(earlyOreTagMixin.contains("callback.setReturnValue(resolved)"));
     }
+
+	@Test
+	public void forge61ConstructionReceivesStableIdsBeforeRegistration() throws Exception {
+		String helper = text("src/main/java/zone/moddev/mc/mineralogy/init/RegistrationProperties.java");
+		assertTrue(helper.contains("properties.setId(ResourceKey.create(Registries.BLOCK"));
+		assertTrue(helper.contains("properties.setId(ResourceKey.create(Registries.ITEM"));
+		String fluids = text("src/main/java/zone/moddev/mc/mineralogy/init/MineralogyFluids.java");
+		assertTrue(fluids.contains("RegistrationProperties.block("));
+		assertTrue(fluids.contains("RegistrationProperties.item("));
+	}
 
     @Test
     public void optionalGunpowderDustsCannotCollapseToTwoIngredients() throws Exception {
@@ -121,7 +145,7 @@ public class GameplayContractTest {
     }
 
     @Test
-    public void forge52UsesModelBlockLayersAndNativeFlowingFluidRendering() throws Exception {
+    public void forge61UsesModelBlockLayersAndNativeFlowingFluidRendering() throws Exception {
         String fluid = text("src/main/java/zone/moddev/mc/mineralogy/init/MineralogyFluids.java");
         assertTrue(fluid.contains("ForgeFlowingFluid.Source"));
         assertTrue(fluid.contains("ForgeFlowingFluid.Flowing"));
@@ -131,7 +155,7 @@ public class GameplayContractTest {
         assertTrue(fluid.contains("blocks/crude_oil_flow"));
         String client = text("src/main/java/zone/moddev/mc/mineralogy/client/ClientSetup.java");
         assertTrue(client.contains("ItemBlockRenderTypes.setRenderLayer(MineralogyFluids.CRUDE_OIL.get()"));
-        assertTrue(client.contains("RenderType.translucent()"));
+        assertTrue(client.contains("ChunkSectionLayer.TRANSLUCENT"));
         assertFalse(client.contains("setRenderLayer(block"));
         for (String model : new String[] { "pane_n", "pane_ne", "pane_ns", "pane_nse", "pane_nsew",
                 "rocksaltlamp", "rocksaltlamp_down", "rocksaltlamp_wall", "rocksaltstreetlamp" }) {
@@ -151,9 +175,8 @@ public class GameplayContractTest {
         assertTrue(hook.contains("rewriteLegacyRockFurnaceTileEntities"));
 		assertTrue(hook.contains("tileEntity.putString(\"id\", ROCK_FURNACE_TILE_ENTITY)"));
 
-        String transformer = text("src/main/resources/coremods/mineralogy_legacy_world_fix.js");
-        assertTrue(transformer.contains("mineralogy_legacy_chunk_data"));
-        assertTrue(transformer.contains("net.minecraft.world.level.chunk.storage.ChunkStorage"));
+        String transformer = text("src/main/java/zone/moddev/mc/mineralogy/mixin/SimpleRegionStorageMixin.java");
+        assertTrue(transformer.contains("SimpleRegionStorage.class"));
         assertTrue(transformer.contains("prepareLegacyChunk"));
         assertTrue(transformer.contains("finalizeLegacyChunk"));
 
@@ -171,15 +194,21 @@ public class GameplayContractTest {
     public void legacyFlatteningUsesTheExpandedArrayAndReinstallsTheSelectedWorldMapping() throws Exception {
         String hook = text("src/main/java/zone/moddev/mc/mineralogy/patching/LegacyWorldDataHook.java");
         assertTrue(hook.contains("expandFlatteningTable(highestStateId + 1)"));
-        assertTrue(hook.contains("type.getComponentType() != Dynamic.class"));
-        assertTrue(hook.contains("legacyStates[stateId] = BlockStateData.parse(stateNbt)"));
-        assertTrue(hook.contains("unsafe.putObjectVolatile(base, offset, expanded)"));
+        assertTrue(hook.contains("BlockStateDataAccessor.mineralogy$getLegacyStateMap()"));
+        assertTrue(hook.contains("new Dynamic<>(NbtOps.INSTANCE"));
+        assertTrue(hook.contains("NbtUtils.writeBlockState(legacyState(block, meta))"));
         assertTrue(hook.contains("captureLegacyLevelData(LevelStorageSource.LevelStorageAccess access,"));
         assertTrue(hook.contains("LevelStorageSource.LevelDirectory levelDirectory)"));
         assertTrue(hook.contains("access.getDataTagRaw(false)"));
         assertTrue(hook.contains("access.getDataTagRaw(true)"));
-        String transformer = text("src/main/resources/coremods/mineralogy_legacy_world_fix.js");
-        assertTrue(transformer.contains("net/minecraft/world/level/storage/LevelStorageSource$LevelDirectory"));
+        String transformer = text("src/main/java/zone/moddev/mc/mineralogy/mixin/ForgeHooksMixin.java");
+        assertTrue(transformer.contains("LevelStorageSource.LevelDirectory"));
+        String tableMixin = text("src/main/java/zone/moddev/mc/mineralogy/mixin/BlockStateDataMixin.java");
+        assertTrue(tableMixin.contains("Arrays.copyOf(MAP, 65_536)"));
+        assertTrue(tableMixin.contains("Arrays.copyOf(BLOCK_DEFAULTS, 4_096)"));
+        assertTrue(new File("src/main/resources/mineralogy.mixins.json").isFile());
+        assertFalse(new File("src/main/resources/META-INF/coremods.json").exists());
+        assertFalse(new File("src/main/resources/coremods/mineralogy_legacy_world_fix.js").exists());
         assertTrue(hook.contains("writeSidecar(levelDat.getParentFile(), blocks)"));
         assertTrue(hook.contains("prepareLegacyWorld(levelDat)"));
 

@@ -11,7 +11,7 @@ import zone.moddev.mc.mineralogy.blocks.RockWall;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -19,7 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
@@ -37,6 +37,11 @@ public final class MineralogyItemGroups {
 		throw new IllegalAccessError("Not an instantiable class");
 	}
 
+	/** Registers the creative-content event, which moved off the mod bus in Forge 61. */
+	public static void registerRuntimeListeners() {
+		BuildCreativeModeTabContentsEvent.BUS.addListener(MineralogyItemGroups::buildTabContents);
+	}
+
 	@SubscribeEvent
 	public static void registerTabs(RegisterEvent event) {
 		event.register(Registries.CREATIVE_MODE_TAB, helper -> {
@@ -52,7 +57,6 @@ public final class MineralogyItemGroups {
 		});
 	}
 
-	@SubscribeEvent
 	public static void buildTabContents(BuildCreativeModeTabContentsEvent event) {
 		boolean grouped = MineralogyConfig.groupCreativeTabItemsByType();
 		CreativeModeTab tab = event.getTab();
@@ -64,7 +68,7 @@ public final class MineralogyItemGroups {
 		}
 
 		for (Item item : ForgeRegistries.ITEMS.getValues()) {
-			ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
+			Identifier id = ForgeRegistries.ITEMS.getKey(item);
 			if (id == null || !Mineralogy.MODID.equals(id.getNamespace())) {
 				continue;
 			}
@@ -111,12 +115,12 @@ public final class MineralogyItemGroups {
 				.icon(() -> icon(iconItemName))
 				.withSearchBar()
 				.build();
-		helper.register(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, name), tab);
+		helper.register(Identifier.fromNamespaceAndPath(Mineralogy.MODID, name), tab);
 		return tab;
 	}
 
 	private static ItemStack icon(String itemName) {
-		Item item = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, itemName));
+		Item item = ForgeRegistries.ITEMS.getValue(Identifier.fromNamespaceAndPath(Mineralogy.MODID, itemName));
 		return new ItemStack(item == null ? net.minecraft.world.item.Items.IRON_PICKAXE : item);
 	}
 }

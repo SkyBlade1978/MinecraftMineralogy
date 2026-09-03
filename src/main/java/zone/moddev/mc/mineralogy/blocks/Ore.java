@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import zone.moddev.mc.mineralogy.Mineralogy;
+import zone.moddev.mc.mineralogy.init.RegistrationProperties;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -12,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelReader;
@@ -27,8 +28,9 @@ public class Ore extends Block implements NamedMineralogyBlock {
 	private final int pickLevel;
 
 	public Ore(String name, String dropItemName, int minNumberDropped, int maxNumberDropped, int pickLevel) {
-		super(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.STONE).strength(1.5F, 5.0F).sound(SoundType.STONE)
-				.requiresCorrectToolForDrops());
+		super(RegistrationProperties.block(
+				BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.STONE)
+						.strength(1.5F, 5.0F).sound(SoundType.STONE).requiresCorrectToolForDrops(), name));
 		this.registryPath = name;
 		this.dropItemName = dropItemName;
 		this.dropAdduct = minNumberDropped;
@@ -48,7 +50,7 @@ public class Ore extends Block implements NamedMineralogyBlock {
 	}
 
 	public ItemLike getItemDropped() {
-		Item item = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, dropItemName));
+		Item item = ForgeRegistries.ITEMS.getValue(Identifier.fromNamespaceAndPath(Mineralogy.MODID, dropItemName));
 		return item == null ? this : item;
 	}
 
