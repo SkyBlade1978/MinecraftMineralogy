@@ -91,6 +91,8 @@ public class WorkflowContractTest {
         assertTrue(build.contains("filesMatching(['**/*.json', '**/*.mcmeta', '**/*.toml', '**/*.md'])"));
         assertTrue(build.contains("ForgeGradle merged main output has multiple producers"));
         assertTrue(build.contains("'zone/moddev/mc/mineralogy/Mineralogy.class'"));
+        assertTrue(build.contains("928 Forge 61 item definitions"));
+        assertTrue(build.contains("assets/mineralogy/items/"));
         assertTrue(build.contains("def preparedReleaseDir = project.findProperty('preparedReleaseDir')"));
         assertTrue(build.contains("tasks.register('verifyPreparedReleaseArtifacts')"));
         assertTrue(build.contains("tasks.withType(PublishToMavenRepository).configureEach"));

@@ -90,7 +90,8 @@ public class Items {
 
 	private static BlockItem createBlockItem(Block block) {
 		Identifier name = ForgeRegistries.BLOCKS.getKey(block);
-		Item.Properties properties = RegistrationProperties.item(new Item.Properties(), name.getPath());
+		Item.Properties properties = RegistrationProperties.item(new Item.Properties(), name.getPath())
+				.useBlockDescriptionPrefix();
 		if (block instanceof RockFurnace) {
 			properties.stacksTo(1);
 		} else if (block instanceof RockSaltStreetLamp) {

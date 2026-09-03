@@ -133,6 +133,9 @@ public class GameplayContractTest {
 		String fluids = text("src/main/java/zone/moddev/mc/mineralogy/init/MineralogyFluids.java");
 		assertTrue(fluids.contains("RegistrationProperties.block("));
 		assertTrue(fluids.contains("RegistrationProperties.item("));
+		String items = text("src/main/java/zone/moddev/mc/mineralogy/init/Items.java");
+		assertTrue(items.contains("RegistrationProperties.item(new Item.Properties(), name.getPath())"));
+		assertTrue(items.contains(".useBlockDescriptionPrefix()"));
 	}
 
     @Test
@@ -153,6 +156,10 @@ public class GameplayContractTest {
         assertTrue(fluid.contains("MineralogyBucketItem"));
         assertTrue(fluid.contains("blocks/crude_oil_still"));
         assertTrue(fluid.contains("blocks/crude_oil_flow"));
+        String bucketModel = text("src/main/resources/assets/mineralogy/models/item/crude_oil_bucket.json");
+        assertTrue(bucketModel.contains("\"parent\": \"minecraft:item/generated\""));
+        assertTrue(bucketModel.contains("\"layer0\": \"mineralogy:items/crude_oil_bucket\""));
+        assertFalse(bucketModel.contains("forge:fluid_container"));
         String client = text("src/main/java/zone/moddev/mc/mineralogy/client/ClientSetup.java");
         assertTrue(client.contains("ItemBlockRenderTypes.setRenderLayer(MineralogyFluids.CRUDE_OIL.get()"));
         assertTrue(client.contains("ChunkSectionLayer.TRANSLUCENT"));

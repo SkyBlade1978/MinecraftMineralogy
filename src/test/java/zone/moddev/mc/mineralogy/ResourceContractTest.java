@@ -513,6 +513,43 @@ public class ResourceContractTest {
     }
 
     @Test
+    public void forge61InventoryModelsUseTargetItemDefinitions() throws Exception {
+        File legacyModelDirectory = new File(ROOT, "assets/mineralogy/models/item");
+        File definitionDirectory = new File(ROOT, "assets/mineralogy/items");
+        File[] legacyModels = legacyModelDirectory.listFiles((dir, name) -> name.endsWith(".json"));
+        File[] definitions = definitionDirectory.listFiles((dir, name) -> name.endsWith(".json"));
+        assertNotNull(legacyModels);
+        assertNotNull(definitions);
+
+        Set<String> expected = new HashSet<String>();
+        for (File model : legacyModels) {
+            String name = model.getName();
+            String id = name.substring(0, name.length() - ".json".length());
+            if (!id.endsWith("_double_slab") && !(id.startsWith("lit_") && id.endsWith("_furnace"))) {
+                expected.add(name);
+            }
+        }
+        assertEquals(928, expected.size());
+
+        Set<String> actual = new HashSet<String>();
+        for (File definition : definitions) {
+            actual.add(definition.getName());
+            String id = definition.getName().substring(0,
+                    definition.getName().length() - ".json".length());
+            JsonObject model = json(definition).getAsJsonObject("model");
+            assertNotNull(definition.getName(), model);
+            assertEquals(definition.getName(), "minecraft:model", model.get("type").getAsString());
+            assertEquals(definition.getName(), "mineralogy:item/" + id, model.get("model").getAsString());
+        }
+        assertEquals(expected, actual);
+
+        String itemRegistration = new String(Files.readAllBytes(new File(
+                "src/main/java/zone/moddev/mc/mineralogy/init/Items.java").toPath()), StandardCharsets.UTF_8);
+        assertTrue("Block items must retain the translated block description prefix",
+                itemRegistration.contains(".useBlockDescriptionPrefix()"));
+    }
+
+    @Test
     public void generatedRecipeAdvancementsDisableTelemetry() throws Exception {
         File mineralogyAdvancements = new File(ROOT, "data/mineralogy/advancement/recipes");
         List<File> generated = jsonFiles(mineralogyAdvancements);

@@ -738,6 +738,23 @@ tasks.register('verifyReleaseArtifacts') {
             if (locales.size() != 17) {
                 throw new GradleException("Release jar must contain 17 locales, found ${locales.size()}")
             }
+            def legacyItemModels = names.findAll { it ==~ /assets\/mineralogy\/models\/item\/[^\/]+\.json/ }
+            def itemDefinitions = names.findAll { it ==~ /assets\/mineralogy\/items\/[^\/]+\.json/ }
+            if (legacyItemModels.size() != 1144 || itemDefinitions.size() != 928) {
+                throw new GradleException('Release jar must contain 1,144 legacy item models and 928 Forge 61 item definitions')
+            }
+            itemDefinitions.each { definitionName ->
+                String id = definitionName.substring(
+                        'assets/mineralogy/items/'.length(), definitionName.length() - '.json'.length())
+                if (id.endsWith('_double_slab') || (id.startsWith('lit_') && id.endsWith('_furnace'))) {
+                    throw new GradleException("Hidden block unexpectedly has an item definition: ${id}")
+                }
+                def definition = new JsonSlurper().parse(zip.getInputStream(zip.getEntry(definitionName)))
+                if (definition.model?.type != 'minecraft:model' ||
+                        definition.model?.model != "mineralogy:item/${id}") {
+                    throw new GradleException("Invalid Forge 61 item definition: ${definitionName}")
+                }
+            }
             zip.entries().findAll { !it.directory && it.name.endsWith('.class') }.each { entry ->
                 byte[] header = new byte[8]
                 def stream = zip.getInputStream(entry)
