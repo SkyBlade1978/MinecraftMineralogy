@@ -513,6 +513,44 @@ public class ResourceContractTest {
     }
 
     @Test
+    public void forge61MiningTagsUseSupportedOptionalEntryObjects() throws Exception {
+        String[] paths = {
+                "data/minecraft/tags/block/mineable/pickaxe.json",
+                "data/minecraft/tags/block/needs_iron_tool.json",
+                "data/minecraft/tags/block/needs_stone_tool.json"
+        };
+        int[] totals = { 1133, 123, 329 };
+        int[] optionalTotals = { 1080, 120, 320 };
+
+        for (int index = 0; index < paths.length; index++) {
+            JsonObject tag = json(new File(ROOT, paths[index]));
+            assertFalse(paths[index], tag.has("optional"));
+            JsonArray values = tag.getAsJsonArray("values");
+            assertEquals(paths[index], totals[index], values.size());
+
+            int optionalEntries = 0;
+            for (JsonElement value : values) {
+                if (!value.isJsonObject()) continue;
+                JsonObject entry = value.getAsJsonObject();
+                assertEquals(paths[index], 2, entry.size());
+                assertTrue(paths[index], entry.has("id"));
+                assertTrue(paths[index], entry.has("required"));
+                assertFalse(paths[index], entry.get("required").getAsBoolean());
+                assertTrue(paths[index], entry.get("id").getAsString().startsWith("mineralogy:"));
+                optionalEntries++;
+            }
+            assertEquals(paths[index], optionalTotals[index], optionalEntries);
+        }
+
+        JsonArray pickaxe = json(new File(ROOT, paths[0])).getAsJsonArray("values");
+        JsonArray iron = json(new File(ROOT, paths[1])).getAsJsonArray("values");
+        assertTrue(pickaxe.contains(JsonParser.parseString("\"mineralogy:basalt\"")));
+        assertTrue(iron.contains(JsonParser.parseString("\"mineralogy:basalt\"")));
+        assertTrue(hasOptionalTagEntry(pickaxe, "mineralogy:basalt_smooth"));
+        assertTrue(hasOptionalTagEntry(iron, "mineralogy:basalt_smooth"));
+    }
+
+    @Test
     public void forge61InventoryModelsUseTargetItemDefinitions() throws Exception {
         File legacyModelDirectory = new File(ROOT, "assets/mineralogy/models/item");
         File definitionDirectory = new File(ROOT, "assets/mineralogy/items");
@@ -977,6 +1015,18 @@ public class ResourceContractTest {
         try (java.io.Reader reader = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
             return JsonParser.parseReader(reader).getAsJsonObject();
         }
+    }
+
+    private static boolean hasOptionalTagEntry(JsonArray values, String id) {
+        for (JsonElement value : values) {
+            if (!value.isJsonObject()) continue;
+            JsonObject entry = value.getAsJsonObject();
+            if (id.equals(entry.get("id").getAsString())
+                    && !entry.get("required").getAsBoolean()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void assertGunpowderRecipe(File recipes, String name, String requiredTag) throws Exception {

@@ -1,5 +1,11 @@
 Mineralogy 6.1.1.121111 for Minecraft 1.21.11
 
+- Updated all pickaxe and harvest-tier tags to Minecraft 1.21.11's optional
+  tag-entry object format. This restores normal mining speed and drops for all
+  1,133 pickaxe-mined Mineralogy blocks, including every derived rock form.
+- Synchronized a retained rock-furnace block entity with its new block state
+  before reattaching it during lit/unlit transitions, removing the chunk state
+  mismatch warning while preserving fuel, contents, and progress.
 - Added Minecraft 1.21.11 item definitions for every registered Mineralogy
   item and block item, restoring their inventory, hotbar, recipe-book, and
   creative-tab models. Block items now explicitly retain their translated

@@ -734,6 +734,30 @@ tasks.register('verifyReleaseArtifacts') {
             }) {
                 throw new GradleException('Release jar contains a stale pre-1.21 plural data directory')
             }
+            def miningTagContracts = [
+                    'data/minecraft/tags/block/mineable/pickaxe.json': [1133, 1080],
+                    'data/minecraft/tags/block/needs_iron_tool.json': [123, 120],
+                    'data/minecraft/tags/block/needs_stone_tool.json': [329, 320]
+            ]
+            miningTagContracts.each { tagName, contract ->
+                def entry = zip.getEntry(tagName)
+                if (entry == null) throw new GradleException("Release jar is missing ${tagName}")
+                def tag = new JsonSlurper().parse(zip.getInputStream(entry))
+                if (tag.containsKey('optional')) {
+                    throw new GradleException("${tagName} uses the removed Forge 61 top-level optional field")
+                }
+                if (tag.values.size() != contract[0]) {
+                    throw new GradleException("${tagName} must contain ${contract[0]} values")
+                }
+                def optionalEntries = tag.values.findAll { it instanceof Map }
+                if (optionalEntries.size() != contract[1] || !optionalEntries.every {
+                        it.keySet() == ['id', 'required'] as Set &&
+                                it.id instanceof String && it.id.startsWith('mineralogy:') &&
+                                it.required == false
+                }) {
+                    throw new GradleException("${tagName} has invalid Forge 61 optional tag entries")
+                }
+            }
             def locales = names.findAll { it ==~ /assets\/mineralogy\/lang\/[a-z_]+\.json/ }
             if (locales.size() != 17) {
                 throw new GradleException("Release jar must contain 17 locales, found ${locales.size()}")
