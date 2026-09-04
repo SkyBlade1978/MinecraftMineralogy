@@ -62,6 +62,7 @@ public final class RecipeIntegrationProbe {
     private void serverStarted(ServerStartedEvent event) {
         boolean enabled = Boolean.parseBoolean(System.getProperty(
                 "mineralogy.recipeProbe.equivalence", "true"));
+        String phase = System.getProperty("mineralogy.recipeProbe.phase", "single");
         ServerLevel level = event.getServer().overworld();
         Item basalt = requireItem("mineralogy", "basalt");
 
@@ -103,9 +104,9 @@ public final class RecipeIntegrationProbe {
 
         verifyStoneSpear(level, enabled);
         verifySlabRoutes(level);
-        verifyFurnaceStateTransitions(level);
+        verifyFurnaceStateTransitions(level, phase);
         verifyAdvancements(event);
-        writeMarker(enabled);
+        writeMarker(enabled, phase);
         event.getServer().halt(false);
     }
 
@@ -158,10 +159,29 @@ public final class RecipeIntegrationProbe {
         }
     }
 
-    private static void verifyFurnaceStateTransitions(ServerLevel level) {
+    private static void verifyFurnaceStateTransitions(ServerLevel level, String phase) {
         BlockPos pos = new BlockPos(0, level.getMinY() + 10, 0);
         Block unlit = requireBlock("mineralogy", "basalt_furnace");
         Block lit = requireBlock("mineralogy", "lit_basalt_furnace");
+
+        if ("reload".equals(phase)) {
+            require(level.getBlockState(pos).is(unlit), "persisted furnace is not unlit");
+            BlockEntity persisted = level.getBlockEntity(pos);
+            require(persisted instanceof TileEntityRockFurnace,
+                    "persisted basalt furnace lost its block entity");
+            TileEntityRockFurnace furnace = (TileEntityRockFurnace) persisted;
+            require(furnace.getBlockState().equals(level.getBlockState(pos)),
+                    "persisted furnace has a stale block-entity state");
+            require(furnace.getItem(1).is(Items.COAL) && furnace.getItem(1).getCount() == 1,
+                    "persisted furnace lost its fuel");
+            RockFurnace.setState(true, level, pos);
+            assertFurnaceState(level, pos, lit, furnace, "reload lit");
+            RockFurnace.setState(false, level, pos);
+            assertFurnaceState(level, pos, unlit, furnace, "reload unlit");
+            level.removeBlock(pos, false);
+            return;
+        }
+
         level.setBlockAndUpdate(pos, unlit.defaultBlockState());
         try {
             BlockEntity initial = level.getBlockEntity(pos);
@@ -180,7 +200,7 @@ public final class RecipeIntegrationProbe {
             require(furnace.getItem(1).is(Items.COAL) && furnace.getItem(1).getCount() == 1,
                     "unlit transition lost the furnace fuel");
         } finally {
-            level.removeBlock(pos, false);
+            if (!"first".equals(phase)) level.removeBlock(pos, false);
         }
     }
 
@@ -577,9 +597,10 @@ public final class RecipeIntegrationProbe {
         return "redstone";
     }
 
-    private static void writeMarker(boolean enabled) {
+    private static void writeMarker(boolean enabled, String phase) {
         String result = "forge_recipe_manager_loaded=true\n"
                 + "equivalence_enabled=" + enabled + "\n"
+                + "phase=" + phase + "\n"
                 + "covered_vanilla_recipes=19\n"
                 + "native_stone_spear_verified=true\n"
                 + "legacy_rock_families=27\n"
@@ -589,6 +610,7 @@ public final class RecipeIntegrationProbe {
                 + "stone_tool_blocks_verified=329\n"
                 + "diamond_pickaxe_harvest_verified=true\n"
                 + "furnace_state_transitions_verified=true\n"
+                + "furnace_reload_verified=" + "reload".equals(phase) + "\n"
                 + "shared_stonecutting_routes=15\n"
                 + "slab_bridges=18\n"
                 + "progressive_advancements_loaded=true\n";

@@ -612,7 +612,7 @@ tasks.register('verifyReleaseConfiguration') {
     description = 'Verifies the exact Mineralogy 1.21.11 release identity.'
     dependsOn tasks.named('verifyMavenizerCompatibilityFixture')
     doLast {
-        if (project.mod_version != '6.1.1.121111'
+        if (project.mod_version != '6.1.2.121111'
                 || project.mod_group != expectedMavenGroup
                 || project.minecraft_version != '1.21.11'
                 || project.forge_version != '61.1.0'
@@ -627,7 +627,7 @@ tasks.register('verifyReleaseDependencies') {
     group = 'verification'
     description = 'Resolves and verifies the exact released OreSpawn dependency.'
     doLast {
-        if (project.mod_version != '6.1.1.121111'
+        if (project.mod_version != '6.1.2.121111'
                 || project.minecraft_version != project.mc_version
                 || project.mc_version != '1.21.11'
                 || project.loader_name != 'forge'
@@ -744,7 +744,7 @@ tasks.register('verifyReleaseArtifacts') {
                 if (entry == null) throw new GradleException("Release jar is missing ${tagName}")
                 def tag = new JsonSlurper().parse(zip.getInputStream(entry))
                 if (tag.containsKey('optional')) {
-                    throw new GradleException("${tagName} uses the removed Forge 61 top-level optional field")
+                    throw new GradleException("${tagName} uses an unsupported top-level optional field")
                 }
                 if (tag.values.size() != contract[0]) {
                     throw new GradleException("${tagName} must contain ${contract[0]} values")
@@ -755,7 +755,11 @@ tasks.register('verifyReleaseArtifacts') {
                                 it.id instanceof String && it.id.startsWith('mineralogy:') &&
                                 it.required == false
                 }) {
-                    throw new GradleException("${tagName} has invalid Forge 61 optional tag entries")
+                    throw new GradleException("${tagName} has invalid optional tag entries")
+                }
+                def ids = tag.values.collect { it instanceof Map ? it.id : it } as Set
+                if (ids.size() != tag.values.size()) {
+                    throw new GradleException("${tagName} contains duplicate entries")
                 }
             }
             def locales = names.findAll { it ==~ /assets\/mineralogy\/lang\/[a-z_]+\.json/ }
@@ -1389,7 +1393,7 @@ tasks.register('verifyEclipseProductionClasspath') {
             throw new GradleException('Eclipse output contains stale or unexpanded mods.toml metadata')
         }
         String eclipseMetadata = eclipseModsToml.getText('UTF-8')
-        if (eclipseMetadata.contains('${') || !eclipseMetadata.contains('version="6.1.1.121111"')) {
+        if (eclipseMetadata.contains('${') || !eclipseMetadata.contains('version="6.1.2.121111"')) {
             throw new GradleException('Eclipse output contains unresolved or invalid Mineralogy version metadata')
         }
     }

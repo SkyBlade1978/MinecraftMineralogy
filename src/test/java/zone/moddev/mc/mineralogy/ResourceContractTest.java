@@ -513,7 +513,7 @@ public class ResourceContractTest {
     }
 
     @Test
-    public void forge61MiningTagsUseSupportedOptionalEntryObjects() throws Exception {
+    public void miningTagsUseSupportedOptionalEntryObjects() throws Exception {
         String[] paths = {
                 "data/minecraft/tags/block/mineable/pickaxe.json",
                 "data/minecraft/tags/block/needs_iron_tool.json",
@@ -528,16 +528,23 @@ public class ResourceContractTest {
             JsonArray values = tag.getAsJsonArray("values");
             assertEquals(paths[index], totals[index], values.size());
 
+            Set<String> ids = new HashSet<String>();
             int optionalEntries = 0;
             for (JsonElement value : values) {
-                if (!value.isJsonObject()) continue;
-                JsonObject entry = value.getAsJsonObject();
-                assertEquals(paths[index], 2, entry.size());
-                assertTrue(paths[index], entry.has("id"));
-                assertTrue(paths[index], entry.has("required"));
-                assertFalse(paths[index], entry.get("required").getAsBoolean());
-                assertTrue(paths[index], entry.get("id").getAsString().startsWith("mineralogy:"));
-                optionalEntries++;
+                String id;
+                if (value.isJsonObject()) {
+                    JsonObject entry = value.getAsJsonObject();
+                    assertEquals(paths[index], 2, entry.size());
+                    assertTrue(paths[index], entry.has("id"));
+                    assertTrue(paths[index], entry.has("required"));
+                    assertFalse(paths[index], entry.get("required").getAsBoolean());
+                    id = entry.get("id").getAsString();
+                    assertTrue(paths[index], id.startsWith("mineralogy:"));
+                    optionalEntries++;
+                } else {
+                    id = value.getAsString();
+                }
+                assertTrue(paths[index] + " duplicate " + id, ids.add(id));
             }
             assertEquals(paths[index], optionalTotals[index], optionalEntries);
         }
@@ -730,7 +737,7 @@ public class ResourceContractTest {
     @Test
     public void oilAndBuildMetadataUseStableTargetIdentities() throws Exception {
         String properties = new String(Files.readAllBytes(new File("gradle.properties").toPath()), StandardCharsets.UTF_8);
-        assertTrue(properties.contains("mod_version=6.1.1.121111"));
+        assertTrue(properties.contains("mod_version=6.1.2.121111"));
         assertTrue(properties.contains("orespawn_curse_file_id=8791659"));
         String build = new String(Files.readAllBytes(new File("build.gradle").toPath()), StandardCharsets.UTF_8);
         assertTrue(build.contains("runtimeOnly \"curse.maven:mmd-orespawn-"));

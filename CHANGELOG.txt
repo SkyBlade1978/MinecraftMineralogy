@@ -1,4 +1,4 @@
-Mineralogy 6.1.1.121111 for Minecraft 1.21.11
+Mineralogy 6.1.2.121111 for Minecraft 1.21.11
 
 - Updated all pickaxe and harvest-tier tags to Minecraft 1.21.11's optional
   tag-entry object format. This restores normal mining speed and drops for all
@@ -128,7 +128,7 @@ Mineralogy 6.1.1.121111 for Minecraft 1.21.11
   format 94.1 resources.
 - Added reproducible Java 21 main, sources, and Javadoc artifacts, exact released
   OreSpawn dependency verification, guarded 1.21.11 CI, and the four-component
-  release tag `6.1.1.121111`.
+  release tag `6.1.2.121111`.
 - Kept ForgeGradle 7 while sealing Forge 61's audited zero-repair Mavenizer
   fixture by SHA-256. The build-only tool runs on Java 25; Mineralogy compiles
   and ships exclusively as Java 21, and release audits reject fixture leakage.
