@@ -1,29 +1,25 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:gneiss_smooth_slab"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:gneiss_smooth"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:gneiss_smooth_slab"
-                        },
-                        {
-                            "item":  "mineralogy:gneiss_smooth_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:gneiss_smooth",
-                   "count":  1
-               }
+  "forge:condition": {
+    "type": "forge:and",
+    "values": [
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:gneiss_smooth_slab"
+      },
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:gneiss_smooth"
+      }
+    ]
+  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:gneiss_smooth_slab",
+    "mineralogy:gneiss_smooth_slab"
+  ],
+  "result": {
+    "id": "mineralogy:gneiss_smooth",
+    "count": 1
+  }
 }

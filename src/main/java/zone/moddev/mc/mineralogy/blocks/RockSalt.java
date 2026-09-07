@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.storage.loot.LootParams.Builder;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -24,7 +24,7 @@ public class RockSalt extends Rock {
 			return Collections.singletonList(new ItemStack(this));
 		}
 
-		Item dust = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "rock_salt_dust"));
+		Item dust = ForgeRegistries.ITEMS.getValue(Identifier.fromNamespaceAndPath(Mineralogy.MODID, "rock_salt_dust"));
 		if (dust != null) {
 			return Collections.singletonList(new ItemStack(dust, 4));
 		}

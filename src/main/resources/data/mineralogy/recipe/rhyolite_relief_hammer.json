@@ -1,29 +1,23 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:rhyolite_relief_hammer"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "zxz",
-                    "zyz",
-                    "zzz"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:rhyolite_smooth"
-                      },
-                "y":  {
-                          "item":  "minecraft:stick"
-                      },
-                "z":  {
-                          "item":  "mineralogy:rhyolite_relief_blank"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:rhyolite_relief_hammer",
-                   "count":  7
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:rhyolite_relief_hammer"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "zxz",
+    "zyz",
+    "zzz"
+  ],
+  "key": {
+    "x": "mineralogy:rhyolite_smooth",
+    "y": "minecraft:stick",
+    "z": "mineralogy:rhyolite_relief_blank"
+  },
+  "result": {
+    "id": "mineralogy:rhyolite_relief_hammer",
+    "count": 7
+  },
+  "show_notification": true
 }

@@ -7,8 +7,8 @@ import zone.moddev.mc.mineralogy.MineralogyConfig;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.Item;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.resources.Identifier;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.MissingMappingsEvent;
@@ -20,14 +20,14 @@ import org.apache.logging.log4j.Logger;
 public final class PatchHandler {
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private static final ResourceLocation SAPROLITE = mineralogyId("saprolite");
-	private static final ResourceLocation PUMMICE = mineralogyId("pummice");
-	private static final ResourceLocation LIMESTONE = mineralogyId("limestone");
-	private static final ResourceLocation PUMICE = mineralogyId("pumice");
-	private static final ResourceLocation GRASS_PATH = minecraftId("grass_path");
-	private static final ResourceLocation DIRT_PATH = minecraftId("dirt_path");
-	private static final ResourceLocation SWEET_BERRIES_PICK = minecraftId("item.sweet_berries.pick_from_bush");
-	private static final ResourceLocation SWEET_BERRY_BUSH_PICK = minecraftId("block.sweet_berry_bush.pick_berries");
+	private static final Identifier SAPROLITE = mineralogyId("saprolite");
+	private static final Identifier PUMMICE = mineralogyId("pummice");
+	private static final Identifier LIMESTONE = mineralogyId("limestone");
+	private static final Identifier PUMICE = mineralogyId("pumice");
+	private static final Identifier GRASS_PATH = minecraftId("grass_path");
+	private static final Identifier DIRT_PATH = minecraftId("dirt_path");
+	private static final Identifier SWEET_BERRIES_PICK = minecraftId("item.sweet_berries.pick_from_bush");
+	private static final Identifier SWEET_BERRY_BUSH_PICK = minecraftId("block.sweet_berry_bush.pick_berries");
 
 	private PatchHandler() {
 		throw new IllegalAccessError("Not an instantiable class");
@@ -56,7 +56,7 @@ public final class PatchHandler {
 	}
 
 	private static <T> void remapMissing(List<MissingMappingsEvent.Mapping<T>> mappings,
-			ResourceLocation oldId, T replacement) {
+			Identifier oldId, T replacement) {
 		for (MissingMappingsEvent.Mapping<T> mapping : mappings) {
 			if (!oldId.equals(mapping.getKey())) {
 				continue;
@@ -72,11 +72,11 @@ public final class PatchHandler {
 		}
 	}
 
-	private static ResourceLocation mineralogyId(String path) {
-		return ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, path);
+	private static Identifier mineralogyId(String path) {
+		return Identifier.fromNamespaceAndPath(Mineralogy.MODID, path);
 	}
 
-	private static ResourceLocation minecraftId(String path) {
-		return ResourceLocation.fromNamespaceAndPath("minecraft", path);
+	private static Identifier minecraftId(String path) {
+		return Identifier.fromNamespaceAndPath("minecraft", path);
 	}
 }

@@ -1,29 +1,25 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:novaculite_slab"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:novaculite"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:novaculite_slab"
-                        },
-                        {
-                            "item":  "mineralogy:novaculite_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:novaculite",
-                   "count":  1
-               }
+  "forge:condition": {
+    "type": "forge:and",
+    "values": [
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:novaculite_slab"
+      },
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:novaculite"
+      }
+    ]
+  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:novaculite_slab",
+    "mineralogy:novaculite_slab"
+  ],
+  "result": {
+    "id": "mineralogy:novaculite",
+    "count": 1
+  }
 }

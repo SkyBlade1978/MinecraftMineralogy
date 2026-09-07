@@ -1,29 +1,23 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:gneiss_relief_hammer"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "zxz",
-                    "zyz",
-                    "zzz"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:gneiss_smooth"
-                      },
-                "y":  {
-                          "item":  "minecraft:stick"
-                      },
-                "z":  {
-                          "item":  "mineralogy:gneiss_relief_blank"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:gneiss_relief_hammer",
-                   "count":  7
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:gneiss_relief_hammer"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "zxz",
+    "zyz",
+    "zzz"
+  ],
+  "key": {
+    "x": "mineralogy:gneiss_smooth",
+    "y": "minecraft:stick",
+    "z": "mineralogy:gneiss_relief_blank"
+  },
+  "result": {
+    "id": "mineralogy:gneiss_relief_hammer",
+    "count": 7
+  },
+  "show_notification": true
 }

@@ -27,7 +27,7 @@ $colors = @(
     'gray', 'pink', 'lime', 'yellow', 'light_blue', 'magenta', 'orange', 'white'
 )
 
-# Minecraft owns these full-block identities in 1.21.1. Mineralogy keeps its
+# Minecraft owns these full-block identities in 1.21.11. Mineralogy keeps its
 # legacy blocks registered, but recipes may accept either identity where doing
 # so cannot compete with a native recipe.
 $nativeFullBlocks = @{
@@ -115,11 +115,16 @@ function ItemIngredient([string] $item, [object] $data = $null) {
             $item = "minecraft:$($dyes[[int]$data])"
         }
     }
-    $ingredient = [ordered]@{ item = $item }
-    return $ingredient
+    return $item
 }
 
 function AdvancementPredicate([object] $ingredient) {
+	if ($ingredient -is [string]) {
+		return [ordered]@{ items = [string]$ingredient }
+	}
+	if ($ingredient -is [System.Array]) {
+		return [ordered]@{ items = @($ingredient) }
+	}
     if ($ingredient -is [System.Collections.IDictionary]) {
         if ($ingredient.Contains('item')) {
             return [ordered]@{ items = [string]$ingredient['item'] }
@@ -140,33 +145,33 @@ function AdvancementPredicate([object] $ingredient) {
     if ($null -ne $ingredient.PSObject.Properties['items']) {
         return [ordered]@{ items = $ingredient.items }
     }
-    throw "Cannot convert recipe ingredient into a Minecraft 1.21.1 advancement predicate"
+    throw "Cannot convert recipe ingredient into a Minecraft 1.21.11 advancement predicate"
 }
 
 function OreIngredient([string] $ore) {
-    if ($ore -eq 'sand') { return [ordered]@{ tag = 'forge:sand' } }
-    if ($ore -eq 'paper') { return [ordered]@{ tag = 'forge:paper' } }
-    if ($ore -eq 'drywallWhite') { return [ordered]@{ tag = 'mineralogy:drywall/white' } }
-    if ($ore -eq 'lampRocksalt') { return [ordered]@{ tag = 'forge:lamps/rock_salt' } }
+    if ($ore -eq 'sand') { return '#forge:sand' }
+    if ($ore -eq 'paper') { return '#forge:paper' }
+    if ($ore -eq 'drywallWhite') { return '#mineralogy:drywall/white' }
+    if ($ore -eq 'lampRocksalt') { return '#forge:lamps/rock_salt' }
     if ($ore -match '^dust(.+)$') {
         $name = $Matches[1] -replace 'Rock_salt', 'rock_salt'
-        return [ordered]@{ tag = "c:dusts/$($name.ToLowerInvariant())" }
+        return "#c:dusts/$($name.ToLowerInvariant())"
     }
     if ($ore -match '^block(.+)$') {
         $name = $Matches[1] -replace 'Rocksalt', 'rock_salt'
-        return [ordered]@{ tag = "c:storage_blocks/$($name.ToLowerInvariant())" }
+        return "#c:storage_blocks/$($name.ToLowerInvariant())"
     }
     if ($ore -match '^stone(.+?)(SmoothBrick|Smooth|Brick)?$') {
         $family = Convert-CamelToSnake $Matches[1]
         $finish = if ($Matches[2]) { '/' + (Convert-CamelToSnake $Matches[2]) } else { '' }
-        return [ordered]@{ tag = "mineralogy:stones/$family$finish" }
+        return "#mineralogy:stones/$family$finish"
     }
     if ($ore -match '^slab(.+?)(SmoothBrick|Smooth|Brick)?$') {
         $family = Convert-CamelToSnake $Matches[1]
         $finish = if ($Matches[2]) { '/' + (Convert-CamelToSnake $Matches[2]) } else { '' }
-        return [ordered]@{ tag = "mineralogy:slabs/$family$finish" }
+        return "#mineralogy:slabs/$family$finish"
     }
-    throw "No Minecraft 1.21.1 tag mapping for legacy OreDictionary key $ore"
+    throw "No Minecraft 1.21.11 tag mapping for legacy OreDictionary key $ore"
 }
 
 function Convert-CamelToSnake([string] $value) {
@@ -340,14 +345,14 @@ function Add-SandUnlockCriteria(
     $criteria['has_sand'] = [ordered]@{
         trigger = 'minecraft:inventory_changed'
         conditions = [ordered]@{
-            items = @([ordered]@{ items = @('minecraft:sand') })
+            items = @([ordered]@{ items = 'minecraft:sand' })
         }
     }
     if ($sandMode -eq 'ore_dictionary') {
         $criteria['has_red_sand'] = [ordered]@{
             trigger = 'minecraft:inventory_changed'
             conditions = [ordered]@{
-                items = @([ordered]@{ items = @('minecraft:red_sand') })
+                items = @([ordered]@{ items = 'minecraft:red_sand' })
             }
         }
     }
@@ -366,6 +371,9 @@ function Get-UnlockRequirements([string] $sandMode) {
 }
 
 function Resolve-UnlockIngredient([object] $ingredient) {
+	if ($ingredient -is [string] -or $ingredient -is [System.Array]) {
+		return $ingredient
+	}
     if ($null -ne $ingredient.item) {
         return [ordered]@{ item = [string]$ingredient.item }
     }
@@ -899,18 +907,30 @@ function Prepare-TargetDirectories() {
 
     foreach ($file in Get-ChildItem -LiteralPath $recipeRoot -Filter '*.json') {
         $recipe = Get-Content -LiteralPath $file.FullName -Raw | ConvertFrom-Json
-        if ($recipe.type -eq 'minecraft:smelting') {
-            if ($null -eq $recipe.ingredient.item) {
-                throw "Smelting recipe $($file.Name) has no direct item ingredient"
-            }
-            Register-UnlockSource $file.BaseName ([string]$recipe.ingredient.item)
+		if ($recipe.type -eq 'minecraft:smelting') {
+			$smeltingIngredient = if ($recipe.ingredient -is [string]) {
+				[string]$recipe.ingredient
+			}
+			elseif ($null -ne $recipe.ingredient.item) {
+				[string]$recipe.ingredient.item
+			}
+			else {
+				$null
+			}
+			if ($null -eq $smeltingIngredient) {
+				throw "Smelting recipe $($file.Name) has no direct item ingredient"
+			}
+			Register-UnlockSource $file.BaseName $smeltingIngredient
             $orderedRecipe = [ordered]@{
                 type = [string]$recipe.type
                 category = 'blocks'
             }
             foreach ($property in $recipe.PSObject.Properties) {
                 if ($property.Name -notin @('type', 'category')) {
-                    if ($property.Name -eq 'result' -and $property.Value -is [string]) {
+					if ($property.Name -eq 'ingredient') {
+						$orderedRecipe[$property.Name] = $smeltingIngredient
+					}
+					elseif ($property.Name -eq 'result' -and $property.Value -is [string]) {
                         $orderedRecipe[$property.Name] = [ordered]@{ id = [string]$property.Value }
                     }
                     else {
@@ -1032,7 +1052,7 @@ function Write-CobblestoneRecipeTags() {
 function VanillaRecipeAdvancement(
     [string] $recipeName,
     [string] $criterionName,
-    [System.Collections.IDictionary] $criterionIngredient
+    [object] $criterionIngredient
 ) {
     return [ordered]@{
         parent = 'minecraft:recipes/root'
@@ -1057,13 +1077,13 @@ function Write-ConditionalMinecraftAdvancement(
     [string] $recipeName,
     [System.Collections.IDictionary] $condition,
     [string] $criterionName,
-    [System.Collections.IDictionary] $enabledIngredient,
-    [System.Collections.IDictionary] $fallbackIngredient
+    [object] $enabledIngredient,
+    [object] $fallbackIngredient
 ) {
     $directory = Join-Path $minecraftAdvancementRoot $category
     New-Item -ItemType Directory -Force -Path $directory | Out-Null
     Write-Json (Join-Path $directory "$recipeName.json") ([ordered]@{
-        advancements = @(
+        'forge:conditional' = @(
             (Add-ConditionToAdvancement $condition `
                 (VanillaRecipeAdvancement $recipeName $criterionName $enabledIngredient)),
             (Add-ConditionToAdvancement (NotCondition $condition) `
@@ -1085,12 +1105,12 @@ function Add-ConditionToAdvancement(
 
 function Write-CobblestoneRecipeOverrides() {
     $condition = ConfigCondition 'COBBLESTONE_EQUIVILENT'
-    $enabledCobblestone = [ordered]@{ tag = 'mineralogy:cobblestone_equivalents' }
-    $fallbackCobblestone = [ordered]@{ tag = 'c:cobblestones' }
-    $enabledCrafting = [ordered]@{ tag = 'mineralogy:stone_crafting_materials' }
-    $fallbackCrafting = [ordered]@{ tag = 'minecraft:stone_crafting_materials' }
-    $enabledTools = [ordered]@{ tag = 'mineralogy:stone_tool_materials' }
-    $fallbackTools = [ordered]@{ tag = 'minecraft:stone_tool_materials' }
+	$enabledCobblestone = '#mineralogy:cobblestone_equivalents'
+	$fallbackCobblestone = '#c:cobblestones'
+	$enabledCrafting = '#mineralogy:stone_crafting_materials'
+	$fallbackCrafting = '#minecraft:stone_crafting_materials'
+	$enabledTools = '#mineralogy:stone_tool_materials'
+	$fallbackTools = '#minecraft:stone_tool_materials'
 
     Write-ConditionalMinecraftRecipe 'furnace' $condition `
         (VanillaShapedRecipe @('###', '# #', '###') ([ordered]@{ '#' = $enabledCrafting }) 'minecraft:furnace') `
@@ -1112,11 +1132,11 @@ function Write-CobblestoneRecipeOverrides() {
     Write-ConditionalMinecraftRecipe 'piston' $condition `
         (VanillaShapedRecipe @('TTT', '#X#', '#R#') ([ordered]@{
             R = ItemIngredient 'minecraft:redstone'; '#' = $enabledCobblestone
-            T = [ordered]@{ tag = 'minecraft:planks' }; X = ItemIngredient 'minecraft:iron_ingot'
+			T = '#minecraft:planks'; X = ItemIngredient 'minecraft:iron_ingot'
         }) 'minecraft:piston') `
         (VanillaShapedRecipe @('TTT', '#X#', '#R#') ([ordered]@{
             R = ItemIngredient 'minecraft:redstone'; '#' = $fallbackCobblestone
-            T = [ordered]@{ tag = 'minecraft:planks' }; X = ItemIngredient 'minecraft:iron_ingot'
+			T = '#minecraft:planks'; X = ItemIngredient 'minecraft:iron_ingot'
         }) 'minecraft:piston')
     Write-ConditionalMinecraftRecipe 'dispenser' $condition `
         (VanillaShapedRecipe @('###', '#X#', '#R#') ([ordered]@{
@@ -1381,4 +1401,4 @@ $advancementCount = Synchronize-AdvancementConditions
 if ($advancementCount -ne $expectedTargetRecipeCount) {
     throw "Expected $expectedTargetRecipeCount recipe advancements, found $advancementCount"
 }
-Write-Output "Generated $expectedRecipeCount crafting recipe JSON files, retained 28 target-native smelting recipes, created $createdAdvancements missing recipe advancements, and conditioned $advancementCount Minecraft 1.21.1 recipe advancements."
+Write-Output "Generated $expectedRecipeCount crafting recipe JSON files, retained 28 target-native smelting recipes, created $createdAdvancements missing recipe advancements, and conditioned $advancementCount Minecraft 1.21.11 recipe advancements."

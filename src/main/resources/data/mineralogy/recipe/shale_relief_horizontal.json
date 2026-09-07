@@ -1,21 +1,19 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:shale_relief_horizontal"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:shale_relief_blank"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:shale_relief_horizontal",
-                   "count":  3
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:shale_relief_horizontal"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx"
+  ],
+  "key": {
+    "x": "mineralogy:shale_relief_blank"
+  },
+  "result": {
+    "id": "mineralogy:shale_relief_horizontal",
+    "count": 3
+  },
+  "show_notification": true
 }

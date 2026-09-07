@@ -1,21 +1,19 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:diabase_relief_horizontal"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:diabase_relief_blank"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:diabase_relief_horizontal",
-                   "count":  3
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:diabase_relief_horizontal"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx"
+  ],
+  "key": {
+    "x": "mineralogy:diabase_relief_blank"
+  },
+  "result": {
+    "id": "mineralogy:diabase_relief_horizontal",
+    "count": 3
+  },
+  "show_notification": true
 }

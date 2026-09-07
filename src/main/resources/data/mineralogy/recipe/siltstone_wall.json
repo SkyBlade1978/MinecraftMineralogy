@@ -1,22 +1,20 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:siltstone_wall"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/siltstone"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:siltstone_wall",
-                   "count":  6
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:siltstone_wall"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:stones/siltstone"
+  },
+  "result": {
+    "id": "mineralogy:siltstone_wall",
+    "count": 6
+  },
+  "show_notification": true
 }

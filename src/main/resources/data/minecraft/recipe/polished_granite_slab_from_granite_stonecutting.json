@@ -1,40 +1,36 @@
 {
-    "type":  "forge:conditional",
-    "recipes":  [
-                    {
-                        "forge:condition":  {
-                                                "type":  "forge:item_exists",
-                                                "item":  "mineralogy:granite_smooth_slab"
-                                            },
-                        "recipe":  {
-                                       "type":  "minecraft:stonecutting",
-                                       "ingredient":  {
-                                                          "item":  "minecraft:granite"
-                                                      },
-                                       "result":  {
-                                                      "id":  "mineralogy:granite_smooth_slab",
-                                                      "count":  2
-                                                  }
-                                   }
-                    },
-                    {
-                        "forge:condition":  {
-                                                "type":  "forge:not",
-                                                "value":  {
-                                                              "type":  "forge:item_exists",
-                                                              "item":  "mineralogy:granite_smooth_slab"
-                                                          }
-                                            },
-                        "recipe":  {
-                                       "type":  "minecraft:stonecutting",
-                                       "ingredient":  {
-                                                          "item":  "minecraft:granite"
-                                                      },
-                                       "result":  {
-                                                      "id":  "minecraft:polished_granite_slab",
-                                                      "count":  2
-                                                  }
-                                   }
-                    }
-                ]
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "forge:condition": {
+        "type": "forge:item_exists",
+        "item": "mineralogy:granite_smooth_slab"
+      },
+      "recipe": {
+        "type": "minecraft:stonecutting",
+        "ingredient": "minecraft:granite",
+        "result": {
+          "id": "mineralogy:granite_smooth_slab",
+          "count": 2
+        }
+      }
+    },
+    {
+      "forge:condition": {
+        "type": "forge:not",
+        "value": {
+          "type": "forge:item_exists",
+          "item": "mineralogy:granite_smooth_slab"
+        }
+      },
+      "recipe": {
+        "type": "minecraft:stonecutting",
+        "ingredient": "minecraft:granite",
+        "result": {
+          "id": "minecraft:polished_granite_slab",
+          "count": 2
+        }
+      }
+    }
+  ]
 }

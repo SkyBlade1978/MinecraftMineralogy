@@ -1,31 +1,29 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:gneiss_stairs"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:gneiss_brick_stairs"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:gneiss_stairs"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:gneiss_brick_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:and",
+    "values": [
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:gneiss_stairs"
+      },
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:gneiss_brick_stairs"
+      }
+    ]
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": "mineralogy:gneiss_stairs"
+  },
+  "result": {
+    "id": "mineralogy:gneiss_brick_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }

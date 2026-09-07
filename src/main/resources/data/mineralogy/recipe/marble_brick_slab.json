@@ -1,21 +1,19 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:marble_brick_slab"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:marble_brick"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:marble_brick_slab",
-                   "count":  6
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:marble_brick_slab"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx"
+  ],
+  "key": {
+    "x": "mineralogy:marble_brick"
+  },
+  "result": {
+    "id": "mineralogy:marble_brick_slab",
+    "count": 6
+  },
+  "show_notification": true
 }

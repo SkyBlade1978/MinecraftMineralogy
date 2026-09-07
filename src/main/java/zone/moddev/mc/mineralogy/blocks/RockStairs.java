@@ -1,5 +1,7 @@
 package zone.moddev.mc.mineralogy.blocks;
 
+import zone.moddev.mc.mineralogy.init.RegistrationProperties;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.SoundType;
@@ -11,8 +13,9 @@ public class RockStairs extends StairBlock implements NamedMineralogyBlock {
 
 	public RockStairs(Block materialBlock, float hardness, float blastResistance, int toolHardnessLevel,
 			SoundType sound, String name) {
-		super(materialBlock.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(materialBlock)
-				.strength(hardness, blastResistance).sound(sound).requiresCorrectToolForDrops());
+		super(materialBlock.defaultBlockState(), RegistrationProperties.block(
+				BlockBehaviour.Properties.ofFullCopy(materialBlock).strength(hardness, blastResistance)
+						.sound(sound).requiresCorrectToolForDrops(), name));
 
 		this.registryPath = name;
 		this.toolHardnessLevel = toolHardnessLevel;

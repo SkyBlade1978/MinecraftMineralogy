@@ -1,41 +1,23 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:peridotite_relief_axe"
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:peridotite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:peridotite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:peridotite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:peridotite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:peridotite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:peridotite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:peridotite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:peridotite_relief_blank"
-                        },
-                        {
-                            "item":  "minecraft:stone_axe"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:peridotite_relief_axe",
-                   "count":  8
-               }
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:peridotite_relief_axe"
+  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:peridotite_relief_blank",
+    "mineralogy:peridotite_relief_blank",
+    "mineralogy:peridotite_relief_blank",
+    "mineralogy:peridotite_relief_blank",
+    "mineralogy:peridotite_relief_blank",
+    "mineralogy:peridotite_relief_blank",
+    "mineralogy:peridotite_relief_blank",
+    "mineralogy:peridotite_relief_blank",
+    "minecraft:stone_axe"
+  ],
+  "result": {
+    "id": "mineralogy:peridotite_relief_axe",
+    "count": 8
+  }
 }

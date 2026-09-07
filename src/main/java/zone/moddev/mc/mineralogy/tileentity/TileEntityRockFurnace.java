@@ -15,17 +15,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.FurnaceFuelSlot;
@@ -39,13 +41,14 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -63,7 +66,7 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 	private int currentItemBurnTime;
 	private int cookTime;
 	private int totalCookTime = 200;
-	private final Map<ResourceLocation, Integer> recipeUseCounts = new HashMap<ResourceLocation, Integer>();
+	private final Map<ResourceKey<Recipe<?>>, Integer> recipeUseCounts = new HashMap<>();
 	private final ContainerData furnaceData = new ContainerData() {
 		@Override
 		public int get(int index) {
@@ -166,27 +169,25 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag compound, HolderLookup.Provider registries) {
-		super.loadAdditional(compound, registries);
-		customInventoryName = null;
+	protected void loadAdditional(ValueInput compound) {
+		super.loadAdditional(compound);
+		customInventoryName = compound.read("CustomName", ComponentSerialization.CODEC).orElse(null);
 		furnaceItemStacks = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(compound, furnaceItemStacks, registries);
-		furnaceBurnTime = compound.getInt("BurnTime");
-		cookTime = compound.getInt("CookTime");
-		totalCookTime = compound.getInt("CookTimeTotal");
+		ContainerHelper.loadAllItems(compound, furnaceItemStacks);
+		furnaceBurnTime = compound.getIntOr("BurnTime", 0);
+		cookTime = compound.getIntOr("CookTime", 0);
+		totalCookTime = compound.getIntOr("CookTimeTotal", 200);
 		currentItemBurnTime = getItemBurnTime(furnaceItemStacks.get(1));
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
-		super.saveAdditional(compound, registries);
+	protected void saveAdditional(ValueOutput compound) {
+		super.saveAdditional(compound);
 		compound.putInt("BurnTime", furnaceBurnTime);
 		compound.putInt("CookTime", cookTime);
 		compound.putInt("CookTimeTotal", totalCookTime);
-		ContainerHelper.saveAllItems(compound, furnaceItemStacks, registries);
-		if (customInventoryName != null) {
-			compound.putString("CustomName", Component.Serializer.toJson(customInventoryName, registries));
-		}
+		ContainerHelper.saveAllItems(compound, furnaceItemStacks);
+		compound.storeNullable("CustomName", ComponentSerialization.CODEC, customInventoryName);
 	}
 
 	public boolean isBurning() {
@@ -215,7 +216,7 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 
 				if (isBurning()) {
 					dirty = true;
-					ItemStack container = fuel.getCraftingRemainingItem();
+					ItemStack container = fuel.getCraftingRemainder();
 					if (!container.isEmpty()) {
 						furnaceItemStacks.set(1, container);
 					} else if (!fuel.isEmpty()) {
@@ -253,17 +254,18 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 	}
 
 	private int getCookTime(@Nullable RecipeHolder<SmeltingRecipe> recipe) {
-		return recipe != null ? recipe.value().getCookingTime() : 200;
+		return recipe != null ? recipe.value().cookingTime() : 200;
 	}
 
 	@Nullable
 	private RecipeHolder<SmeltingRecipe> getSmeltingRecipe() {
-		return level == null ? null
-				: level.getRecipeManager().getRecipeFor(RecipeType.SMELTING,
-						new SingleRecipeInput(furnaceItemStacks.get(0)), level).orElse(null);
+		return level instanceof ServerLevel serverLevel
+				? serverLevel.recipeAccess().getRecipeFor(RecipeType.SMELTING,
+						new SingleRecipeInput(furnaceItemStacks.get(0)), serverLevel).orElse(null)
+				: null;
 	}
 
-	private boolean canSmelt(@Nullable RecipeHolder<? extends Recipe<?>> recipe) {
+	private boolean canSmelt(@Nullable RecipeHolder<SmeltingRecipe> recipe) {
 		if (furnaceItemStacks.get(0).isEmpty() || recipe == null) {
 			return false;
 		}
@@ -271,7 +273,8 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 		if (level == null) {
 			return false;
 		}
-		ItemStack result = recipe.value().getResultItem(level.registryAccess());
+		ItemStack result = recipe.value().assemble(new SingleRecipeInput(furnaceItemStacks.get(0)),
+				level.registryAccess());
 		if (result.isEmpty()) {
 			return false;
 		}
@@ -291,13 +294,13 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 		return output.getCount() + result.getCount() <= result.getMaxStackSize();
 	}
 
-	private void smeltItem(@Nullable RecipeHolder<? extends Recipe<?>> recipe) {
+	private void smeltItem(@Nullable RecipeHolder<SmeltingRecipe> recipe) {
 		if (!canSmelt(recipe)) {
 			return;
 		}
 
 		ItemStack input = furnaceItemStacks.get(0);
-		ItemStack result = recipe.value().getResultItem(level.registryAccess());
+		ItemStack result = recipe.value().assemble(new SingleRecipeInput(input), level.registryAccess());
 		ItemStack output = furnaceItemStacks.get(2);
 
 		if (output.isEmpty()) {
@@ -317,11 +320,15 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 		input.shrink(1);
 	}
 
-	private static int getItemBurnTime(ItemStack stack) {
-		return stack.isEmpty() ? 0 : ForgeHooks.getBurnTime(stack, RecipeType.SMELTING);
+	private int getItemBurnTime(ItemStack stack) {
+		if (stack.isEmpty()) {
+			return 0;
+		}
+		return level == null ? Math.max(0, stack.getBurnTime(RecipeType.SMELTING))
+				: level.fuelValues().burnDuration(stack, RecipeType.SMELTING);
 	}
 
-	public static boolean isItemFuel(ItemStack stack) {
+	public boolean isItemFuel(ItemStack stack) {
 		return getItemBurnTime(stack) > 0;
 	}
 
@@ -413,7 +420,7 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 	}
 
 	@Override
-	public void fillStackedContents(StackedContents helper) {
+	public void fillStackedContents(StackedItemContents helper) {
 		for (ItemStack stack : furnaceItemStacks) {
 			helper.accountStack(stack);
 		}
@@ -424,7 +431,7 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 		if (recipe == null) {
 			return;
 		}
-		ResourceLocation id = recipe.id();
+		ResourceKey<Recipe<?>> id = recipe.id();
 		Integer count = recipeUseCounts.get(id);
 		recipeUseCounts.put(id, count == null ? 1 : count + 1);
 	}
@@ -434,21 +441,22 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 		return null;
 	}
 
-	public Map<ResourceLocation, Integer> getRecipeUseCounts() {
+	public Map<ResourceKey<Recipe<?>>, Integer> getRecipeUseCounts() {
 		return recipeUseCounts;
 	}
 
 	@Override
-	public boolean setRecipeUsed(Level level, ServerPlayer player, RecipeHolder<?> recipe) {
+	public boolean setRecipeUsed(ServerPlayer player, RecipeHolder<?> recipe) {
 		setRecipeUsed(recipe);
 		return recipe != null;
 	}
 
 	public void onCrafting(Player player) {
-		if (!player.level().getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING)) {
+		if (player.level() instanceof ServerLevel serverLevel
+				&& !serverLevel.getGameRules().get(GameRules.LIMITED_CRAFTING)) {
 			List<RecipeHolder<?>> recipes = new ArrayList<RecipeHolder<?>>();
-			for (ResourceLocation id : recipeUseCounts.keySet()) {
-				RecipeHolder<?> recipe = player.level().getRecipeManager().byKey(id).orElse(null);
+			for (ResourceKey<Recipe<?>> id : recipeUseCounts.keySet()) {
+				RecipeHolder<?> recipe = serverLevel.recipeAccess().byKey(id).orElse(null);
 				if (recipe != null) {
 					recipes.add(recipe);
 				}
@@ -457,6 +465,13 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 		}
 
 		recipeUseCounts.clear();
+	}
+
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		if (!RockFurnace.isKeepingInventory()) {
+			super.preRemoveSideEffects(pos, state);
+		}
 	}
 
 	@Override

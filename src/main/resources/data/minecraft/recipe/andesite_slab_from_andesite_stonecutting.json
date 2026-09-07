@@ -1,40 +1,36 @@
 {
-    "type":  "forge:conditional",
-    "recipes":  [
-                    {
-                        "forge:condition":  {
-                                                "type":  "forge:item_exists",
-                                                "item":  "mineralogy:andesite_slab"
-                                            },
-                        "recipe":  {
-                                       "type":  "minecraft:stonecutting",
-                                       "ingredient":  {
-                                                          "item":  "minecraft:andesite"
-                                                      },
-                                       "result":  {
-                                                      "id":  "mineralogy:andesite_slab",
-                                                      "count":  2
-                                                  }
-                                   }
-                    },
-                    {
-                        "forge:condition":  {
-                                                "type":  "forge:not",
-                                                "value":  {
-                                                              "type":  "forge:item_exists",
-                                                              "item":  "mineralogy:andesite_slab"
-                                                          }
-                                            },
-                        "recipe":  {
-                                       "type":  "minecraft:stonecutting",
-                                       "ingredient":  {
-                                                          "item":  "minecraft:andesite"
-                                                      },
-                                       "result":  {
-                                                      "id":  "minecraft:andesite_slab",
-                                                      "count":  2
-                                                  }
-                                   }
-                    }
-                ]
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "forge:condition": {
+        "type": "forge:item_exists",
+        "item": "mineralogy:andesite_slab"
+      },
+      "recipe": {
+        "type": "minecraft:stonecutting",
+        "ingredient": "minecraft:andesite",
+        "result": {
+          "id": "mineralogy:andesite_slab",
+          "count": 2
+        }
+      }
+    },
+    {
+      "forge:condition": {
+        "type": "forge:not",
+        "value": {
+          "type": "forge:item_exists",
+          "item": "mineralogy:andesite_slab"
+        }
+      },
+      "recipe": {
+        "type": "minecraft:stonecutting",
+        "ingredient": "minecraft:andesite",
+        "result": {
+          "id": "minecraft:andesite_slab",
+          "count": 2
+        }
+      }
+    }
+  ]
 }

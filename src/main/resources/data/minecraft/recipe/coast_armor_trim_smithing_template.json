@@ -1,70 +1,58 @@
 {
-    "type":  "forge:conditional",
-    "recipes":  [
-                    {
-                        "forge:condition":  {
-                                                "type":  "mineralogy:config",
-                                                "flag":  "COBBLESTONE_EQUIVILENT"
-                                            },
-                        "recipe":  {
-                                       "type":  "minecraft:crafting_shaped",
-                                       "category":  "misc",
-                                       "pattern":  [
-                                                       "#S#",
-                                                       "#C#",
-                                                       "###"
-                                                   ],
-                                       "key":  {
-                                                   "#":  {
-                                                             "item":  "minecraft:diamond"
-                                                         },
-                                                   "C":  {
-                                                             "tag":  "mineralogy:cobblestone_equivalents"
-                                                         },
-                                                   "S":  {
-                                                             "item":  "minecraft:coast_armor_trim_smithing_template"
-                                                         }
-                                               },
-                                       "result":  {
-                                                      "id":  "minecraft:coast_armor_trim_smithing_template",
-                                                      "count":  2
-                                                  },
-                                       "show_notification":  true
-                                   }
-                    },
-                    {
-                        "forge:condition":  {
-                                                "type":  "forge:not",
-                                                "value":  {
-                                                              "type":  "mineralogy:config",
-                                                              "flag":  "COBBLESTONE_EQUIVILENT"
-                                                          }
-                                            },
-                        "recipe":  {
-                                       "type":  "minecraft:crafting_shaped",
-                                       "category":  "misc",
-                                       "pattern":  [
-                                                       "#S#",
-                                                       "#C#",
-                                                       "###"
-                                                   ],
-                                       "key":  {
-                                                   "#":  {
-                                                             "item":  "minecraft:diamond"
-                                                         },
-                                                   "C":  {
-                                                             "item":  "minecraft:cobblestone"
-                                                         },
-                                                   "S":  {
-                                                             "item":  "minecraft:coast_armor_trim_smithing_template"
-                                                         }
-                                               },
-                                       "result":  {
-                                                      "id":  "minecraft:coast_armor_trim_smithing_template",
-                                                      "count":  2
-                                                  },
-                                       "show_notification":  true
-                                   }
-                    }
-                ]
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "forge:condition": {
+        "type": "mineralogy:config",
+        "flag": "COBBLESTONE_EQUIVILENT"
+      },
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "pattern": [
+          "#S#",
+          "#C#",
+          "###"
+        ],
+        "key": {
+          "#": "minecraft:diamond",
+          "C": "#mineralogy:cobblestone_equivalents",
+          "S": "minecraft:coast_armor_trim_smithing_template"
+        },
+        "result": {
+          "id": "minecraft:coast_armor_trim_smithing_template",
+          "count": 2
+        },
+        "show_notification": true
+      }
+    },
+    {
+      "forge:condition": {
+        "type": "forge:not",
+        "value": {
+          "type": "mineralogy:config",
+          "flag": "COBBLESTONE_EQUIVILENT"
+        }
+      },
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "pattern": [
+          "#S#",
+          "#C#",
+          "###"
+        ],
+        "key": {
+          "#": "minecraft:diamond",
+          "C": "minecraft:cobblestone",
+          "S": "minecraft:coast_armor_trim_smithing_template"
+        },
+        "result": {
+          "id": "minecraft:coast_armor_trim_smithing_template",
+          "count": 2
+        },
+        "show_notification": true
+      }
+    }
+  ]
 }
