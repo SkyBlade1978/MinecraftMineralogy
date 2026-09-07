@@ -50,7 +50,7 @@ public class ResourceContractTest {
         assertFalse(text.contains("metadata"));
         assertTrue(text.contains("minecraft:deepslate"));
         assertTrue(text.contains("\"host_blocks\""));
-        assertFalse("Forge 61 common setup must not resolve unbound host tags",
+        assertFalse("Forge 64 common setup must not resolve unbound host tags",
                 text.contains("minecraft:stone_ore_replaceables")
                         || text.contains("minecraft:deepslate_ore_replaceables"));
         for (Map.Entry<String, JsonElement> entry : provider.getAsJsonObject("rocks").entrySet()) {
@@ -83,7 +83,7 @@ public class ResourceContractTest {
     }
 
     @Test
-    public void minecraft121UsesOnlySingularRegistryDataDirectories() {
+    public void minecraft261UsesOnlySingularRegistryDataDirectories() {
         for (String namespace : Arrays.asList("mineralogy", "minecraft", "forge", "poweradvantage")) {
             File namespaceRoot = new File(ROOT, "data/" + namespace);
             for (String stale : Arrays.asList("recipes", "advancements", "loot_tables")) {
@@ -140,6 +140,16 @@ public class ResourceContractTest {
         assertEquals("mineralogy:basalt_relief_blank", criterionItem(marked, "has_rock"));
         JsonObject right = json(new File(advancementDir, "basalt_relief_right.json"));
         assertEquals("mineralogy:basalt_relief_left", criterionItem(right, "has_rock"));
+    }
+
+    @Test
+    public void stonecuttingRecipesUseTheMinecraft261CodecShape() throws Exception {
+        File recipeRoot = new File(ROOT, "data");
+        for (File file : jsonFiles(recipeRoot)) {
+            if (!file.getPath().replace('\\', '/').contains("/recipe/")) continue;
+            JsonObject recipe = json(file);
+            assertNoStonecuttingGroup(recipe, file.getPath());
+        }
     }
 
     @Test
@@ -423,15 +433,15 @@ public class ResourceContractTest {
     }
 
     @Test
-    public void forge61ResourcesRetainNativeWallsTagsAndPackFormats() throws Exception {
+    public void forge64ResourcesRetainNativeWallsTagsAndPackFormats() throws Exception {
         JsonObject pack = json(new File(ROOT, "pack.mcmeta"));
-        assertEquals(94, pack.getAsJsonObject("pack").get("max_format").getAsInt());
+        assertEquals(101, pack.getAsJsonObject("pack").get("max_format").getAsInt());
         JsonArray dataMinimum = pack.getAsJsonObject("pack").getAsJsonArray("min_format");
-        assertEquals(94, dataMinimum.get(0).getAsInt());
+        assertEquals(101, dataMinimum.get(0).getAsInt());
         assertEquals(1, dataMinimum.get(1).getAsInt());
         JsonObject resourcePack = json(new File("resourcepack/x16/pack.mcmeta"));
-        assertEquals(75, resourcePack.getAsJsonObject("pack").get("min_format").getAsInt());
-        assertEquals(75, resourcePack.getAsJsonObject("pack").get("max_format").getAsInt());
+        assertEquals(84, resourcePack.getAsJsonObject("pack").get("min_format").getAsInt());
+        assertEquals(84, resourcePack.getAsJsonObject("pack").get("max_format").getAsInt());
 
         File blockstates = new File(ROOT, "assets/mineralogy/blockstates");
         File[] wallStates = blockstates.listFiles((dir, name) -> name.endsWith("_wall.json"));
@@ -737,14 +747,14 @@ public class ResourceContractTest {
     @Test
     public void oilAndBuildMetadataUseStableTargetIdentities() throws Exception {
         String properties = new String(Files.readAllBytes(new File("gradle.properties").toPath()), StandardCharsets.UTF_8);
-        assertTrue(properties.contains("mod_version=6.1.2.121111"));
-        assertTrue(properties.contains("orespawn_curse_file_id=8791659"));
+        assertTrue(properties.contains("mod_version=6.1.2.2601021"));
+        assertTrue(properties.contains("orespawn_curse_file_id=8795661"));
         String build = new String(Files.readAllBytes(new File("build.gradle").toPath()), StandardCharsets.UTF_8);
         assertTrue(build.contains("runtimeOnly \"curse.maven:mmd-orespawn-"));
         assertTrue(build.contains("orespawnRelease"));
         String metadata = new String(Files.readAllBytes(new File(ROOT, "META-INF/mods.toml").toPath()), StandardCharsets.UTF_8);
-        assertTrue(metadata.contains("loaderVersion=\"[61,)\""));
-        assertTrue(metadata.contains("versionRange=\"[61.1.0,62)\""));
+        assertTrue(metadata.contains("loaderVersion=\"[64,)\""));
+        assertTrue(metadata.contains("versionRange=\"[64.0.9,65)\""));
         assertTrue(metadata.contains("versionRange=\"[4.0.6,5.0.0)\""));
         assertTrue(metadata.contains("ordering=\"AFTER\""));
         assertTrue(new File(ROOT, "assets/mineralogy/textures/items/crude_oil_bucket.png").isFile());
@@ -1016,6 +1026,22 @@ public class ResourceContractTest {
             else if (child.getName().endsWith(".json")) files.add(child);
         }
         return files;
+    }
+
+    private static void assertNoStonecuttingGroup(JsonElement element, String source) {
+        if (element.isJsonObject()) {
+            JsonObject object = element.getAsJsonObject();
+            if (object.has("type") && "minecraft:stonecutting".equals(object.get("type").getAsString())) {
+                assertFalse(source + " retains the removed stonecutting group field", object.has("group"));
+            }
+            for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
+                assertNoStonecuttingGroup(entry.getValue(), source);
+            }
+        } else if (element.isJsonArray()) {
+            for (JsonElement value : element.getAsJsonArray()) {
+                assertNoStonecuttingGroup(value, source);
+            }
+        }
     }
 
     private static JsonObject json(File file) throws Exception {

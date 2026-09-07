@@ -95,7 +95,7 @@ public final class RecipeIntegrationProbe {
             }
 
             ItemStack result = recipe.assemble(inventory(name,
-                    enabled ? basalt : Blocks.COBBLESTONE.asItem()), level.registryAccess());
+                    enabled ? basalt : Blocks.COBBLESTONE.asItem()));
             require(expectedOutput(name).equals(ForgeRegistries.ITEMS.getKey(result.getItem())),
                     name + " produced " + ForgeRegistries.ITEMS.getKey(result.getItem()));
             require(result.getCount() == (isTrimTemplateRecipe(name) ? 2 : expectedCount(name)),
@@ -240,7 +240,7 @@ public final class RecipeIntegrationProbe {
         CraftingInput input = stoneSpearInput(material);
         require(recipe.matches(input, level), "stone spear rejected "
                 + ForgeRegistries.ITEMS.getKey(material));
-        ItemStack output = recipe.assemble(input, level.registryAccess());
+        ItemStack output = recipe.assemble(input);
         require(output.getItem() == expected && output.getCount() == 1,
                 "stone spear produced the wrong result");
     }
@@ -257,7 +257,7 @@ public final class RecipeIntegrationProbe {
             CraftingInput slabInput = shaped(new String[] { "###" }, Map.of('#', nativeRock));
             require(slab.matches(slabInput, level), family + " slab override does not match");
             require(Identifier.fromNamespaceAndPath("mineralogy", family + "_slab").equals(
-                    ForgeRegistries.ITEMS.getKey(slab.assemble(slabInput, level.registryAccess()).getItem())),
+                    ForgeRegistries.ITEMS.getKey(slab.assemble(slabInput).getItem())),
                     family + " slab override did not produce Mineralogy's slab");
 
             assertBridge(level, family + "_slab_to_vanilla",
@@ -299,7 +299,7 @@ public final class RecipeIntegrationProbe {
             CraftingRecipe slab = requireCraftingRecipe(level, form[1]);
             CraftingInput input = shaped(new String[] { "###" }, Map.of('#', source));
             require(slab.matches(input, level), form[1] + " override does not match");
-            ItemStack result = slab.assemble(input, level.registryAccess());
+            ItemStack result = slab.assemble(input);
             require(result.getItem() == mineralogySlab && result.getCount() == 6,
                     form[1] + " override did not produce six matching Mineralogy slabs");
 
@@ -390,7 +390,7 @@ public final class RecipeIntegrationProbe {
         StonecutterRecipe recipe = (StonecutterRecipe) holder.value();
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(source));
         require(recipe.matches(input, level), name + " does not match its native source");
-        ItemStack output = recipe.assemble(input, level.registryAccess());
+        ItemStack output = recipe.assemble(input);
         require(output.getItem() == expected && output.getCount() == expectedCount,
                 name + " produced the wrong stonecutting result");
     }
@@ -399,7 +399,7 @@ public final class RecipeIntegrationProbe {
             Item expected, int expectedCount) {
         CraftingRecipe recipe = requireCraftingRecipe(level, name);
         require(recipe.matches(input, level), name + " does not match its native inputs");
-        ItemStack output = recipe.assemble(input, level.registryAccess());
+        ItemStack output = recipe.assemble(input);
         require(output.getItem() == expected && output.getCount() == expectedCount,
                 name + " produced the wrong native result");
     }
@@ -408,7 +408,7 @@ public final class RecipeIntegrationProbe {
         CraftingRecipe recipe = requireCraftingRecipe(level, name, "mineralogy");
         CraftingInput input = shapeless(source);
         require(recipe.matches(input, level), name + " does not match its exact source");
-        ItemStack output = recipe.assemble(input, level.registryAccess());
+        ItemStack output = recipe.assemble(input);
         require(output.getItem() == expected && output.getCount() == 1,
                 name + " did not produce its exact one-for-one result");
     }

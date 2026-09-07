@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[61,)"
+loaderVersion="[64,)"
 license="LGPL-2.1-only"
 
 [[mods]]
@@ -10,13 +10,13 @@ displayName="Mineralogy Recipe Integration Probe"
 [[dependencies.mineralogyrecipeprobe]]
 modId="forge"
 mandatory=true
-versionRange="[61.1.0,62)"
+versionRange="[64.0.9,65)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.mineralogyrecipeprobe]]
 modId="mineralogy"
 mandatory=true
-versionRange="[6.1.2.121111]"
+versionRange="[6.1.2.2601021]"
 ordering="AFTER"
 side="BOTH"

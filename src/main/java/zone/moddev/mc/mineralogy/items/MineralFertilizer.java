@@ -13,8 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 public class MineralFertilizer extends Item {
-	private final ItemStack phantomBonemeal = new ItemStack(Items.BONE_MEAL, 27);
-
 	public MineralFertilizer() {
 		super(RegistrationProperties.item(new Item.Properties(), "mineral_fertilizer"));
 	}
@@ -27,7 +25,9 @@ public class MineralFertilizer extends Item {
 
 		boolean canUse = BoneMealItem.applyBonemeal(context.getItemInHand(), world, target, player);
 		if (canUse) {
-			phantomBonemeal.setCount(27);
+			// Minecraft 26.1 binds item components after registry objects are
+			// constructed, so helper stacks must be created lazily during play.
+			ItemStack phantomBonemeal = new ItemStack(Items.BONE_MEAL, 27);
 			for (int dx = -2; dx <= 2; dx++) {
 				for (int dy = -2; dy <= 2; dy++) {
 					for (int dz = -1; dz <= 1; dz++) {
