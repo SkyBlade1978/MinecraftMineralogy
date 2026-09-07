@@ -172,11 +172,17 @@ public final class LegacyWorldDataHook {
 
 	/** Reads only Anvil location tables so old chunks are protected before their NBT is loaded. */
 	private static int indexLegacyChunks(File worldDirectory) {
-		File regionDirectory = new File(worldDirectory, "region");
+		indexLegacyRegionDirectory(new File(worldDirectory, "region"));
+		indexLegacyRegionDirectory(new File(worldDirectory,
+				"dimensions/minecraft/overworld/region"));
+		return LEGACY_MINERALOGY_CHUNKS.size();
+	}
+
+	private static void indexLegacyRegionDirectory(File regionDirectory) {
 		File[] regionFiles = regionDirectory.listFiles((directory, name) ->
 				(name.endsWith(".mca") || name.endsWith(".mcr")) && name.startsWith("r."));
 		if (regionFiles == null) {
-			return 0;
+			return;
 		}
 
 		byte[] locations = new byte[4096];
@@ -216,7 +222,6 @@ public final class LegacyWorldDataHook {
 				LOGGER.warn("Could not inspect legacy chunk locations in '{}'", regionFile, e);
 			}
 		}
-		return LEGACY_MINERALOGY_CHUNKS.size();
 	}
 
 	private static void writeSidecar(File worldDirectory, CompoundTag blockSnapshot) {

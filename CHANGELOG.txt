@@ -1,3 +1,49 @@
+Mineralogy 6.1.2.2601021 for Minecraft 26.1.2
+
+- Ported the complete Mineralogy 6.1.2 content, recipe, migration, and
+  compatibility contract to Minecraft 26.1.2 Forge while preserving every
+  registry ID, block-entity ID, NBT contract, asset, configuration key,
+  provider rule, locale, guide, and crude-oil identity.
+- Retained the corrected relief occlusion shape, all 928 item definitions, and
+  the fixed mining tags: 1,133 pickaxe-mined blocks, 123 iron-tier blocks, and
+  329 stone-tier blocks use target-supported optional entries inside `values`.
+- Retained warning-free rock-furnace lit/unlit transitions and adapted
+  inventory, fuel, cooking progress, block-entity persistence, components,
+  enchantments, fluids, rendering, events, and recipes to Forge 64 APIs.
+- Retargeted required legacy-conversion Mixins to Minecraft 26.1.2. Chunk
+  conversion now intercepts the four-argument `SimpleRegionStorage` method and
+  protects legacy Overworld chunks stored in either the historic root `region`
+  directory or `dimensions/minecraft/overworld/region`, without rewriting the
+  source save before normal loading.
+- Preserved all 18,192 pre-flattening mappings, selected-world recovery,
+  sidecars, furnace normalization, and populated-boundary protection.
+- Preserved 1,433 JSON recipes and progressive advancements, 18 reversible
+  native/Mineralogy slab bridges, 48 Minecraft recipe overrides, 21 Minecraft
+  advancement overrides, all 19 configurable cobblestone routes, the native
+  tuff matrix, stone-spear compatibility, and Mineralogy slab precedence.
+  Minecraft 26.1's exact stone-to-cobblestone stonecutting recipes remain
+  untouched, and obsolete stonecutting `group` fields are not emitted.
+- Reapplied configurable cobblestone holder sets after Forge 64 commits static
+  registry tags, preserving unrelated members and relying on holder-set
+  invalidation callbacks for already-parsed ingredients.
+- Retained OreSpawn schema 4/provider revision 3 with 32 rock rules, three ore
+  rules, native aliases, stone/deepslate hosts, the covered Ocean crude-oil
+  deposit, Cyano/GEOME migration, and `manage_vanilla_ores=false`. Mineralogy
+  registers no parallel world generator.
+- Updated the human guide bundle for Minecraft 26.1.2, Forge 64.0.9, released
+  OreSpawn 4.0.16.2601021, Java 25, resource format 84.0, data format 101.1,
+  and the target's namespaced Overworld storage layout.
+- Added reproducible Java 25 main, sources, and Javadoc artifacts under
+  `zone.moddev.mc:Mineralogy:6.1.2.2601021`, exact OreSpawn dependency
+  verification, guarded 26.1.2 CI, and tag validation for `6.1.2.2601021`.
+- Reused the checksum-sealed MinecraftMavenizer 0.5.21 compatibility fixture as
+  an explicit zero-repair Forge 64.0.9 target. Mavenizer, Gradle, compilation,
+  tests, and launches all use pinned Temurin 25.0.3+9; fixture files remain
+  build-only and are rejected from release jars.
+- Excluded Forge 64's compile-only `mixinextras-common` artifact from the
+  Mineralogy dependency model so Eclipse does not place it beside Forge's
+  embedded MixinExtras runtime and fail Java 25 module resolution at startup.
+
 Mineralogy 6.1.2.121111 for Minecraft 1.21.11
 
 - Updated all pickaxe and harvest-tier tags to Minecraft 1.21.11's optional

@@ -37,7 +37,7 @@ public final class MineralogyItemGroups {
 		throw new IllegalAccessError("Not an instantiable class");
 	}
 
-	/** Registers the creative-content event, which moved off the mod bus in Forge 61. */
+	/** Registers the creative-content event on Forge 64's global event bus. */
 	public static void registerRuntimeListeners() {
 		BuildCreativeModeTabContentsEvent.BUS.addListener(MineralogyItemGroups::buildTabContents);
 	}

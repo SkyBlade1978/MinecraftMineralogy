@@ -27,7 +27,7 @@ $colors = @(
     'gray', 'pink', 'lime', 'yellow', 'light_blue', 'magenta', 'orange', 'white'
 )
 
-# Minecraft owns these full-block identities in 1.21.11. Mineralogy keeps its
+# Minecraft owns these full-block identities in 26.1.2. Mineralogy keeps its
 # legacy blocks registered, but recipes may accept either identity where doing
 # so cannot compete with a native recipe.
 $nativeFullBlocks = @{
@@ -145,7 +145,7 @@ function AdvancementPredicate([object] $ingredient) {
     if ($null -ne $ingredient.PSObject.Properties['items']) {
         return [ordered]@{ items = $ingredient.items }
     }
-    throw "Cannot convert recipe ingredient into a Minecraft 1.21.11 advancement predicate"
+    throw "Cannot convert recipe ingredient into a Minecraft 26.1.2 advancement predicate"
 }
 
 function OreIngredient([string] $ore) {
@@ -171,7 +171,7 @@ function OreIngredient([string] $ore) {
         $finish = if ($Matches[2]) { '/' + (Convert-CamelToSnake $Matches[2]) } else { '' }
         return "#mineralogy:slabs/$family$finish"
     }
-    throw "No Minecraft 1.21.11 tag mapping for legacy OreDictionary key $ore"
+    throw "No Minecraft 26.1.2 tag mapping for legacy OreDictionary key $ore"
 }
 
 function Convert-CamelToSnake([string] $value) {
@@ -1401,4 +1401,4 @@ $advancementCount = Synchronize-AdvancementConditions
 if ($advancementCount -ne $expectedTargetRecipeCount) {
     throw "Expected $expectedTargetRecipeCount recipe advancements, found $advancementCount"
 }
-Write-Output "Generated $expectedRecipeCount crafting recipe JSON files, retained 28 target-native smelting recipes, created $createdAdvancements missing recipe advancements, and conditioned $advancementCount Minecraft 1.21.11 recipe advancements."
+Write-Output "Generated $expectedRecipeCount crafting recipe JSON files, retained 28 target-native smelting recipes, created $createdAdvancements missing recipe advancements, and conditioned $advancementCount Minecraft 26.1.2 recipe advancements."
