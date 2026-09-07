@@ -8,13 +8,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import zone.moddev.mc.mineralogy.compat.CobblestoneTagPolicy;
 
 /**
- * Forge 61.1 leaves the server-side TagsUpdatedEvent call disabled. Rebind the
- * affected named sets immediately after vanilla commits the pending tag load,
- * which also covers every later /reload.
+ * Rebind the affected named sets immediately after Minecraft 26.1.2 commits
+ * pending tags and static components, which also covers every later /reload.
  */
 @Mixin(ReloadableServerResources.class)
 public abstract class ReloadableServerResourcesMixin {
-    @Inject(method = "updateStaticRegistryTags", at = @At("TAIL"))
+    @Inject(method = "updateComponentsAndStaticRegistryTags", at = @At("TAIL"))
     private void mineralogy$rebindCobblestoneTags(CallbackInfo callback) {
         ReloadableServerResources resources = (ReloadableServerResources) (Object) this;
         CobblestoneTagPolicy.apply(resources.fullRegistries().lookup());

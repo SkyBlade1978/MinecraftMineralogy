@@ -35,6 +35,7 @@ import net.minecraft.world.inventory.RecipeCraftingHolder;
 import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -216,9 +217,9 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 
 				if (isBurning()) {
 					dirty = true;
-					ItemStack container = fuel.getCraftingRemainder();
-					if (!container.isEmpty()) {
-						furnaceItemStacks.set(1, container);
+					ItemStackTemplate remainder = fuel.getCraftingRemainder();
+					if (remainder != null) {
+						furnaceItemStacks.set(1, remainder.create());
 					} else if (!fuel.isEmpty()) {
 						fuel.shrink(1);
 						if (fuel.isEmpty()) {
@@ -273,8 +274,7 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 		if (level == null) {
 			return false;
 		}
-		ItemStack result = recipe.value().assemble(new SingleRecipeInput(furnaceItemStacks.get(0)),
-				level.registryAccess());
+		ItemStack result = recipe.value().assemble(new SingleRecipeInput(furnaceItemStacks.get(0)));
 		if (result.isEmpty()) {
 			return false;
 		}
@@ -300,7 +300,7 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 		}
 
 		ItemStack input = furnaceItemStacks.get(0);
-		ItemStack result = recipe.value().assemble(new SingleRecipeInput(input), level.registryAccess());
+		ItemStack result = recipe.value().assemble(new SingleRecipeInput(input));
 		ItemStack output = furnaceItemStacks.get(2);
 
 		if (output.isEmpty()) {

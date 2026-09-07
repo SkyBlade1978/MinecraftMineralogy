@@ -19,23 +19,23 @@ public class WorkflowContractTest {
         try (FileInputStream input = new FileInputStream("gradle.properties")) {
             properties.load(input);
         }
-        assertEquals("6.1.2.121111", properties.getProperty("mod_version"));
-        assertEquals("1.21.11", properties.getProperty("minecraft_version"));
+        assertEquals("6.1.2.2601021", properties.getProperty("mod_version"));
+        assertEquals("26.1.2", properties.getProperty("minecraft_version"));
         assertEquals(properties.getProperty("mc_version"), properties.getProperty("minecraft_version"));
         assertEquals("forge", properties.getProperty("loader_name"));
         assertEquals("1", properties.getProperty("loader_code"));
-        assertEquals("21", properties.getProperty("java_version"));
-        assertEquals("21.0.7+6", properties.getProperty("java_toolchain_version"));
-        assertEquals("21", properties.getProperty("gradle_java_version"));
+        assertEquals("25", properties.getProperty("java_version"));
+        assertEquals("25.0.3+9", properties.getProperty("java_toolchain_version"));
+        assertEquals("25", properties.getProperty("gradle_java_version"));
         assertEquals("240974", properties.getProperty("curseforge_project_id"));
         assertEquals("zone.moddev.mc", properties.getProperty("mod_group"));
-        assertEquals("4.0.16.121111", properties.getProperty("orespawn_version"));
-        assertEquals("8791659", properties.getProperty("orespawn_curse_file_id"));
-        assertEquals("230042EFF5E69C4958DEBE4D8357FA173BD695F57D5C361828C7D1E87459E171",
+        assertEquals("4.0.16.2601021", properties.getProperty("orespawn_version"));
+        assertEquals("8795661", properties.getProperty("orespawn_curse_file_id"));
+        assertEquals("E0356FCC58D88875550CB85E4D9E5CF57AC9E247333F9E1CEF2AEA9711994730",
                 properties.getProperty("orespawn_sha256"));
         String wrapper = text("gradle/wrapper/gradle-wrapper.properties");
-        assertTrue(wrapper.contains("gradle-9.3.1-bin.zip"));
-        assertTrue(wrapper.contains("b266d5ff6b90eada6dc3b20cb090e3731302e553a27c5d3e4df1f0d76beaff06"));
+        assertTrue(wrapper.contains("gradle-9.6.1-bin.zip"));
+        assertTrue(wrapper.contains("9c0f7faeeb306cb14e4279a3e084ca6b596894089a0638e68a07c945a32c9e14"));
     }
 
     @Test
@@ -45,13 +45,12 @@ public class WorkflowContractTest {
         String wrapper = text(".github/workflows/validate-gradle-build.yml");
         String staging = text("gradle/stage-orespawn-release.sh");
         assertTrue(ci.contains("name: Build, test, and audit"));
-        assertTrue(ci.contains("master-1.21.11"));
-        assertTrue(ci.contains("Install pinned Java 8 launcher toolchain"));
-        assertTrue(ci.contains("java-version: '8.0.502+7'"));
-        assertTrue(ci.contains("java-version: '21.0.7+6.0.LTS'"));
-        assertTrue(ci.contains("Install pinned Java 21 runtime and toolchain"));
-        assertTrue(ci.contains("applied 0 rule(s) for net.minecraftforge:forge:1.21.11-61.1.0 (explicit no-op)"));
-        assertTrue(ci.contains("$JAVA_HOME,$JAVA_HOME_8_X64,$JAVA_HOME_25_X64"));
+        assertTrue(ci.contains("master-26.1.2"));
+        assertTrue(ci.contains("Install pinned Java 25 runtime and toolchain"));
+        assertTrue(ci.contains("java-version: '25.0.3+9.0.LTS'"));
+        assertTrue(ci.contains("applied 0 rule(s) for net.minecraftforge:forge:26.1.2-64.0.9 (explicit no-op)"));
+        assertTrue(ci.contains("-Dorg.gradle.java.installations.paths=\"$JAVA_HOME\""));
+        assertFalse(ci.contains("JAVA_HOME_8_X64"));
         assertTrue(ci.contains("verifyReleaseDependencies verifyReleaseArtifacts writeReleaseChecksums"));
         assertTrue(ci.contains("genEclipseRuns isolateEclipseProductionRuns verifyEclipseProductionClasspath"));
         assertTrue(ci.contains("CHANGELOG.txt"));
@@ -59,9 +58,9 @@ public class WorkflowContractTest {
         assertTrue(staging.contains("https://www.curseforge.com/api/v1/mods/$project_id/files/$file_id/download"));
         assertTrue(staging.contains("sha256sum"));
         assertTrue(codeql.contains("github/codeql-action/init@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28"));
-        assertTrue(codeql.contains("Install pinned Java 8 launcher toolchain"));
-        assertTrue(codeql.contains("java-version: '8.0.502+7'"));
-        assertTrue(codeql.contains("$JAVA_HOME,$JAVA_HOME_8_X64,$JAVA_HOME_25_X64"));
+        assertTrue(codeql.contains("Install pinned Java 25 runtime and toolchain"));
+        assertTrue(codeql.contains("-Dorg.gradle.java.installations.paths=$JAVA_HOME"));
+        assertFalse(codeql.contains("JAVA_HOME_8_X64"));
         assertTrue(codeql.contains("clean classes --rerun-tasks --no-build-cache"));
         assertTrue(codeql.contains("--rerun-tasks --no-build-cache"));
         assertTrue(wrapper.contains("gradle/actions/wrapper-validation@9c971963bec38e04b3d30dcc455b5382be2fdbfb"));
@@ -91,7 +90,7 @@ public class WorkflowContractTest {
         assertTrue(build.contains("filesMatching(['**/*.json', '**/*.mcmeta', '**/*.toml', '**/*.md'])"));
         assertTrue(build.contains("ForgeGradle merged main output has multiple producers"));
         assertTrue(build.contains("'zone/moddev/mc/mineralogy/Mineralogy.class'"));
-        assertTrue(build.contains("928 Forge 61 item definitions"));
+        assertTrue(build.contains("928 Forge 64 item definitions"));
         assertTrue(build.contains("assets/mineralogy/items/"));
         assertTrue(build.contains("def preparedReleaseDir = project.findProperty('preparedReleaseDir')"));
         assertTrue(build.contains("tasks.register('verifyPreparedReleaseArtifacts')"));
@@ -102,6 +101,8 @@ public class WorkflowContractTest {
         assertTrue(build.contains("expectedMavenGroup = 'zone.moddev.mc'"));
         assertTrue(build.contains("expectedMavenArtifact = 'Mineralogy'"));
         assertTrue(build.contains("'Maven-Artifact'"));
+        assertTrue(build.contains("'Built-On-Java'         : '25'"));
+        assertTrue(build.contains("args '--mixin', 'mineralogy.mixins.json'"));
         assertTrue(build.contains("Maven release publication must use a remote repository"));
         assertTrue(build.contains("name = 'release'"));
         assertFalse(build.contains("file:///${project.projectDir}/mcmodsrepo"));
@@ -119,7 +120,9 @@ public class WorkflowContractTest {
     @Test
     public void eclipseLaunchesQuoteCompleteSlimeLauncherPaths() throws Exception {
         String build = text("build.gradle");
-        assertTrue(build.contains("['cache', 'metadata', 'to-srg', 'to-obf'].each"));
+        assertTrue(build.contains("['cache', 'metadata'].each"));
+        assertTrue(build.contains("['to-srg', 'to-obf'].each"));
+        assertTrue(build.contains("ForgeGradle omitted required --${flag}"));
         assertTrue(build.contains("&quot;${value}&quot;"));
         assertTrue(build.contains("Eclipse launch does not quote its --${flag} path"));
         assertTrue(build.contains("if (launch.contains('-DlegacyClassPath.file=')"));
@@ -129,6 +132,8 @@ public class WorkflowContractTest {
         assertTrue(build.contains("Eclipse must use processed production resources"));
         assertTrue(build.contains("defaultOutputDir = file('bin/default')"));
         assertTrue(build.contains("Eclipse outputs must be disjoint bin/default, bin/main and bin/test"));
+        assertTrue(build.contains("exclude group: 'io.github.llamalad7', module: 'mixinextras-common'"));
+        assertTrue(build.contains("Eclipse production classpath contains duplicate MixinExtras common module"));
     }
 
     private static String text(String path) throws Exception {

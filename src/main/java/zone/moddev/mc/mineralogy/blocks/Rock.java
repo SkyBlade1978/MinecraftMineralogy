@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.storage.loot.LootParams.Builder;
@@ -55,15 +56,21 @@ public class Rock extends Block implements NamedMineralogyBlock {
 	}
 
 	protected static boolean hasSilkTouch(Builder builder) {
-		ItemStack tool = builder.getOptionalParameter(LootContextParams.TOOL);
-		return tool != null && !tool.isEmpty()
+		ItemInstance toolInstance = builder.getOptionalParameter(LootContextParams.TOOL);
+		if (!(toolInstance instanceof ItemStack tool)) {
+			return false;
+		}
+		return !tool.isEmpty()
 				&& EnchantmentHelper.getItemEnchantmentLevel(
 						builder.getLevel().registryAccess().getOrThrow(Enchantments.SILK_TOUCH), tool) > 0;
 	}
 
 	protected static int getFortuneLevel(Builder builder) {
-		ItemStack tool = builder.getOptionalParameter(LootContextParams.TOOL);
-		return tool == null || tool.isEmpty() ? 0 : EnchantmentHelper.getItemEnchantmentLevel(
+		ItemInstance toolInstance = builder.getOptionalParameter(LootContextParams.TOOL);
+		if (!(toolInstance instanceof ItemStack tool) || tool.isEmpty()) {
+			return 0;
+		}
+		return EnchantmentHelper.getItemEnchantmentLevel(
 				builder.getLevel().registryAccess().getOrThrow(Enchantments.FORTUNE), tool);
 	}
 }

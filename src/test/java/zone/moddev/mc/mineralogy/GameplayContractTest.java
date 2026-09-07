@@ -119,7 +119,7 @@ public class GameplayContractTest {
         assertFalse(policy.contains("Ingredient.invalidateAll()"));
 
 		String reloadMixin = text("src/main/java/zone/moddev/mc/mineralogy/mixin/ReloadableServerResourcesMixin.java");
-		assertTrue(reloadMixin.contains("method = \"updateStaticRegistryTags\""));
+		assertTrue(reloadMixin.contains("method = \"updateComponentsAndStaticRegistryTags\""));
 		assertTrue(reloadMixin.contains("at = @At(\"TAIL\")"));
 		assertTrue(reloadMixin.contains("CobblestoneTagPolicy.apply"));
 
@@ -167,9 +167,11 @@ public class GameplayContractTest {
         assertTrue(bucketModel.contains("\"layer0\": \"mineralogy:items/crude_oil_bucket\""));
         assertFalse(bucketModel.contains("forge:fluid_container"));
         String client = text("src/main/java/zone/moddev/mc/mineralogy/client/ClientSetup.java");
-        assertTrue(client.contains("ItemBlockRenderTypes.setRenderLayer(MineralogyFluids.CRUDE_OIL.get()"));
-        assertTrue(client.contains("ChunkSectionLayer.TRANSLUCENT"));
-        assertFalse(client.contains("setRenderLayer(block"));
+        assertTrue(client.contains("ModelEvent.BakeFluidModels.BUS.addListener"));
+        assertTrue(client.contains("new FluidModel.Unbaked"));
+        assertTrue(client.contains("event.register(MineralogyFluids.CRUDE_OIL.get(), model)"));
+        assertTrue(client.contains("event.register(MineralogyFluids.FLOWING_CRUDE_OIL.get(), model)"));
+        assertFalse(client.contains("ItemBlockRenderTypes"));
         for (String model : new String[] { "pane_n", "pane_ne", "pane_ns", "pane_nse", "pane_nsew",
                 "rocksaltlamp", "rocksaltlamp_down", "rocksaltlamp_wall", "rocksaltstreetlamp" }) {
             assertTrue(text("src/main/resources/assets/mineralogy/models/block/" + model + ".json")
@@ -187,11 +189,22 @@ public class GameplayContractTest {
         assertTrue(hook.contains("LightPopulated"));
         assertTrue(hook.contains("rewriteLegacyRockFurnaceTileEntities"));
 		assertTrue(hook.contains("tileEntity.putString(\"id\", ROCK_FURNACE_TILE_ENTITY)"));
+        assertTrue(hook.contains("new File(worldDirectory, \"region\")"));
+        assertTrue(hook.contains("dimensions/minecraft/overworld/region"));
 
         String transformer = text("src/main/java/zone/moddev/mc/mineralogy/mixin/SimpleRegionStorageMixin.java");
         assertTrue(transformer.contains("SimpleRegionStorage.class"));
         assertTrue(transformer.contains("prepareLegacyChunk"));
         assertTrue(transformer.contains("finalizeLegacyChunk"));
+        assertTrue(transformer.contains("int targetDataVersion"));
+        assertTrue(transformer.contains("CompoundTag;I)Lnet/minecraft/nbt/CompoundTag;"));
+
+        String reloadMixin = text("src/main/java/zone/moddev/mc/mineralogy/mixin/ReloadableServerResourcesMixin.java");
+        assertTrue(reloadMixin.contains("updateComponentsAndStaticRegistryTags"));
+        String mixinConfig = text("src/main/resources/mineralogy.mixins.json");
+        assertTrue(mixinConfig.contains("\"compatibilityLevel\": \"JAVA_21\""));
+        assertFalse(mixinConfig.contains("JAVA_25"));
+        assertFalse(new File("src/main/resources/META-INF/coremods.json").exists());
 
 		String mappings = text("src/main/java/zone/moddev/mc/mineralogy/patching/PatchHandler.java");
 		assertTrue(mappings.contains("GRASS_PATH"));
