@@ -69,8 +69,16 @@ public class WorkflowContractTest {
         assertTrue(deploy.contains("java_setup_version=\"$(value java_setup_version)\""));
         assertTrue(deploy.contains("java_setup_version=\"${java_setup_version:-$java_toolchain_version}\""));
         assertTrue(deploy.contains("java_setup_version: ${{ steps.validate.outputs.java_setup_version }}"));
+        assertTrue(deploy.contains("install_gradle_java: ${{ steps.validate.outputs.install_gradle_java }}"));
+        assertTrue(deploy.contains("requires_separate_gradle_java()"));
+        assertTrue(deploy.contains("'25.0.3+9 25 false'"));
+        assertTrue(deploy.contains("echo \"install_gradle_java=$install_gradle_java\" >> \"$GITHUB_OUTPUT\""));
         assertEquals(2, countOccurrences(deploy,
                 "java-version: ${{ needs.preflight.outputs.java_setup_version }}"));
+        assertEquals(2, countOccurrences(deploy,
+                "if: needs.preflight.outputs.install_gradle_java == 'true'"));
+        assertEquals(2, countOccurrences(deploy, "- name: Install separate Java for Gradle"));
+        assertFalse(deploy.contains("- name: Install Java for Gradle"));
         assertFalse(deploy.contains(
                 "java-version: ${{ needs.preflight.outputs.java_toolchain_version }}"));
 
