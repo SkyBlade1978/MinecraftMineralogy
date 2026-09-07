@@ -10,7 +10,7 @@ import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.SoundActions;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.DeferredRegister;
@@ -35,9 +35,9 @@ public final class MineralogyFluids {
 	private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS,
 			Mineralogy.MODID);
 
-	private static final ResourceLocation CRUDE_OIL_STILL = ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID,
+	private static final Identifier CRUDE_OIL_STILL = Identifier.fromNamespaceAndPath(Mineralogy.MODID,
 			"blocks/crude_oil_still");
-	private static final ResourceLocation CRUDE_OIL_FLOW = ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID,
+	private static final Identifier CRUDE_OIL_FLOW = Identifier.fromNamespaceAndPath(Mineralogy.MODID,
 			"blocks/crude_oil_flow");
 
 	public static final RegistryObject<FluidType> CRUDE_OIL_TYPE = FLUID_TYPES.register("crude_oil",
@@ -51,12 +51,12 @@ public final class MineralogyFluids {
 				public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
 					consumer.accept(new IClientFluidTypeExtensions() {
 						@Override
-						public ResourceLocation getStillTexture() {
+						public Identifier getStillTexture() {
 							return CRUDE_OIL_STILL;
 						}
 
 						@Override
-						public ResourceLocation getFlowingTexture() {
+						public Identifier getFlowingTexture() {
 							return CRUDE_OIL_FLOW;
 						}
 					});
@@ -80,18 +80,19 @@ public final class MineralogyFluids {
 			FLUIDS.register("flowing_crude_oil", () -> new ForgeFlowingFluid.Flowing(CRUDE_OIL_PROPERTIES));
 	public static final RegistryObject<LiquidBlock> CRUDE_OIL_BLOCK = BLOCKS.register("crude_oil",
 			() -> new MineralogyLiquidBlock(MineralogyFluids::crudeOilFlowing,
-					BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable()
-							.noCollission().strength(100.0F).noLootTable().liquid()
-							.pushReaction(PushReaction.DESTROY)));
+					RegistrationProperties.block(BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable()
+							.noCollision().strength(100.0F).noLootTable().liquid()
+							.pushReaction(PushReaction.DESTROY), "crude_oil")));
 	public static final RegistryObject<Item> CRUDE_OIL_BUCKET = ITEMS.register("crude_oil_bucket",
 			() -> new MineralogyBucketItem(MineralogyFluids::crudeOil,
-					new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+					RegistrationProperties.item(
+							new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1), "crude_oil_bucket")));
 
-	public static void register(IEventBus modBus) {
-		FLUID_TYPES.register(modBus);
-		FLUIDS.register(modBus);
-		BLOCKS.register(modBus);
-		ITEMS.register(modBus);
+	public static void register(BusGroup modBusGroup) {
+		FLUID_TYPES.register(modBusGroup);
+		FLUIDS.register(modBusGroup);
+		BLOCKS.register(modBusGroup);
+		ITEMS.register(modBusGroup);
 	}
 
 	public static Fluid crudeOil() {

@@ -1,41 +1,23 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:andesite_relief_pickaxe"
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:andesite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:andesite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:andesite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:andesite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:andesite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:andesite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:andesite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:andesite_relief_blank"
-                        },
-                        {
-                            "item":  "minecraft:stone_pickaxe"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:andesite_relief_pickaxe",
-                   "count":  8
-               }
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:andesite_relief_pickaxe"
+  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:andesite_relief_blank",
+    "mineralogy:andesite_relief_blank",
+    "mineralogy:andesite_relief_blank",
+    "mineralogy:andesite_relief_blank",
+    "mineralogy:andesite_relief_blank",
+    "mineralogy:andesite_relief_blank",
+    "mineralogy:andesite_relief_blank",
+    "mineralogy:andesite_relief_blank",
+    "minecraft:stone_pickaxe"
+  ],
+  "result": {
+    "id": "mineralogy:andesite_relief_pickaxe",
+    "count": 8
+  }
 }

@@ -1,23 +1,21 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:granite_stairs"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "x  ",
-                    "xx ",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:granite"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:granite_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:granite_stairs"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "x  ",
+    "xx ",
+    "xxx"
+  ],
+  "key": {
+    "x": "mineralogy:granite"
+  },
+  "result": {
+    "id": "mineralogy:granite_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }

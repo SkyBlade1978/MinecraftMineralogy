@@ -1,29 +1,25 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:diabase_stairs"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:diabase_smooth_stairs"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:diabase_stairs"
-                        },
-                        {
-                            "tag":  "forge:sand"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:diabase_smooth_stairs",
-                   "count":  1
-               }
+  "forge:condition": {
+    "type": "forge:and",
+    "values": [
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:diabase_stairs"
+      },
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:diabase_smooth_stairs"
+      }
+    ]
+  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:diabase_stairs",
+    "#forge:sand"
+  ],
+  "result": {
+    "id": "mineralogy:diabase_smooth_stairs",
+    "count": 1
+  }
 }

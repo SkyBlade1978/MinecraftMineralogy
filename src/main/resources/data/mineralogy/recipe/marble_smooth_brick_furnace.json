@@ -1,26 +1,22 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:marble_smooth_brick_furnace"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "misc",
-    "pattern":  [
-                    "xxx",
-                    "xyx",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:slabs/marble/smooth_brick"
-                      },
-                "y":  {
-                          "item":  "minecraft:furnace"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:marble_smooth_brick_furnace",
-                   "count":  1
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:marble_smooth_brick_furnace"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "xxx",
+    "xyx",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:slabs/marble/smooth_brick",
+    "y": "minecraft:furnace"
+  },
+  "result": {
+    "id": "mineralogy:marble_smooth_brick_furnace",
+    "count": 1
+  },
+  "show_notification": true
 }

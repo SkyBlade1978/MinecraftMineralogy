@@ -1,74 +1,58 @@
 {
-    "type":  "forge:conditional",
-    "recipes":  [
-                    {
-                        "forge:condition":  {
-                                                "type":  "mineralogy:config",
-                                                "flag":  "COBBLESTONE_EQUIVILENT"
-                                            },
-                        "recipe":  {
-                                       "type":  "minecraft:crafting_shaped",
-                                       "category":  "redstone",
-                                       "pattern":  [
-                                                       "TTT",
-                                                       "#X#",
-                                                       "#R#"
-                                                   ],
-                                       "key":  {
-                                                   "R":  {
-                                                             "item":  "minecraft:redstone"
-                                                         },
-                                                   "#":  {
-                                                             "tag":  "mineralogy:cobblestone_equivalents"
-                                                         },
-                                                   "T":  {
-                                                             "tag":  "minecraft:planks"
-                                                         },
-                                                   "X":  {
-                                                             "item":  "minecraft:iron_ingot"
-                                                         }
-                                               },
-                                       "result":  {
-                                                      "id":  "minecraft:piston"
-                                                  },
-                                       "show_notification":  true
-                                   }
-                    },
-                    {
-                        "forge:condition":  {
-                                                "type":  "forge:not",
-                                                "value":  {
-                                                              "type":  "mineralogy:config",
-                                                              "flag":  "COBBLESTONE_EQUIVILENT"
-                                                          }
-                                            },
-                        "recipe":  {
-                                       "type":  "minecraft:crafting_shaped",
-                                       "category":  "redstone",
-                                       "pattern":  [
-                                                       "TTT",
-                                                       "#X#",
-                                                       "#R#"
-                                                   ],
-                                       "key":  {
-                                                   "R":  {
-                                                             "item":  "minecraft:redstone"
-                                                         },
-                                                   "#":  {
-                                                             "tag":  "c:cobblestones"
-                                                         },
-                                                   "T":  {
-                                                             "tag":  "minecraft:planks"
-                                                         },
-                                                   "X":  {
-                                                             "item":  "minecraft:iron_ingot"
-                                                         }
-                                               },
-                                       "result":  {
-                                                      "id":  "minecraft:piston"
-                                                  },
-                                       "show_notification":  true
-                                   }
-                    }
-                ]
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "forge:condition": {
+        "type": "mineralogy:config",
+        "flag": "COBBLESTONE_EQUIVILENT"
+      },
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "redstone",
+        "pattern": [
+          "TTT",
+          "#X#",
+          "#R#"
+        ],
+        "key": {
+          "R": "minecraft:redstone",
+          "#": "#mineralogy:cobblestone_equivalents",
+          "T": "#minecraft:planks",
+          "X": "minecraft:iron_ingot"
+        },
+        "result": {
+          "id": "minecraft:piston"
+        },
+        "show_notification": true
+      }
+    },
+    {
+      "forge:condition": {
+        "type": "forge:not",
+        "value": {
+          "type": "mineralogy:config",
+          "flag": "COBBLESTONE_EQUIVILENT"
+        }
+      },
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "redstone",
+        "pattern": [
+          "TTT",
+          "#X#",
+          "#R#"
+        ],
+        "key": {
+          "R": "minecraft:redstone",
+          "#": "#c:cobblestones",
+          "T": "#minecraft:planks",
+          "X": "minecraft:iron_ingot"
+        },
+        "result": {
+          "id": "minecraft:piston"
+        },
+        "show_notification": true
+      }
+    }
+  ]
 }

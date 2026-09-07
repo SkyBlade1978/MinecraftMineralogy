@@ -1,23 +1,21 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:peridotite_relief_blank"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx",
-                    "xxx",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:peridotite_smooth"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:peridotite_relief_blank",
-                   "count":  16
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:peridotite_relief_blank"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx",
+    "xxx",
+    "xxx"
+  ],
+  "key": {
+    "x": "mineralogy:peridotite_smooth"
+  },
+  "result": {
+    "id": "mineralogy:peridotite_relief_blank",
+    "count": 16
+  },
+  "show_notification": true
 }

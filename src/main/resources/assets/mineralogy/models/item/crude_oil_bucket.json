@@ -1,4 +1,6 @@
 {
-  "loader": "forge:fluid_container",
-  "fluid": "mineralogy:crude_oil"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mineralogy:items/crude_oil_bucket"
+  }
 }

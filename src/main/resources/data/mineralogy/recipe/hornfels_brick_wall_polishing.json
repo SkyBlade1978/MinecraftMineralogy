@@ -1,29 +1,25 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:hornfels_brick_wall"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:hornfels_smooth_brick_wall"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:hornfels_brick_wall"
-                        },
-                        {
-                            "tag":  "forge:sand"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:hornfels_smooth_brick_wall",
-                   "count":  1
-               }
+  "forge:condition": {
+    "type": "forge:and",
+    "values": [
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:hornfels_brick_wall"
+      },
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:hornfels_smooth_brick_wall"
+      }
+    ]
+  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:hornfels_brick_wall",
+    "#forge:sand"
+  ],
+  "result": {
+    "id": "mineralogy:hornfels_smooth_brick_wall",
+    "count": 1
+  }
 }

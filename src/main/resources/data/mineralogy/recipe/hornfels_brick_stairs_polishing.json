@@ -1,29 +1,25 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:hornfels_brick_stairs"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:hornfels_smooth_brick_stairs"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:hornfels_brick_stairs"
-                        },
-                        {
-                            "tag":  "forge:sand"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:hornfels_smooth_brick_stairs",
-                   "count":  1
-               }
+  "forge:condition": {
+    "type": "forge:and",
+    "values": [
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:hornfels_brick_stairs"
+      },
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:hornfels_smooth_brick_stairs"
+      }
+    ]
+  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:hornfels_brick_stairs",
+    "#forge:sand"
+  ],
+  "result": {
+    "id": "mineralogy:hornfels_smooth_brick_stairs",
+    "count": 1
+  }
 }

@@ -1,7 +1,7 @@
 {
-    "replace":  false,
-    "values":  [
-                   "mineralogy:tuff_smooth",
-                   "minecraft:polished_tuff"
-               ]
+  "replace": false,
+  "values": [
+    "mineralogy:tuff_smooth",
+    "minecraft:polished_tuff"
+  ]
 }

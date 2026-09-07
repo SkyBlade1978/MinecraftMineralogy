@@ -1,26 +1,22 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:rhyolite_smooth_furnace"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "misc",
-    "pattern":  [
-                    "xxx",
-                    "xyx",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:slabs/rhyolite/smooth"
-                      },
-                "y":  {
-                          "item":  "minecraft:furnace"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:rhyolite_smooth_furnace",
-                   "count":  1
-               },
-    "show_notification":  true
+  "forge:condition": {
+    "type": "forge:item_exists",
+    "item": "mineralogy:rhyolite_smooth_furnace"
+  },
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "xxx",
+    "xyx",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:slabs/rhyolite/smooth",
+    "y": "minecraft:furnace"
+  },
+  "result": {
+    "id": "mineralogy:rhyolite_smooth_furnace",
+    "count": 1
+  },
+  "show_notification": true
 }

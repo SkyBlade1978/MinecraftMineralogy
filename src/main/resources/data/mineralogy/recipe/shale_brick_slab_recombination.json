@@ -1,29 +1,25 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:shale_brick_slab"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:shale_brick"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:shale_brick_slab"
-                        },
-                        {
-                            "item":  "mineralogy:shale_brick_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:shale_brick",
-                   "count":  1
-               }
+  "forge:condition": {
+    "type": "forge:and",
+    "values": [
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:shale_brick_slab"
+      },
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:shale_brick"
+      }
+    ]
+  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:shale_brick_slab",
+    "mineralogy:shale_brick_slab"
+  ],
+  "result": {
+    "id": "mineralogy:shale_brick",
+    "count": 1
+  }
 }

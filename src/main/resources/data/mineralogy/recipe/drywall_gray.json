@@ -1,29 +1,25 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "mineralogy:config",
-                                               "flag":  "ENABLE_DRYWALLS"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:drywall_gray"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "tag":  "mineralogy:drywall/white"
-                        },
-                        {
-                            "item":  "minecraft:gray_dye"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:drywall_gray",
-                   "count":  1
-               }
+  "forge:condition": {
+    "type": "forge:and",
+    "values": [
+      {
+        "type": "mineralogy:config",
+        "flag": "ENABLE_DRYWALLS"
+      },
+      {
+        "type": "forge:item_exists",
+        "item": "mineralogy:drywall_gray"
+      }
+    ]
+  },
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "#mineralogy:drywall/white",
+    "minecraft:gray_dye"
+  ],
+  "result": {
+    "id": "mineralogy:drywall_gray",
+    "count": 1
+  }
 }

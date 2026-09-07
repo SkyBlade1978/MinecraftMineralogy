@@ -5,12 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,23 +17,22 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.mojang.serialization.Dynamic;
 
-import sun.misc.Unsafe;
-
 import zone.moddev.mc.mineralogy.Mineralogy;
 import zone.moddev.mc.mineralogy.blocks.RockFurnace;
 import zone.moddev.mc.mineralogy.blocks.RockSaltLamp;
 import zone.moddev.mc.mineralogy.blocks.RockSaltStreetLamp;
 import zone.moddev.mc.mineralogy.blocks.RockSlab;
 import zone.moddev.mc.mineralogy.migration.LegacyMineralogy6ConfigMigrator;
+import zone.moddev.mc.mineralogy.mixin.BlockStateDataAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.datafix.fixes.BlockStateData;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -52,7 +49,7 @@ import org.apache.logging.log4j.Logger;
 /** Converts pre-flattening Mineralogy block IDs before vanilla chunk datafixing. */
 public final class LegacyWorldDataHook {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final Map<ResourceLocation, ResourceLocation> BLOCK_ALIASES = new HashMap<>();
+	private static final Map<Identifier, Identifier> BLOCK_ALIASES = new HashMap<>();
 	private static final BitSet LEGACY_MINERALOGY_BLOCK_IDS = new BitSet();
 	private static final BitSet LEGACY_ROCK_FURNACE_BLOCK_IDS = new BitSet();
 	private static final Set<Long> LEGACY_MINERALOGY_CHUNKS = ConcurrentHashMap.newKeySet();
@@ -62,10 +59,10 @@ public final class LegacyWorldDataHook {
 	private static volatile boolean legacyWorldActive;
 
 	static {
-		BLOCK_ALIASES.put(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "pummice"),
-				ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "pumice"));
-		BLOCK_ALIASES.put(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "saprolite"),
-				ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "limestone"));
+		BLOCK_ALIASES.put(Identifier.fromNamespaceAndPath(Mineralogy.MODID, "pummice"),
+				Identifier.fromNamespaceAndPath(Mineralogy.MODID, "pumice"));
+		BLOCK_ALIASES.put(Identifier.fromNamespaceAndPath(Mineralogy.MODID, "saprolite"),
+				Identifier.fromNamespaceAndPath(Mineralogy.MODID, "limestone"));
 	}
 
 	private LegacyWorldDataHook() {
@@ -90,10 +87,10 @@ public final class LegacyWorldDataHook {
 			}
 		}
 		Path levelPath = levelDirectory.path();
-		if (root.contains("FML", 10)) {
-			prepareLegacyWorld(levelPath.toFile(), root.getCompound("FML"));
-		} else if (root.contains("fml", 10)) {
-			prepareLegacyWorld(levelPath.toFile(), root.getCompound("fml"));
+		if (root.contains("FML")) {
+			prepareLegacyWorld(levelPath.toFile(), root.getCompoundOrEmpty("FML"));
+		} else if (root.contains("fml")) {
+			prepareLegacyWorld(levelPath.toFile(), root.getCompoundOrEmpty("fml"));
 		} else {
 			prepareLegacyWorld(levelPath.resolve("level.dat").toFile());
 		}
@@ -115,11 +112,11 @@ public final class LegacyWorldDataHook {
 
 		try (FileInputStream input = new FileInputStream(levelDat)) {
 			CompoundTag root = NbtIo.readCompressed(input, NbtAccounter.unlimitedHeap());
-			if (root.contains("FML", 10)) {
-				CompoundTag fml = root.getCompound("FML");
-				CompoundTag registries = fml.getCompound("Registries");
-				if (registries.contains("minecraft:blocks", 10)) {
-					CompoundTag blocks = registries.getCompound("minecraft:blocks");
+			if (root.contains("FML")) {
+				CompoundTag fml = root.getCompoundOrEmpty("FML");
+				CompoundTag registries = fml.getCompoundOrEmpty("Registries");
+				if (registries.contains("minecraft:blocks")) {
+					CompoundTag blocks = registries.getCompoundOrEmpty("minecraft:blocks");
 					install(levelDat.getParentFile(), blocks);
 					writeSidecar(levelDat.getParentFile(), blocks);
 					return;
@@ -133,7 +130,7 @@ public final class LegacyWorldDataHook {
 		File sidecar = sidecar(levelDat.getParentFile());
 		if (sidecar.isFile()) {
 			try (FileInputStream input = new FileInputStream(sidecar)) {
-				install(levelDat.getParentFile(), NbtIo.readCompressed(input, NbtAccounter.unlimitedHeap()).getCompound("Blocks"));
+				install(levelDat.getParentFile(), NbtIo.readCompressed(input, NbtAccounter.unlimitedHeap()).getCompoundOrEmpty("Blocks"));
 			} catch (IOException e) {
 				LOGGER.warn("Could not read legacy Mineralogy registry sidecar '{}'", sidecar, e);
 			}
@@ -143,10 +140,10 @@ public final class LegacyWorldDataHook {
 	private static synchronized void prepareLegacyWorld(File worldDirectory, CompoundTag fmlData) {
 		legacyWorldActive = false;
 		LEGACY_MINERALOGY_CHUNKS.clear();
-		if (fmlData.contains("Registries", 10)) {
-			CompoundTag registries = fmlData.getCompound("Registries");
-			if (registries.contains("minecraft:blocks", 10)) {
-				CompoundTag blocks = registries.getCompound("minecraft:blocks");
+		if (fmlData.contains("Registries")) {
+			CompoundTag registries = fmlData.getCompoundOrEmpty("Registries");
+			if (registries.contains("minecraft:blocks")) {
+				CompoundTag blocks = registries.getCompoundOrEmpty("minecraft:blocks");
 				install(worldDirectory, blocks);
 				writeSidecar(worldDirectory, blocks);
 				return;
@@ -156,7 +153,7 @@ public final class LegacyWorldDataHook {
 		File sidecar = sidecar(worldDirectory);
 		if (sidecar.isFile()) {
 			try (FileInputStream input = new FileInputStream(sidecar)) {
-				install(worldDirectory, NbtIo.readCompressed(input, NbtAccounter.unlimitedHeap()).getCompound("Blocks"));
+				install(worldDirectory, NbtIo.readCompressed(input, NbtAccounter.unlimitedHeap()).getCompoundOrEmpty("Blocks"));
 			} catch (IOException e) {
 				LOGGER.warn("Could not read legacy Mineralogy registry sidecar '{}'", sidecar, e);
 			}
@@ -250,31 +247,31 @@ public final class LegacyWorldDataHook {
 		return new File(new File(worldDirectory, "data"), SIDECAR_NAME);
 	}
 
-	/** Called by the chunk-loader coremod immediately before vanilla datafixing. */
+	/** Called by the chunk-storage mixin immediately before vanilla datafixing. */
 	public static void prepareLegacyChunk(CompoundTag root) {
-		if (!legacyWorldActive || root == null || !root.contains("Level", 10)) {
+		if (!legacyWorldActive || root == null || !root.contains("Level")) {
 			return;
 		}
 
-		CompoundTag level = root.getCompound("Level");
+		CompoundTag level = root.getCompoundOrEmpty("Level");
 		if (!containsLegacyMineralogyBlock(level)) {
 			return;
 		}
-		LEGACY_MINERALOGY_CHUNKS.add(chunkKey(level.getInt("xPos"), level.getInt("zPos")));
+		LEGACY_MINERALOGY_CHUNKS.add(chunkKey(level.getIntOr("xPos", 0), level.getIntOr("zPos", 0)));
 		rewriteLegacyRockFurnaceTileEntities(level);
 		level.putBoolean("TerrainPopulated", true);
 		level.putBoolean("LightPopulated", true);
 		level.putBoolean(PRESERVE_CHUNK_MARKER, true);
 	}
 
-	/** Called by the chunk-loader coremod after vanilla datafixing. */
+	/** Called by the chunk-storage mixin after vanilla datafixing. */
 	public static CompoundTag finalizeLegacyChunk(CompoundTag root) {
 		if (root == null) {
 			return root;
 		}
-		CompoundTag level = root.contains("Level", 10) ? root.getCompound("Level") : root;
-		boolean preserve = level.getBoolean(PRESERVE_CHUNK_MARKER)
-				|| LEGACY_MINERALOGY_CHUNKS.contains(chunkKey(level.getInt("xPos"), level.getInt("zPos")));
+		CompoundTag level = root.contains("Level") ? root.getCompoundOrEmpty("Level") : root;
+		boolean preserve = level.getBooleanOr(PRESERVE_CHUNK_MARKER, false)
+				|| LEGACY_MINERALOGY_CHUNKS.contains(chunkKey(level.getIntOr("xPos", 0), level.getIntOr("zPos", 0)));
 		if (preserve) {
 			level.putString("Status", "full");
 			level.remove(PRESERVE_CHUNK_MARKER);
@@ -285,90 +282,64 @@ public final class LegacyWorldDataHook {
 	private static int installLegacyBlockStates(CompoundTag blockSnapshot) {
 		LEGACY_MINERALOGY_BLOCK_IDS.clear();
 		LEGACY_ROCK_FURNACE_BLOCK_IDS.clear();
-		Map<ResourceLocation, Integer> mineralogyIds = new HashMap<>();
-		ListTag savedIds = blockSnapshot.getList("ids", 10);
+		Map<Identifier, Integer> mineralogyIds = new HashMap<>();
+		ListTag savedIds = blockSnapshot.getListOrEmpty("ids");
 		int highestStateId = 0;
 		for (int index = 0; index < savedIds.size(); ++index) {
-			CompoundTag savedId = savedIds.getCompound(index);
-			String key = savedId.getString("K");
+			CompoundTag savedId = savedIds.getCompoundOrEmpty(index);
+			String key = savedId.getStringOr("K", "");
 			if (!key.startsWith(Mineralogy.MODID + ":")) {
 				continue;
 			}
-			ResourceLocation id = ResourceLocation.parse(key);
-			int numericId = savedId.getInt("V");
+			Identifier id = Identifier.parse(key);
+			int numericId = savedId.getIntOr("V", -1);
+			if (numericId < 0) {
+				continue;
+			}
 			mineralogyIds.put(id, numericId);
 			highestStateId = Math.max(highestStateId, (numericId << 4) | 15);
 		}
 		Dynamic<?>[] legacyStates = expandFlatteningTable(highestStateId + 1);
 		int mapped = 0;
-		for (Map.Entry<ResourceLocation, Integer> entry : mineralogyIds.entrySet()) {
-			ResourceLocation oldId = entry.getKey();
+		for (Map.Entry<Identifier, Integer> entry : mineralogyIds.entrySet()) {
+			Identifier oldId = entry.getKey();
 			LEGACY_MINERALOGY_BLOCK_IDS.set(entry.getValue());
 			Block block = resolveCurrentBlock(oldId);
 			if (block instanceof RockFurnace) {
 				LEGACY_ROCK_FURNACE_BLOCK_IDS.set(entry.getValue());
 			}
 			for (int meta = 0; meta < 16; ++meta) {
-				String stateNbt = NbtUtils.writeBlockState(legacyState(block, meta)).toString();
 				int stateId = (entry.getValue() << 4) | meta;
 				// The private vanilla register method may retain a JIT-compiled reference to
 				// its original final 4,096-entry array. Write the expanded array directly;
 				// Mineralogy has no legacy aliases that need its auxiliary name maps.
-				legacyStates[stateId] = BlockStateData.parse(stateNbt);
+				legacyStates[stateId] = new Dynamic<>(NbtOps.INSTANCE,
+						NbtUtils.writeBlockState(legacyState(block, meta)));
 				++mapped;
 			}
 		}
 		return mapped;
 	}
 
-	/**
-	 * Minecraft 1.21.1 still fixes the pre-flattening state table at 4,096 entries,
-	 * while Forge 1.12 worlds commonly assign mod blocks higher numeric IDs.
-	 * Replace that exact static-final array before writing any recovered states.
-	 */
+	/** Returns the lookup table expanded by the required BlockStateData mixin. */
 	private static Dynamic<?>[] expandFlatteningTable(int requiredLength) {
-		try {
-			Unsafe unsafe = unsafe();
-			for (Field field : BlockStateData.class.getDeclaredFields()) {
-				Class<?> type = field.getType();
-				if (!java.lang.reflect.Modifier.isStatic(field.getModifiers()) || !type.isArray()
-						|| type.getComponentType() != Dynamic.class) {
-					continue;
-				}
-				Object base = unsafe.staticFieldBase(field);
-				long offset = unsafe.staticFieldOffset(field);
-				Dynamic<?>[] current = (Dynamic<?>[]) unsafe.getObject(base, offset);
-				if (current == null || current.length < 4096) {
-					continue;
-				}
-				if (current.length >= requiredLength) {
-					return current;
-				}
-				Dynamic<?>[] expanded = Arrays.copyOf(current, requiredLength);
-				unsafe.putObjectVolatile(base, offset, expanded);
-				return expanded;
-			}
-		} catch (ReflectiveOperationException e) {
-			throw new IllegalStateException("Could not access Minecraft's legacy block-state flattening table", e);
+		Dynamic<?>[] states = BlockStateDataAccessor.mineralogy$getLegacyStateMap();
+		if (states.length < requiredLength) {
+			throw new IllegalStateException("Legacy block-state table has length " + states.length
+					+ " but Mineralogy needs at least " + requiredLength);
 		}
-		throw new IllegalStateException("Could not locate Minecraft's legacy block-state flattening table");
-	}
-
-	private static Unsafe unsafe() throws ReflectiveOperationException {
-		Field field = Unsafe.class.getDeclaredField("theUnsafe");
-		field.setAccessible(true);
-		return (Unsafe) field.get(null);
+		return states;
 	}
 
 	private static boolean containsLegacyMineralogyBlock(CompoundTag level) {
-		ListTag sections = level.getList("Sections", 10);
+		ListTag sections = level.getListOrEmpty("Sections");
 		for (int sectionIndex = 0; sectionIndex < sections.size(); ++sectionIndex) {
-			CompoundTag section = sections.getCompound(sectionIndex);
-			byte[] blocks = section.getByteArray("Blocks");
+			CompoundTag section = sections.getCompoundOrEmpty(sectionIndex);
+			byte[] blocks = section.getByteArray("Blocks").orElseGet(() -> new byte[0]);
 			if (blocks.length != 4096) {
 				continue;
 			}
-			byte[] add = section.getByteArray("Add");
+			byte[] add = section.getByteArray("Add").orElseGet(() -> new byte[0]);
 			for (int blockIndex = 0; blockIndex < blocks.length; ++blockIndex) {
 				if (LEGACY_MINERALOGY_BLOCK_IDS.get(blockId(blocks, add, blockIndex))) {
 					return true;
@@ -379,11 +350,11 @@ public final class LegacyWorldDataHook {
 	}
 
 	private static void rewriteLegacyRockFurnaceTileEntities(CompoundTag level) {
-		ListTag tileEntities = level.getList("TileEntities", 10);
+		ListTag tileEntities = level.getListOrEmpty("TileEntities");
 		for (int index = 0; index < tileEntities.size(); ++index) {
-			CompoundTag tileEntity = tileEntities.getCompound(index);
-			int blockId = getLegacyBlockId(level, tileEntity.getInt("x"), tileEntity.getInt("y"),
-					tileEntity.getInt("z"));
+			CompoundTag tileEntity = tileEntities.getCompoundOrEmpty(index);
+			int blockId = getLegacyBlockId(level, tileEntity.getIntOr("x", 0), tileEntity.getIntOr("y", -1),
+					tileEntity.getIntOr("z", 0));
 			if (LEGACY_ROCK_FURNACE_BLOCK_IDS.get(blockId)) {
 				tileEntity.putString("id", ROCK_FURNACE_TILE_ENTITY);
 			}
@@ -394,18 +365,18 @@ public final class LegacyWorldDataHook {
 		if (y < 0 || y > 255) {
 			return -1;
 		}
-		ListTag sections = level.getList("Sections", 10);
+		ListTag sections = level.getListOrEmpty("Sections");
 		for (int sectionIndex = 0; sectionIndex < sections.size(); ++sectionIndex) {
-			CompoundTag section = sections.getCompound(sectionIndex);
-			if ((section.getByte("Y") & 0xFF) != y >> 4) {
+			CompoundTag section = sections.getCompoundOrEmpty(sectionIndex);
+			if ((section.getByteOr("Y", (byte) -1) & 0xFF) != y >> 4) {
 				continue;
 			}
-			byte[] blocks = section.getByteArray("Blocks");
+			byte[] blocks = section.getByteArray("Blocks").orElseGet(() -> new byte[0]);
 			if (blocks.length != 4096) {
 				return -1;
 			}
 			int index = ((y & 15) << 8) | ((z & 15) << 4) | (x & 15);
-			return blockId(blocks, section.getByteArray("Add"), index);
+			return blockId(blocks, section.getByteArray("Add").orElseGet(() -> new byte[0]), index);
 		}
 		return -1;
 	}
@@ -429,8 +400,8 @@ public final class LegacyWorldDataHook {
 		return ((long) chunkX & 0xFFFFFFFFL) << 32 | ((long) chunkZ & 0xFFFFFFFFL);
 	}
 
-	private static Block resolveCurrentBlock(ResourceLocation oldId) {
-		ResourceLocation target = BLOCK_ALIASES.getOrDefault(oldId, oldId);
+	private static Block resolveCurrentBlock(Identifier oldId) {
+		Identifier target = BLOCK_ALIASES.getOrDefault(oldId, oldId);
 		if (!ForgeRegistries.BLOCKS.containsKey(target)) {
 			throw new IllegalStateException("Legacy Mineralogy block has no current replacement: " + oldId);
 		}

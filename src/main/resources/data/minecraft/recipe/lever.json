@@ -1,60 +1,52 @@
 {
-    "type":  "forge:conditional",
-    "recipes":  [
-                    {
-                        "forge:condition":  {
-                                                "type":  "mineralogy:config",
-                                                "flag":  "COBBLESTONE_EQUIVILENT"
-                                            },
-                        "recipe":  {
-                                       "type":  "minecraft:crafting_shaped",
-                                       "category":  "redstone",
-                                       "pattern":  [
-                                                       "X",
-                                                       "#"
-                                                   ],
-                                       "key":  {
-                                                   "#":  {
-                                                             "tag":  "mineralogy:cobblestone_equivalents"
-                                                         },
-                                                   "X":  {
-                                                             "item":  "minecraft:stick"
-                                                         }
-                                               },
-                                       "result":  {
-                                                      "id":  "minecraft:lever"
-                                                  },
-                                       "show_notification":  true
-                                   }
-                    },
-                    {
-                        "forge:condition":  {
-                                                "type":  "forge:not",
-                                                "value":  {
-                                                              "type":  "mineralogy:config",
-                                                              "flag":  "COBBLESTONE_EQUIVILENT"
-                                                          }
-                                            },
-                        "recipe":  {
-                                       "type":  "minecraft:crafting_shaped",
-                                       "category":  "redstone",
-                                       "pattern":  [
-                                                       "X",
-                                                       "#"
-                                                   ],
-                                       "key":  {
-                                                   "#":  {
-                                                             "tag":  "c:cobblestones"
-                                                         },
-                                                   "X":  {
-                                                             "item":  "minecraft:stick"
-                                                         }
-                                               },
-                                       "result":  {
-                                                      "id":  "minecraft:lever"
-                                                  },
-                                       "show_notification":  true
-                                   }
-                    }
-                ]
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "forge:condition": {
+        "type": "mineralogy:config",
+        "flag": "COBBLESTONE_EQUIVILENT"
+      },
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "redstone",
+        "pattern": [
+          "X",
+          "#"
+        ],
+        "key": {
+          "#": "#mineralogy:cobblestone_equivalents",
+          "X": "minecraft:stick"
+        },
+        "result": {
+          "id": "minecraft:lever"
+        },
+        "show_notification": true
+      }
+    },
+    {
+      "forge:condition": {
+        "type": "forge:not",
+        "value": {
+          "type": "mineralogy:config",
+          "flag": "COBBLESTONE_EQUIVILENT"
+        }
+      },
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "redstone",
+        "pattern": [
+          "X",
+          "#"
+        ],
+        "key": {
+          "#": "#c:cobblestones",
+          "X": "minecraft:stick"
+        },
+        "result": {
+          "id": "minecraft:lever"
+        },
+        "show_notification": true
+      }
+    }
+  ]
 }

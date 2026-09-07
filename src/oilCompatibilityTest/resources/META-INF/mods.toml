@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[47,)"
+loaderVersion="[61,)"
 license="LGPL-2.1-only"
 
 [[mods]]
@@ -11,13 +11,13 @@ description='''Disposable runtime fixture for Mineralogy crude-oil coexistence v
 [[dependencies.poweradvantage]]
 modId="forge"
 mandatory=true
-versionRange="[52.1.0,53)"
+versionRange="[61.1.0,62)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.poweradvantage]]
 modId="mineralogy"
 mandatory=true
-versionRange="[6.1.2.121011]"
+versionRange="[6.1.2.121111]"
 ordering="AFTER"
 side="BOTH"

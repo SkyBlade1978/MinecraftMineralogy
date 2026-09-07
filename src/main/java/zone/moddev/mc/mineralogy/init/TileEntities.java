@@ -2,6 +2,7 @@ package zone.moddev.mc.mineralogy.init;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import zone.moddev.mc.mineralogy.Mineralogy;
 import zone.moddev.mc.mineralogy.blocks.RockFurnace;
@@ -9,12 +10,12 @@ import zone.moddev.mc.mineralogy.tileentity.TileEntityRockFurnace;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegisterEvent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @Mod.EventBusSubscriber(modid = Mineralogy.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class TileEntities {
@@ -33,10 +34,8 @@ public class TileEntities {
 			}
 		}
 
-		rock_furnace = BlockEntityType.Builder
-				.of(TileEntityRockFurnace::new, furnaceBlocks.toArray(new Block[furnaceBlocks.size()]))
-				.build(null);
-		registry.register(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "rock_furnace"), rock_furnace);
+		rock_furnace = new BlockEntityType<>(TileEntityRockFurnace::new, Set.copyOf(furnaceBlocks));
+		registry.register(Identifier.fromNamespaceAndPath(Mineralogy.MODID, "rock_furnace"), rock_furnace);
 	}
 
 	private TileEntities() {
