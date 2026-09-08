@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "poweradvantage:crude_oil",
-    "poweradvantage:flowing_crude_oil"
+    "#c:crude_oil"
   ]
 }

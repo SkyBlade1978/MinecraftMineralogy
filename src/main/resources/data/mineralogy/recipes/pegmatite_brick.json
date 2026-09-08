@@ -1,22 +1,18 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:pegmatite_brick"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/pegmatite"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:pegmatite_brick",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": {
+      "tag": "mineralogy:stones/pegmatite"
+    }
+  },
+  "result": {
+    "id": "mineralogy:pegmatite_brick",
+    "count": 4
+  },
+  "show_notification": true
 }

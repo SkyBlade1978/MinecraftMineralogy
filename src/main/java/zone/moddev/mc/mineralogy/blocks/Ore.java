@@ -17,7 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.storage.loot.LootParams.Builder;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class Ore extends Block implements NamedMineralogyBlock {
 	private final String registryPath;
@@ -48,7 +48,7 @@ public class Ore extends Block implements NamedMineralogyBlock {
 	}
 
 	public ItemLike getItemDropped() {
-		Item item = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, dropItemName));
+		Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(Mineralogy.MODID, dropItemName));
 		return item == null ? this : item;
 	}
 

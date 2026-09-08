@@ -1,23 +1,19 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:diorite_stairs"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "x  ",
-                    "xx ",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:diorite"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:diorite_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "x  ",
+    "xx ",
+    "xxx"
+  ],
+  "key": {
+    "x": {
+      "item": "mineralogy:diorite"
+    }
+  },
+  "result": {
+    "id": "mineralogy:diorite_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }

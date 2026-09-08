@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:lime_dye"
+    "#c:dyes/lime"
   ]
 }

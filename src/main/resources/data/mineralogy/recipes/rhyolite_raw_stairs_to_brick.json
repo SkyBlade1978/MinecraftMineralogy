@@ -1,31 +1,18 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:rhyolite_stairs"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:rhyolite_brick_stairs"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:rhyolite_stairs"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:rhyolite_brick_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": {
+      "item": "mineralogy:rhyolite_stairs"
+    }
+  },
+  "result": {
+    "id": "mineralogy:rhyolite_brick_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }

@@ -22,7 +22,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class RockSlab extends Block implements NamedMineralogyBlock {
 	public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.values());
@@ -103,14 +103,14 @@ public class RockSlab extends Block implements NamedMineralogyBlock {
 			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 		}
 
-		ResourceLocation slabItemName = held.isEmpty() ? null : ForgeRegistries.ITEMS.getKey(held.getItem());
+		ResourceLocation slabItemName = held.isEmpty() ? null : BuiltInRegistries.ITEM.getKey(held.getItem());
 
-		if (!ForgeRegistries.BLOCKS.getKey(this).equals(slabItemName)) {
+		if (!BuiltInRegistries.BLOCK.getKey(this).equals(slabItemName)) {
 			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 		}
 
-		Block doubleSlab = ForgeRegistries.BLOCKS.getValue(
-				ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, this.doubleSlabName));
+		Block doubleSlab = BuiltInRegistries.BLOCK.get(
+				new ResourceLocation(Mineralogy.MODID, this.doubleSlabName));
 		if (!(doubleSlab instanceof DoubleSlab)) {
 			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 		}

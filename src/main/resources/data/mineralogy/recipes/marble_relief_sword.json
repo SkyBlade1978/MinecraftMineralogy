@@ -1,41 +1,37 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:marble_relief_sword"
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "minecraft:stone_sword"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:marble_relief_sword",
-                   "count":  8
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "mineralogy:marble_relief_blank"
+    },
+    {
+      "item": "mineralogy:marble_relief_blank"
+    },
+    {
+      "item": "mineralogy:marble_relief_blank"
+    },
+    {
+      "item": "mineralogy:marble_relief_blank"
+    },
+    {
+      "item": "mineralogy:marble_relief_blank"
+    },
+    {
+      "item": "mineralogy:marble_relief_blank"
+    },
+    {
+      "item": "mineralogy:marble_relief_blank"
+    },
+    {
+      "item": "mineralogy:marble_relief_blank"
+    },
+    {
+      "item": "minecraft:stone_sword"
+    }
+  ],
+  "result": {
+    "id": "mineralogy:marble_relief_sword",
+    "count": 8
+  }
 }

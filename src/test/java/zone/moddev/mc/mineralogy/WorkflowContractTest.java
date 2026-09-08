@@ -14,24 +14,24 @@ import org.junit.Test;
 
 public class WorkflowContractTest {
     @Test
-    public void releaseMetadataIdentifiesTheGenericForgeTarget() throws Exception {
+    public void releaseMetadataIdentifiesTheGenericNeoForgeTarget() throws Exception {
         Properties properties = new Properties();
         try (FileInputStream input = new FileInputStream("gradle.properties")) {
             properties.load(input);
         }
-        assertEquals("6.1.2.120061", properties.getProperty("mod_version"));
+        assertEquals("6.1.2.120062", properties.getProperty("mod_version"));
         assertEquals("1.20.6", properties.getProperty("minecraft_version"));
         assertEquals(properties.getProperty("mc_version"), properties.getProperty("minecraft_version"));
-        assertEquals("forge", properties.getProperty("loader_name"));
-        assertEquals("1", properties.getProperty("loader_code"));
+        assertEquals("neoforge", properties.getProperty("loader_name"));
+        assertEquals("2", properties.getProperty("loader_code"));
         assertEquals("21", properties.getProperty("java_version"));
         assertEquals("21.0.7+6", properties.getProperty("java_toolchain_version"));
         assertEquals("21", properties.getProperty("gradle_java_version"));
         assertEquals("240974", properties.getProperty("curseforge_project_id"));
         assertEquals("zone.moddev.mc.mineralogy", properties.getProperty("mod_group"));
-        assertEquals("4.0.16.120061", properties.getProperty("orespawn_version"));
-        assertEquals("8786031", properties.getProperty("orespawn_curse_file_id"));
-        assertEquals("D86A14957B9996DDA0465C413C60811B7473EF327FC16E95266B522F06CBE806",
+        assertEquals("4.0.16.120062", properties.getProperty("orespawn_version"));
+        assertEquals("8800065", properties.getProperty("orespawn_curse_file_id"));
+        assertEquals("C3642CE69BE10E140BCE12345FBA1AF22C06E8A1D92F34B4C1E1356027D692F0",
                 properties.getProperty("orespawn_sha256"));
     }
 
@@ -42,25 +42,24 @@ public class WorkflowContractTest {
         String wrapper = text(".github/workflows/validate-gradle-build.yml");
         String staging = text("gradle/stage-orespawn-release.sh");
         assertTrue(ci.contains("name: Build, test, and audit"));
-        assertTrue(ci.contains("master-1.20.6"));
-        assertTrue(ci.contains("Install pinned Java 8 launcher toolchain"));
-        assertTrue(ci.contains("java-version: '8.0.502+7'"));
+        assertTrue(ci.contains("master-1.20.6-neo"));
         assertTrue(ci.contains("java-version: '21.0.7+6.0.LTS'"));
-        assertTrue(ci.contains("Install pinned Java 21 runtime and toolchain"));
-        assertTrue(ci.contains("applied 0 rule(s) for net.minecraftforge:forge:1.20.6-50.2.0 (explicit no-op)"));
-        assertTrue(ci.contains("$JAVA_HOME,$JAVA_HOME_8_X64,$JAVA_HOME_25_X64"));
+        assertTrue(ci.contains("Install exact Java 21"));
+        assertTrue(ci.contains("Cold NeoForge bootstrap"));
         assertTrue(ci.contains("verifyReleaseDependencies verifyReleaseArtifacts writeReleaseChecksums"));
-        assertTrue(ci.contains("genEclipseRuns eclipse isolateEclipseProductionRuns verifyEclipseProductionClasspath"));
+        assertTrue(ci.contains("eclipse verifyEclipseProductionClasspath"));
         assertTrue(ci.contains("CHANGELOG.txt"));
-        assertTrue(ci.contains("-PorespawnVerificationRepository=${{ steps.orespawn.outputs.repository }}"));
+        assertTrue(ci.contains("PorespawnVerificationRepository"));
+        assertFalse(ci.contains("genEclipseRuns"));
+        assertFalse(ci.contains("Mavenizer"));
+        assertFalse(ci.contains("JAVA_HOME_8_X64"));
+        assertFalse(ci.contains("JAVA_HOME_25_X64"));
         assertTrue(staging.contains("https://www.curseforge.com/api/v1/mods/$project_id/files/$file_id/download"));
         assertTrue(staging.contains("sha256sum"));
         assertTrue(codeql.contains("github/codeql-action/init@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28"));
-        assertTrue(codeql.contains("Install pinned Java 8 launcher toolchain"));
-        assertTrue(codeql.contains("java-version: '8.0.502+7'"));
-        assertTrue(codeql.contains("$JAVA_HOME,$JAVA_HOME_8_X64,$JAVA_HOME_25_X64"));
-        assertTrue(codeql.contains("clean classes --rerun-tasks --no-build-cache"));
-        assertTrue(codeql.contains("--rerun-tasks --no-build-cache"));
+        assertTrue(codeql.contains("Install exact Java 21"));
+        assertTrue(codeql.contains("clean classes --no-daemon --stacktrace --max-workers=2"));
+        assertFalse(codeql.contains("Mavenizer"));
         assertTrue(wrapper.contains("gradle/actions/wrapper-validation@9c971963bec38e04b3d30dcc455b5382be2fdbfb"));
     }
 
@@ -108,15 +107,27 @@ public class WorkflowContractTest {
     }
 
     @Test
-    public void eclipseLaunchesQuoteCompleteSlimeLauncherPaths() throws Exception {
+    public void eclipseUsesNeoGradleProductionOutputs() throws Exception {
         String build = text("build.gradle");
-        assertTrue(build.contains("['cache', 'metadata', 'to-srg', 'to-obf'].each"));
-        assertTrue(build.contains("&quot;${value}&quot;"));
-        assertTrue(build.contains("Eclipse launch does not quote its --${flag} path"));
-        assertTrue(build.contains("if (launch.contains('-DlegacyClassPath.file=')"));
-        assertTrue(build.contains("entry.path == 'src/main/resources'"));
+        assertTrue(build.contains("['src/main/resources', 'src/generated/resources'].contains(entry.path)"));
         assertTrue(build.contains("'build/resources/main', 'bin/main'"));
-        assertTrue(build.contains("Eclipse must use processed production resources"));
+        assertTrue(build.contains("synchronizationTasks 'prepareEclipseResources'"));
+        assertTrue(build.contains("Eclipse must consume only Gradle-processed production resources"));
+        assertTrue(build.contains("tasks.register('verifyEclipseProductionClasspath')"));
+        assertFalse(build.contains("synchronizationTasks 'isolateEclipseProductionRuns'"));
+        assertFalse(build.contains("genEclipseRuns"));
+        assertFalse(build.contains("slime-launcher"));
+    }
+
+    @Test
+    public void worldgenQualificationDelegatesToTheReleasedOreSpawnRuntime() throws Exception {
+        String build = text("build.gradle");
+        assertTrue(build.contains("configureOreSpawnQualification"));
+        assertTrue(build.contains("orespawn.worldgenBenchmarkMode"));
+        assertTrue(build.contains("orespawn.worldgenBenchmarkRadius"));
+        assertTrue(build.contains("orespawn.worldgenBenchmarkDimension"));
+        assertTrue(build.contains("orespawn.worldgenBenchmarkBiomeType"));
+        assertFalse(new File("src/main/java/zone/moddev/mc/mineralogy/worldgen").exists());
     }
 
     private static String text(String path) throws Exception {

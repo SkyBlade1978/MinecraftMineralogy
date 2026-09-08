@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[47,)"
+loaderVersion="[2,)"
 license="LGPL-2.1-only"
 
 [[mods]]
@@ -9,15 +9,15 @@ displayName="Historical Oil Compatibility Probe"
 description='''Disposable runtime fixture for Mineralogy crude-oil coexistence validation.'''
 
 [[dependencies.poweradvantage]]
-modId="forge"
-mandatory=true
-versionRange="[50.2.0,51)"
+modId="neoforge"
+type="required"
+versionRange="[20.6.139,20.7)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.poweradvantage]]
 modId="mineralogy"
-mandatory=true
-versionRange="[6.1.2.120061]"
+type="required"
+versionRange="[6.1.2.120062]"
 ordering="AFTER"
 side="BOTH"

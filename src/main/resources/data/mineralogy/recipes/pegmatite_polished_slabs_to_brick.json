@@ -1,31 +1,18 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:pegmatite_smooth_slab"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:pegmatite_smooth_brick_slab"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:pegmatite_smooth_slab"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:pegmatite_smooth_brick_slab",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": {
+      "item": "mineralogy:pegmatite_smooth_slab"
+    }
+  },
+  "result": {
+    "id": "mineralogy:pegmatite_smooth_brick_slab",
+    "count": 4
+  },
+  "show_notification": true
 }

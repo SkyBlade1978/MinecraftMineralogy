@@ -1,4 +1,4 @@
-package zone.moddev.mc.mineralogy.fixture;
+package zone.moddev.mc.mineralogy.oilfixture;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BucketItem;
@@ -18,33 +19,32 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 @Mod(HistoricalOilCompatibilityProbe.MODID)
 public final class HistoricalOilCompatibilityProbe {
     public static final String MODID = "poweradvantage";
 
     private static final DeferredRegister<FluidType> FLUID_TYPES =
-            DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, MODID);
+            DeferredRegister.create(NeoForgeRegistries.FLUID_TYPES, MODID);
     private static final DeferredRegister<Fluid> FLUIDS =
-            DeferredRegister.create(ForgeRegistries.FLUIDS, MODID);
+            DeferredRegister.create(BuiltInRegistries.FLUID, MODID);
     private static final DeferredRegister<net.minecraft.world.level.block.Block> BLOCKS =
-            DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
+            DeferredRegister.create(BuiltInRegistries.BLOCK, MODID);
     private static final DeferredRegister<Item> ITEMS =
-            DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+            DeferredRegister.create(BuiltInRegistries.ITEM, MODID);
 
-    private static final RegistryObject<FluidType> TYPE = FLUID_TYPES.register("crude_oil",
+    private static final DeferredHolder<FluidType, FluidType> TYPE = FLUID_TYPES.register("crude_oil",
             () -> new FluidType(FluidType.Properties.create().density(850).viscosity(6000)));
-    private static final ForgeFlowingFluid.Properties PROPERTIES = new ForgeFlowingFluid.Properties(
+    private static final BaseFlowingFluid.Properties PROPERTIES = new BaseFlowingFluid.Properties(
             TYPE, HistoricalOilCompatibilityProbe::source,
             HistoricalOilCompatibilityProbe::flowing)
             .bucket(HistoricalOilCompatibilityProbe::bucket)
@@ -52,26 +52,25 @@ public final class HistoricalOilCompatibilityProbe {
             .slopeFindDistance(2)
             .levelDecreasePerBlock(2)
             .tickRate(15);
-    private static final RegistryObject<ForgeFlowingFluid.Source> SOURCE = FLUIDS.register("crude_oil",
-            () -> new ForgeFlowingFluid.Source(PROPERTIES));
-    private static final RegistryObject<ForgeFlowingFluid.Flowing> FLOWING = FLUIDS.register("flowing_crude_oil",
-            () -> new ForgeFlowingFluid.Flowing(PROPERTIES));
-    private static final RegistryObject<LiquidBlock> BLOCK = BLOCKS.register("crude_oil",
-            () -> new LiquidBlock(HistoricalOilCompatibilityProbe::source,
+    private static final DeferredHolder<Fluid, BaseFlowingFluid.Source> SOURCE = FLUIDS.register("crude_oil",
+            () -> new BaseFlowingFluid.Source(PROPERTIES));
+    private static final DeferredHolder<Fluid, BaseFlowingFluid.Flowing> FLOWING = FLUIDS.register("flowing_crude_oil",
+            () -> new BaseFlowingFluid.Flowing(PROPERTIES));
+    private static final DeferredHolder<net.minecraft.world.level.block.Block, LiquidBlock> BLOCK = BLOCKS.register("crude_oil",
+            () -> new LiquidBlock(source(),
                     BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable()
                             .noCollission().strength(100.0F).noLootTable().liquid()
                             .pushReaction(PushReaction.DESTROY)));
-    private static final RegistryObject<Item> BUCKET = ITEMS.register("crude_oil_bucket",
-            () -> new BucketItem(HistoricalOilCompatibilityProbe::source,
+    private static final DeferredHolder<Item, Item> BUCKET = ITEMS.register("crude_oil_bucket",
+            () -> new BucketItem(source(),
                     new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 
-    public HistoricalOilCompatibilityProbe(FMLJavaModLoadingContext context) {
-        IEventBus modBus = context.getModEventBus();
+    public HistoricalOilCompatibilityProbe(IEventBus modBus) {
         FLUID_TYPES.register(modBus);
         FLUIDS.register(modBus);
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
-        MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
+        NeoForge.EVENT_BUS.addListener(this::serverStarted);
     }
 
     private void serverStarted(ServerStartedEvent event) {
@@ -80,9 +79,9 @@ public final class HistoricalOilCompatibilityProbe {
         Item mineralogyBucket = requireItem("mineralogy", "crude_oil_bucket");
         Item historicalBucket = requireItem(MODID, "crude_oil_bucket");
         TagKey<Fluid> oilTag = TagKey.create(Registries.FLUID,
-                ResourceLocation.fromNamespaceAndPath("forge", "crude_oil"));
+                new ResourceLocation("c", "crude_oil"));
         TagKey<Item> bucketTag = TagKey.create(Registries.ITEM,
-                ResourceLocation.fromNamespaceAndPath("forge", "buckets/crude_oil"));
+                new ResourceLocation("c", "buckets/crude_oil"));
 
         boolean distinctFluids = mineralogy != historical;
         boolean distinctBuckets = mineralogyBucket != historicalBucket;
@@ -111,8 +110,8 @@ public final class HistoricalOilCompatibilityProbe {
     }
 
     private static Fluid requireFluid(String namespace, String path) {
-        Fluid result = ForgeRegistries.FLUIDS.getValue(
-                ResourceLocation.fromNamespaceAndPath(namespace, path));
+        Fluid result = BuiltInRegistries.FLUID.get(
+                new ResourceLocation(namespace, path));
         if (result == null) {
             throw new IllegalStateException("Missing fluid " + namespace + ':' + path);
         }
@@ -120,8 +119,8 @@ public final class HistoricalOilCompatibilityProbe {
     }
 
     private static Item requireItem(String namespace, String path) {
-        Item result = ForgeRegistries.ITEMS.getValue(
-                ResourceLocation.fromNamespaceAndPath(namespace, path));
+        Item result = BuiltInRegistries.ITEM.get(
+                new ResourceLocation(namespace, path));
         if (result == null) {
             throw new IllegalStateException("Missing item " + namespace + ':' + path);
         }

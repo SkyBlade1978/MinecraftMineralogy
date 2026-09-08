@@ -6,10 +6,11 @@ import zone.moddev.mc.mineralogy.Mineralogy;
 import zone.moddev.mc.mineralogy.blocks.MineralogyLiquidBlock;
 import zone.moddev.mc.mineralogy.items.MineralogyBucketItem;
 
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.common.SoundActions;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.common.SoundActions;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
@@ -18,29 +19,29 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public final class MineralogyFluids {
 	private static final DeferredRegister<FluidType> FLUID_TYPES =
-			DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, Mineralogy.MODID);
-	private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS,
+			DeferredRegister.create(NeoForgeRegistries.FLUID_TYPES, Mineralogy.MODID);
+	private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(BuiltInRegistries.FLUID,
 			Mineralogy.MODID);
 	private static final DeferredRegister<net.minecraft.world.level.block.Block> BLOCKS =
-			DeferredRegister.create(ForgeRegistries.BLOCKS, Mineralogy.MODID);
-	private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS,
+			DeferredRegister.create(BuiltInRegistries.BLOCK, Mineralogy.MODID);
+	private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM,
 			Mineralogy.MODID);
 
-	private static final ResourceLocation CRUDE_OIL_STILL = ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID,
+	private static final ResourceLocation CRUDE_OIL_STILL = new ResourceLocation(Mineralogy.MODID,
 			"blocks/crude_oil_still");
-	private static final ResourceLocation CRUDE_OIL_FLOW = ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID,
+	private static final ResourceLocation CRUDE_OIL_FLOW = new ResourceLocation(Mineralogy.MODID,
 			"blocks/crude_oil_flow");
 
-	public static final RegistryObject<FluidType> CRUDE_OIL_TYPE = FLUID_TYPES.register("crude_oil",
+	public static final DeferredHolder<FluidType, FluidType> CRUDE_OIL_TYPE = FLUID_TYPES.register("crude_oil",
 			() -> new FluidType(FluidType.Properties.create()
 					.density(850)
 					.viscosity(6000)
@@ -63,8 +64,8 @@ public final class MineralogyFluids {
 				}
 			});
 
-	private static final ForgeFlowingFluid.Properties CRUDE_OIL_PROPERTIES =
-			new ForgeFlowingFluid.Properties(MineralogyFluids::crudeOilType,
+	private static final BaseFlowingFluid.Properties CRUDE_OIL_PROPERTIES =
+			new BaseFlowingFluid.Properties(MineralogyFluids::crudeOilType,
 					MineralogyFluids::crudeOil,
 					MineralogyFluids::flowingCrudeOil)
 					.bucket(MineralogyFluids::crudeOilBucket)
@@ -74,16 +75,16 @@ public final class MineralogyFluids {
 					.tickRate(15)
 					.explosionResistance(100.0F);
 
-	public static final RegistryObject<ForgeFlowingFluid.Source> CRUDE_OIL =
-			FLUIDS.register("crude_oil", () -> new ForgeFlowingFluid.Source(CRUDE_OIL_PROPERTIES));
-	public static final RegistryObject<ForgeFlowingFluid.Flowing> FLOWING_CRUDE_OIL =
-			FLUIDS.register("flowing_crude_oil", () -> new ForgeFlowingFluid.Flowing(CRUDE_OIL_PROPERTIES));
-	public static final RegistryObject<LiquidBlock> CRUDE_OIL_BLOCK = BLOCKS.register("crude_oil",
+	public static final DeferredHolder<Fluid, BaseFlowingFluid.Source> CRUDE_OIL =
+			FLUIDS.register("crude_oil", () -> new BaseFlowingFluid.Source(CRUDE_OIL_PROPERTIES));
+	public static final DeferredHolder<Fluid, BaseFlowingFluid.Flowing> FLOWING_CRUDE_OIL =
+			FLUIDS.register("flowing_crude_oil", () -> new BaseFlowingFluid.Flowing(CRUDE_OIL_PROPERTIES));
+	public static final DeferredHolder<net.minecraft.world.level.block.Block, LiquidBlock> CRUDE_OIL_BLOCK = BLOCKS.register("crude_oil",
 			() -> new MineralogyLiquidBlock(MineralogyFluids::crudeOilFlowing,
 					BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable()
 							.noCollission().strength(100.0F).noLootTable().liquid()
 							.pushReaction(PushReaction.DESTROY)));
-	public static final RegistryObject<Item> CRUDE_OIL_BUCKET = ITEMS.register("crude_oil_bucket",
+	public static final DeferredHolder<Item, Item> CRUDE_OIL_BUCKET = ITEMS.register("crude_oil_bucket",
 			() -> new MineralogyBucketItem(MineralogyFluids::crudeOil,
 					new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 

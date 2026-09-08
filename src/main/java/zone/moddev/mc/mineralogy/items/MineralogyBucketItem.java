@@ -7,11 +7,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
 
 /**
- * Retains Mineralogy's bucket class name for compatibility while using Forge's
+ * Retains Mineralogy's bucket class name for compatibility while using NeoForge's
  * current fluid-type-aware bucket behavior.
  */
 public class MineralogyBucketItem extends BucketItem {
 	public MineralogyBucketItem(Supplier<? extends Fluid> fluid, Item.Properties properties) {
-		super(fluid, properties);
+		super(fluid.get(), properties);
 	}
 }

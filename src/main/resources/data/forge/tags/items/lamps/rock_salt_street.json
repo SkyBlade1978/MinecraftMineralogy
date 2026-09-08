@@ -1,6 +1,6 @@
 {
-    "replace":  false,
-    "values":  [
-                   "mineralogy:rocksaltstreetlamp"
-               ]
+  "replace": false,
+  "values": [
+    "#c:lamps/rock_salt_street"
+  ]
 }

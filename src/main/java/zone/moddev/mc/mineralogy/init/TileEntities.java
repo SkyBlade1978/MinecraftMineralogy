@@ -9,25 +9,26 @@ import zone.moddev.mc.mineralogy.tileentity.TileEntityRockFurnace;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegisterEvent;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.minecraft.resources.ResourceLocation;
 
-@Mod.EventBusSubscriber(modid = Mineralogy.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Mineralogy.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class TileEntities {
 	public static BlockEntityType<TileEntityRockFurnace> rock_furnace;
 
 	@SubscribeEvent
 	public static void registerTileEntities(RegisterEvent event) {
-		if (!ForgeRegistries.Keys.BLOCK_ENTITY_TYPES.equals(event.getRegistryKey())) {
+		if (!Registries.BLOCK_ENTITY_TYPE.equals(event.getRegistryKey())) {
 			return;
 		}
-		IForgeRegistry<BlockEntityType<?>> registry = event.getForgeRegistry();
 		List<Block> furnaceBlocks = new ArrayList<Block>();
-		for (Block block : ForgeRegistries.BLOCKS.getValues()) {
+		for (Block block : BuiltInRegistries.BLOCK.stream().toList()) {
 			if (block instanceof RockFurnace) {
 				furnaceBlocks.add(block);
 			}
@@ -36,7 +37,15 @@ public class TileEntities {
 		rock_furnace = BlockEntityType.Builder
 				.of(TileEntityRockFurnace::new, furnaceBlocks.toArray(new Block[furnaceBlocks.size()]))
 				.build(null);
-		registry.register(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "rock_furnace"), rock_furnace);
+		event.register(Registries.BLOCK_ENTITY_TYPE,
+				new ResourceLocation(Mineralogy.MODID, "rock_furnace"),
+				() -> rock_furnace);
+	}
+
+	@SubscribeEvent
+	public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, rock_furnace,
+				(furnace, side) -> furnace.getItemHandler(side));
 	}
 
 	private TileEntities() {

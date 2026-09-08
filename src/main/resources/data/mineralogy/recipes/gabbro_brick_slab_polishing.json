@@ -1,29 +1,16 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:gabbro_brick_slab"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:gabbro_smooth_brick_slab"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:gabbro_brick_slab"
-                        },
-                        {
-                            "tag":  "forge:sand"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:gabbro_smooth_brick_slab",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "mineralogy:gabbro_brick_slab"
+    },
+    {
+      "tag": "c:sands"
+    }
+  ],
+  "result": {
+    "id": "mineralogy:gabbro_smooth_brick_slab",
+    "count": 1
+  }
 }

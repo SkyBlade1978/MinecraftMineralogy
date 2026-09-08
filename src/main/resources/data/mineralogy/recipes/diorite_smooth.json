@@ -1,20 +1,16 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:diorite_smooth"
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:diorite"
-                        },
-                        {
-                            "item":  "minecraft:sand"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:diorite_smooth",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "mineralogy:diorite"
+    },
+    {
+      "item": "minecraft:sand"
+    }
+  ],
+  "result": {
+    "id": "mineralogy:diorite_smooth",
+    "count": 1
+  }
 }

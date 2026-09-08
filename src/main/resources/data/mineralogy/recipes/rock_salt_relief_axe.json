@@ -1,41 +1,37 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:rock_salt_relief_axe"
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:rock_salt_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:rock_salt_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:rock_salt_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:rock_salt_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:rock_salt_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:rock_salt_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:rock_salt_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:rock_salt_relief_blank"
-                        },
-                        {
-                            "item":  "minecraft:stone_axe"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:rock_salt_relief_axe",
-                   "count":  8
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "mineralogy:rock_salt_relief_blank"
+    },
+    {
+      "item": "mineralogy:rock_salt_relief_blank"
+    },
+    {
+      "item": "mineralogy:rock_salt_relief_blank"
+    },
+    {
+      "item": "mineralogy:rock_salt_relief_blank"
+    },
+    {
+      "item": "mineralogy:rock_salt_relief_blank"
+    },
+    {
+      "item": "mineralogy:rock_salt_relief_blank"
+    },
+    {
+      "item": "mineralogy:rock_salt_relief_blank"
+    },
+    {
+      "item": "mineralogy:rock_salt_relief_blank"
+    },
+    {
+      "item": "minecraft:stone_axe"
+    }
+  ],
+  "result": {
+    "id": "mineralogy:rock_salt_relief_axe",
+    "count": 8
+  }
 }

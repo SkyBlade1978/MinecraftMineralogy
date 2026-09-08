@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:white_dye"
+    "#c:dyes/white"
   ]
 }

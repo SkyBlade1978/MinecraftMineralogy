@@ -16,16 +16,15 @@ import java.util.function.BooleanSupplier;
 
 import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 /**
  * Content-only Mineralogy configuration.
@@ -36,7 +35,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public final class MineralogyConfig {
     public static final String FILE_NAME = "mineralogy-common.toml";
     private static final ResourceLocation CONFIG_CONDITION_ID =
-            ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "config");
+            new ResourceLocation(Mineralogy.MODID, "config");
     private static DeferredRegister<MapCodec<? extends ICondition>> conditionCodecs;
 
     private static boolean smeltableGravel = true;
@@ -235,7 +234,7 @@ public final class MineralogyConfig {
     public static void registerRecipeConditions(IEventBus modEventBus) {
         if (!recipeConditionsRegistered) {
             conditionCodecs = DeferredRegister.create(
-                    ForgeRegistries.Keys.CONDITION_SERIALIZERS,
+                    NeoForgeRegistries.CONDITION_SERIALIZERS,
                     Mineralogy.MODID);
             conditionCodecs.register(CONFIG_CONDITION_ID.getPath(), () -> ConfigCondition.CODEC);
             conditionCodecs.register(modEventBus);
@@ -327,7 +326,7 @@ public final class MineralogyConfig {
             this.flag = configFlagCondition(flagName);
         }
 
-        @Override public boolean test(ICondition.IContext context, DynamicOps<?> ops) { return flag.getAsBoolean(); }
+        @Override public boolean test(ICondition.IContext context) { return flag.getAsBoolean(); }
         @Override public MapCodec<? extends ICondition> codec() { return CODEC; }
     }
 }

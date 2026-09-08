@@ -1,29 +1,16 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:tuff_brick_stairs"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:tuff_smooth_brick_stairs"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:tuff_brick_stairs"
-                        },
-                        {
-                            "tag":  "forge:sand"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:tuff_smooth_brick_stairs",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "mineralogy:tuff_brick_stairs"
+    },
+    {
+      "tag": "c:sands"
+    }
+  ],
+  "result": {
+    "id": "mineralogy:tuff_smooth_brick_stairs",
+    "count": 1
+  }
 }

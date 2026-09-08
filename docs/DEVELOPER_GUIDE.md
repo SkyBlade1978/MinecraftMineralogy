@@ -6,7 +6,7 @@
 | --- | --- |
 | Blocks, items, fluids, and tile entities | Terrain replacement and formations |
 | Models, textures, language, recipes, and drops | Geomes and biome influences |
-| Forge tag identities and old-save compatibility | Ore and fluid-deposit placement |
+| Common and compatibility tag identities and old-save compatibility | Ore and fluid-deposit placement |
 | Mineralogy's provider declaration and migration | Profiles, UI, retrogen, and templates |
 
 Mineralogy requires OreSpawn `[4.0.6,5.0.0)`. Reusable worldgen integrations
@@ -30,35 +30,38 @@ profiles; provider updates must not overwrite established world choices. A pack
 may supply an authoritative full override at
 `config/mineralogy-orespawn.json`.
 
-## Forge Tag Integration
+## NeoForge Tag Integration
 
-All raw rocks use `forge:stone` and their material-specific Mineralogy tags.
+Mineralogy uses the `c:` namespace for canonical interoperability tags and
+retains narrowly scoped `forge:` aliases for older consumers. All raw rocks use
+their material-specific Mineralogy tags.
 When the historical `COBBLESTONE_EQUIVILENT` option is enabled, all 27 raw
 families additionally use `cobblestone`; chert and pumice always retain that
 identity. Gypsum, chalk, rock salt, and both rock salt lamps retain their
 specialty aliases.
 
 Minecraft 1.20.6's `minecraft:stone_crafting_materials` and
-`minecraft:stone_tool_materials` item tags include `#forge:cobblestone`, so
-enabled Mineralogy rocks work in native tool recipes. Forge 50 exposes
-immutable tag snapshots; Mineralogy rebuilds only the block and item tag
-membership after initial tag loading and every data reload, preserves other
-mods' members, updates the exact tag instances retained by parsed recipes,
-then invalidates recipe ingredient caches. The nested Minecraft crafting and
-tool tags are updated alongside the direct Forge tag.
+`minecraft:stone_tool_materials` item tags include Mineralogy's dynamic union,
+so enabled Mineralogy rocks work in native tool recipes. NeoForge itself also
+uses `c:cobblestones/normal` in several higher-priority vanilla recipe
+overrides. Mineralogy therefore rebuilds that tag as well as the canonical
+`c:cobblestones`, compatibility, vanilla, and Mineralogy block and item tag
+membership after initial tag loading and every data reload. It preserves other
+mods' members and clears the cached item stacks in already-parsed recipes so
+the recipe manager observes the new membership immediately.
 
-Sixteen established vanilla recipes and their advancements use conditional JSON overrides
-for the complete exact-cobblestone, stone-crafting-material, and
-stone-tool-material contracts. Enabled branches use stable Mineralogy union
-tags; disabled branches restore the target-native ingredients. Forge 50's
-already-resolved nested tags do not observe a replacement tag collection, so
-Mineralogy also mutates retained tag instances rather than swapping the
-collection.
+Sixteen established vanilla recipes and their advancements use stable
+Mineralogy union tags for the complete exact-cobblestone,
+stone-crafting-material, and stone-tool-material contracts. When equivalence
+is disabled those dynamically rebound tags contain vanilla materials plus
+unconditional chert and pumice; enabling it adds all 27 families and safe
+native aliases. The access transformer exposes only Minecraft's two private
+`Ingredient` cache fields needed to invalidate those caches after rebinding;
+it changes no game identity or recipe behavior by itself.
 
 Minecraft 1.20.6 retains three additional configurable recipes: coast, sentry, and vex
-armor-trim template duplication. Enabled branches use the Mineralogy
-cobblestone union; disabled branches preserve the recipes' exact vanilla
-cobblestone ingredient. Their vanilla advancements are intentionally untouched
+armor-trim template duplication. They use the same dynamically rebound
+Mineralogy cobblestone union. Their vanilla advancements are intentionally untouched
 because those recipes unlock from owning the template, not from cobblestone.
 
 Minecraft 1.20.6 also owns andesite, basalt, diorite, granite, tuff, and several
@@ -98,13 +101,13 @@ material and finish so basalt cannot produce a different rock's slab or wall.
 
 ## Crafting Data
 
-All Mineralogy recipes are native Minecraft/Forge 1.20.6 JSON under
+All Mineralogy recipes are native Minecraft/NeoForge 1.20.6 JSON under
 `data/mineralogy/recipes/`. Run `scripts/generate-recipes.ps1` after changing
 the recipe matrix; it generates the 27 stone families and global recipes, the
 native slab/stonecutting overrides and compatibility conversions, and the four
 target-native polished-block recipe/advancement overrides, then retains the
 target-native smelting data. Every Mineralogy recipe has a matching unlock
-advancement with the same Forge conditions and the same exact-item or
+advancement with the same NeoForge conditions and the same exact-item or
 family-tag material predicate as the recipe. Unlocks use direct inventory
 ingredients instead of listening to other recipe unlocks, which would
 recursively reveal an entire construction tree. Polishing uses Minecraft
@@ -114,8 +117,8 @@ Forge's delayed crafting-output inventory trigger. Rock-furnace advancements
 use the matching slab-family tag as their sole material criterion. They
 deliberately do not require an already-owned vanilla furnace, so the upgrade
 route is visible before that intermediate is crafted.
-Every generated recipe advancement, including each conditional Minecraft
-payload, explicitly sets `sends_telemetry_event` to `false`.
+Every generated recipe advancement, including each overridden Minecraft
+advancement, explicitly sets `sends_telemetry_event` to `false`.
 
 Reliefs preserve the historical two-stage contract. Nine matching polished
 blocks produce 16 blank reliefs; a target-native synonym may satisfy the exact
@@ -127,7 +130,7 @@ Do not reintroduce a parallel Java crafting registry.
 ## Backward Compatibility
 
 Keep the `mineralogy` mod ID, every registry name, tile ID, NBT field, asset
-path, recipe identity, patch alias, Forge tag identity, and provider rule
+path, recipe identity, patch alias, common/compatibility tag identity, and provider rule
 stable. Production Java packages use `zone.moddev.mc.mineralogy`; implementation
 package names are not saved-world identities.
 
@@ -135,7 +138,7 @@ The legacy `GENERATE_*` flags can remove registrations on the next start. The
 new issue-121 switches only change creative visibility and Mineralogy-owned
 recipes, so existing content remains loadable.
 
-Forge 50 converts pre-flattening chunks lazily. The coremod expands Minecraft's
+NeoForge 20.6 converts pre-flattening chunks lazily. The coremod expands Minecraft's
 fixed legacy state tables before conversion, and the selected-world hook
 installs the complete saved block mapping before Mojang's data fixer. It
 reinstalls that mapping after the client enumerates other old saves, normalizes
@@ -148,21 +151,21 @@ reobfuscated jar; a development launch alone cannot prove this path.
 
 ## Building
 
-The build uses ForgeGradle 7.0.34 and the Gradle 9.6.1 wrapper on Java 21,
-while an exact Java 21 toolchain compiles production and test bytecode:
+The build uses NeoGradle 7.1.38 and the Gradle 9.2.1 wrapper on Java 21,
+with an exact Java 21 toolchain for production and test bytecode:
 
 ```powershell
 $env:JAVA_HOME='path-to-a-Java-21-jdk'
 $env:GRADLE_USER_HOME='D:\MinecraftMineralogy\.gradle-verify-cache'
 .\gradlew.bat clean check build javadoc verifyReleaseConfiguration verifyReleaseDependencies verifyReleaseArtifacts writeReleaseChecksums --no-daemon
-.\gradlew.bat genEclipseRuns eclipse isolateEclipseProductionRuns verifyEclipseProductionClasspath --no-daemon
+.\gradlew.bat eclipse verifyEclipseProductionClasspath --no-daemon
 .\gradlew.bat assemble --no-daemon
 ```
 
 Inspect complete client/server logs and test the reobfuscated jar with released
-OreSpawn in a launcher-like Forge installation. The normal jar packages this
+OreSpawn in a launcher-like NeoForge installation. The normal jar packages this
 guide under `META-INF/mineralogy/docs/`.
 
 The complete release version is `Major.Minor.Bug.Target`; see
-[Mineralogy Versioning](VERSIONS.md). This branch validates target `120061`
-for Minecraft 1.20.6 Forge and does not append CI build numbers.
+[Mineralogy Versioning](VERSIONS.md). This branch validates target `120062`
+for Minecraft 1.20.6 NeoForge and does not append CI build numbers.

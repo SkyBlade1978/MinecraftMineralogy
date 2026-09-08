@@ -11,7 +11,7 @@ import java.nio.file.StandardCopyOption;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.loading.FMLPaths;
 
 /** Copies the bundled human-facing Mineralogy guide beside its configuration. */
 public final class DocumentationExporter {

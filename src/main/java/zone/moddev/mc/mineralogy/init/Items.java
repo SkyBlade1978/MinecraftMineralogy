@@ -20,13 +20,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegisterEvent;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.registries.RegisterEvent.RegisterHelper;
 
-@Mod.EventBusSubscriber(modid = Mineralogy.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Mineralogy.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class Items {
 	public static BlockItem basalt;
 	public static Item sulfur_dust;
@@ -40,10 +41,10 @@ public class Items {
 
 	@SubscribeEvent
 	public static void registerItems(RegisterEvent event) {
-		if (!ForgeRegistries.Keys.ITEMS.equals(event.getRegistryKey())) {
+		if (!Registries.ITEM.equals(event.getRegistryKey())) {
 			return;
 		}
-		IForgeRegistry<Item> registry = event.getForgeRegistry();
+		event.register(Registries.ITEM, registry -> {
 
 		sulfur_dust = register(registry, "sulfur_dust", createItem());
 		phosphorous_dust = register(registry, "phosphorous_dust", createItem());
@@ -56,23 +57,24 @@ public class Items {
 
 		List<Item> blockItems = new ArrayList<Item>();
 
-		for (Block block : ForgeRegistries.BLOCKS.getValues()) {
+		for (Block block : BuiltInRegistries.BLOCK.stream().toList()) {
 			if (isMineralogyBlockItem(block)) {
 				blockItems.add(createBlockItem(block));
 			}
 		}
 
 		for (Item item : blockItems) {
-			ResourceLocation name = ForgeRegistries.BLOCKS.getKey(((BlockItem) item).getBlock());
+			ResourceLocation name = BuiltInRegistries.BLOCK.getKey(((BlockItem) item).getBlock());
 			registry.register(name, item);
 			if ("basalt".equals(name.getPath())) {
 				basalt = (BlockItem) item;
 			}
 		}
+		});
 	}
 
 	private static boolean isMineralogyBlockItem(Block block) {
-		ResourceLocation registryName = ForgeRegistries.BLOCKS.getKey(block);
+		ResourceLocation registryName = BuiltInRegistries.BLOCK.getKey(block);
 
 		return registryName != null
 				&& Mineralogy.MODID.equals(registryName.getNamespace())
@@ -100,7 +102,7 @@ public class Items {
 	}
 
 	private static boolean isUnlitRockFurnace(Block block) {
-		ResourceLocation registryName = ForgeRegistries.BLOCKS.getKey(block);
+		ResourceLocation registryName = BuiltInRegistries.BLOCK.getKey(block);
 		return block instanceof RockFurnace
 				&& registryName != null
 				&& !registryName.getPath().startsWith("lit_");
@@ -114,8 +116,8 @@ public class Items {
 		return new MineralFertilizer();
 	}
 
-	private static <T extends Item> T register(IForgeRegistry<Item> registry, String path, T item) {
-		registry.register(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, path), item);
+	private static <T extends Item> T register(RegisterHelper<Item> registry, String path, T item) {
+		registry.register(new ResourceLocation(Mineralogy.MODID, path), item);
 		return item;
 	}
 

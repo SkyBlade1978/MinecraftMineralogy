@@ -1,40 +1,10 @@
 {
-    "type":  "forge:conditional",
-    "recipes":  [
-                    {
-                        "forge:condition":  {
-                                                "type":  "forge:item_exists",
-                                                "item":  "mineralogy:granite_slab"
-                                            },
-                        "recipe":  {
-                                       "type":  "minecraft:stonecutting",
-                                       "ingredient":  {
-                                                          "item":  "minecraft:granite"
-                                                      },
-                                       "result":  {
-                                                      "id":  "mineralogy:granite_slab",
-                                                      "count":  2
-                                                  }
-                                   }
-                    },
-                    {
-                        "forge:condition":  {
-                                                "type":  "forge:not",
-                                                "value":  {
-                                                              "type":  "forge:item_exists",
-                                                              "item":  "mineralogy:granite_slab"
-                                                          }
-                                            },
-                        "recipe":  {
-                                       "type":  "minecraft:stonecutting",
-                                       "ingredient":  {
-                                                          "item":  "minecraft:granite"
-                                                      },
-                                       "result":  {
-                                                      "id":  "minecraft:granite_slab",
-                                                      "count":  2
-                                                  }
-                                   }
-                    }
-                ]
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:granite"
+  },
+  "result": {
+    "id": "mineralogy:granite_slab",
+    "count": 2
+  }
 }

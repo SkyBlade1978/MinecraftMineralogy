@@ -10,8 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -21,16 +23,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.fml.common.Mod;
 import zone.moddev.mc.mineralogy.blocks.RockFurnace;
 import zone.moddev.mc.mineralogy.tileentity.TileEntityRockFurnace;
 
@@ -57,7 +59,7 @@ public final class RecipeIntegrationProbe {
     };
 
     public RecipeIntegrationProbe() {
-        MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
+        NeoForge.EVENT_BUS.addListener(this::serverStarted);
     }
 
     private void serverStarted(ServerStartedEvent event) {
@@ -67,9 +69,27 @@ public final class RecipeIntegrationProbe {
         Level level = event.getServer().overworld();
         Item basalt = requireItem("mineralogy", "basalt");
 
+        if (enabled) {
+            TagKey<Item> union = TagKey.create(net.minecraft.core.registries.Registries.ITEM,
+                    new ResourceLocation("mineralogy", "cobblestone_equivalents"));
+            Item andesite = requireItem("mineralogy", "andesite");
+            require(andesite.builtInRegistryHolder().is(union),
+                    "mineralogy:andesite is absent from the rebound cobblestone union tag");
+            require(Ingredient.of(union).test(new ItemStack(andesite)),
+                    "a fresh union-tag ingredient rejected mineralogy:andesite");
+        }
+
         verifyMiningTags();
         for (String name : RECIPE_NAMES) {
             CraftingRecipe recipe = requireCraftingRecipe(level, name);
+            if (enabled && "lever".equals(name)) {
+                Item andesite = requireItem("mineralogy", "andesite");
+                boolean ingredientAcceptsAndesite = recipe.getIngredients().stream()
+                        .anyMatch(ingredient -> ingredient.test(new ItemStack(andesite)));
+                require(ingredientAcceptsAndesite,
+                        "loaded lever ingredients reject mineralogy:andesite: "
+                                + describeIngredients(recipe));
+            }
             if (enabled) {
                 for (String rockName : LEGACY_ROCKS) {
                     Item rock = requireItem("mineralogy", rockName);
@@ -80,7 +100,7 @@ public final class RecipeIntegrationProbe {
                         Blocks.ANDESITE.asItem(), Blocks.DIORITE.asItem(),
                         Blocks.GRANITE.asItem() }) {
                     require(recipe.matches(inventory(name, nativeRock), level),
-                            name + " rejected native " + ForgeRegistries.ITEMS.getKey(nativeRock));
+                            name + " rejected native " + BuiltInRegistries.ITEM.getKey(nativeRock));
                 }
             } else {
                 require(!recipe.matches(inventory(name, basalt), level),
@@ -97,8 +117,8 @@ public final class RecipeIntegrationProbe {
 
             ItemStack result = recipe.assemble(inventory(name,
                     enabled ? basalt : Blocks.COBBLESTONE.asItem()), level.registryAccess());
-            require(expectedOutput(name).equals(ForgeRegistries.ITEMS.getKey(result.getItem())),
-                    name + " produced " + ForgeRegistries.ITEMS.getKey(result.getItem()));
+            require(expectedOutput(name).equals(BuiltInRegistries.ITEM.getKey(result.getItem())),
+                    name + " produced " + BuiltInRegistries.ITEM.getKey(result.getItem()));
             require(result.getCount() == (isTrimTemplateRecipe(name) ? 2 : expectedCount(name)),
                     name + " produced count " + result.getCount());
         }
@@ -110,14 +130,40 @@ public final class RecipeIntegrationProbe {
         event.getServer().halt(false);
     }
 
+    private static String describeIngredients(CraftingRecipe recipe) {
+        List<String> descriptions = new ArrayList<>();
+        TagKey<Item> union = TagKey.create(net.minecraft.core.registries.Registries.ITEM,
+                new ResourceLocation("mineralogy", "cobblestone_equivalents"));
+        descriptions.add("canonical=" + union + "@" + System.identityHashCode(union));
+        for (Ingredient ingredient : recipe.getIngredients()) {
+            List<String> items = new ArrayList<>();
+            for (ItemStack stack : ingredient.getItems()) {
+                items.add(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
+            }
+            List<String> values = new ArrayList<>();
+            if (!ingredient.isCustom()) {
+                for (Ingredient.Value value : ingredient.getValues()) {
+                    if (value instanceof Ingredient.TagValue tagValue) {
+                        values.add(tagValue.tag().toString() + "@"
+                                + System.identityHashCode(tagValue.tag()));
+                    } else {
+                        values.add(value.toString());
+                    }
+                }
+            }
+            descriptions.add(values + "=" + items);
+        }
+        return descriptions.toString();
+    }
+
     private static void verifyMiningTags() {
         List<String> missingPickaxeTags = new ArrayList<>();
         int mineralogyBlocks = 0;
         int expectedPickaxeBlocks = 0;
         int ironToolBlocks = 0;
         int stoneToolBlocks = 0;
-        for (Block block : ForgeRegistries.BLOCKS.getValues()) {
-            ResourceLocation id = ForgeRegistries.BLOCKS.getKey(block);
+        for (Block block : BuiltInRegistries.BLOCK) {
+            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
             if (id == null || !"mineralogy".equals(id.getNamespace())) continue;
             mineralogyBlocks++;
             String path = id.getPath();
@@ -206,8 +252,8 @@ public final class RecipeIntegrationProbe {
             CraftingRecipe slab = requireCraftingRecipe(level, family + "_slab");
             CraftingContainer slabInput = shaped(new String[] { "###" }, Map.of('#', nativeRock));
             require(slab.matches(slabInput, level), family + " slab override does not match");
-            require(ResourceLocation.fromNamespaceAndPath("mineralogy", family + "_slab").equals(
-                    ForgeRegistries.ITEMS.getKey(slab.assemble(slabInput, level.registryAccess()).getItem())),
+            require(new ResourceLocation("mineralogy", family + "_slab").equals(
+                    BuiltInRegistries.ITEM.getKey(slab.assemble(slabInput, level.registryAccess()).getItem())),
                     family + " slab override did not produce Mineralogy's slab");
 
             assertBridge(level, family + "_slab_to_vanilla",
@@ -236,7 +282,7 @@ public final class RecipeIntegrationProbe {
 
     private static void assertStonecutting(Level level, String name, Item source, Item expected) {
         RecipeHolder<?> holder = level.getRecipeManager().byKey(
-                ResourceLocation.fromNamespaceAndPath("minecraft", name)).orElseThrow(() ->
+                new ResourceLocation("minecraft", name)).orElseThrow(() ->
                         new IllegalStateException("Missing loaded stonecutting recipe minecraft:" + name));
         require(holder.value() instanceof StonecutterRecipe,
                 "minecraft:" + name + " is not a stonecutting recipe");
@@ -261,14 +307,14 @@ public final class RecipeIntegrationProbe {
         for (String name : RECIPE_NAMES) {
             if (isTrimTemplateRecipe(name)) continue;
             String category = advancementCategory(name);
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+            ResourceLocation id = new ResourceLocation(
                     "minecraft", "recipes/" + category + "/" + name);
             require(event.getServer().getAdvancements().get(id) != null,
                     "Missing loaded advancement " + id);
         }
         for (String id : new String[] { "basalt_slab", "basalt_smooth_stairs",
                 "basalt_furnace", "basalt_relief_blank", "basalt_relief_pickaxe" }) {
-            ResourceLocation advancement = ResourceLocation.fromNamespaceAndPath(
+            ResourceLocation advancement = new ResourceLocation(
                     "mineralogy", "recipes/" + id);
             require(event.getServer().getAdvancements().get(advancement) != null,
                     "Missing progressive advancement " + advancement);
@@ -281,7 +327,7 @@ public final class RecipeIntegrationProbe {
 
     private static CraftingRecipe requireCraftingRecipe(Level level, String name, String namespace) {
         RecipeHolder<?> holder = level.getRecipeManager().byKey(
-                ResourceLocation.fromNamespaceAndPath(namespace, name)).orElseThrow(() ->
+                new ResourceLocation(namespace, name)).orElseThrow(() ->
                         new IllegalStateException("Missing loaded recipe " + namespace + ':' + name));
         require(holder.value() instanceof CraftingRecipe,
                 namespace + ':' + name + " is not a crafting recipe");
@@ -399,22 +445,22 @@ public final class RecipeIntegrationProbe {
     }
 
     private static Item requireItem(String namespace, String path) {
-        Item result = ForgeRegistries.ITEMS.getValue(
-                ResourceLocation.fromNamespaceAndPath(namespace, path));
+        Item result = BuiltInRegistries.ITEM.get(
+                new ResourceLocation(namespace, path));
         if (result == null) throw new IllegalStateException("Missing item " + namespace + ':' + path);
         return result;
     }
 
     private static Block requireBlock(String namespace, String path) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(namespace, path);
-        Block block = ForgeRegistries.BLOCKS.getValue(id);
+        ResourceLocation id = new ResourceLocation(namespace, path);
+        Block block = BuiltInRegistries.BLOCK.get(id);
         require(block != null && block != Blocks.AIR, "missing block " + id);
         return block;
     }
 
     private static ResourceLocation expectedOutput(String name) {
         String path = name.startsWith("mossy_cobblestone_from_") ? "mossy_cobblestone" : name;
-        return ResourceLocation.fromNamespaceAndPath("minecraft", path);
+        return new ResourceLocation("minecraft", path);
     }
 
     private static int expectedCount(String name) {
@@ -435,7 +481,7 @@ public final class RecipeIntegrationProbe {
     }
 
     private static void writeMarker(boolean enabled, String phase) {
-        String result = "forge_recipe_manager_loaded=true\n"
+        String result = "neoforge_recipe_manager_loaded=true\n"
                 + "equivalence_enabled=" + enabled + "\n"
                 + "phase=" + phase + "\n"
                 + "covered_vanilla_recipes=19\n"
