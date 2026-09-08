@@ -44,12 +44,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 
 public class TileEntityRockFurnace extends BaseContainerBlockEntity
 		implements WorldlyContainer, RecipeCraftingHolder, StackedContentsCompatible {
@@ -79,7 +76,7 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 			return 4;
 		}
 	};
-	private LazyOptional<? extends IItemHandlerModifiable>[] handlers = createHandlers();
+	private final IItemHandlerModifiable[] handlers = createHandlers();
 	private final float fallbackBurnModifier;
 	private Component customInventoryName;
 
@@ -316,7 +313,7 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 	}
 
 	private static int getItemBurnTime(ItemStack stack) {
-		return stack.isEmpty() ? 0 : ForgeHooks.getBurnTime(stack, RecipeType.SMELTING);
+		return stack.isEmpty() ? 0 : stack.getBurnTime(RecipeType.SMELTING);
 	}
 
 	public static boolean isItemFuel(ItemStack stack) {
@@ -457,36 +454,22 @@ public class TileEntityRockFurnace extends BaseContainerBlockEntity
 		recipeUseCounts.clear();
 	}
 
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-		if (!isRemoved() && facing != null && capability == ForgeCapabilities.ITEM_HANDLER) {
-			if (facing == Direction.UP) {
-				return handlers[0].cast();
-			}
-			if (facing == Direction.DOWN) {
-				return handlers[1].cast();
-			}
-			return handlers[2].cast();
+	public IItemHandler getItemHandler(@Nullable Direction facing) {
+		if (facing == Direction.UP) {
+			return handlers[0];
 		}
-		return super.getCapability(capability, facing);
-	}
-
-	@Override
-	public void invalidateCaps() {
-		super.invalidateCaps();
-		for (LazyOptional<? extends IItemHandlerModifiable> handler : handlers) {
-			handler.invalidate();
+		if (facing == Direction.DOWN) {
+			return handlers[1];
 		}
+		return handlers[2];
 	}
 
-	@Override
-	public void reviveCaps() {
-		super.reviveCaps();
-		handlers = createHandlers();
-	}
-
-	private LazyOptional<? extends IItemHandlerModifiable>[] createHandlers() {
-		return SidedInvWrapper.create(this, Direction.UP, Direction.DOWN, Direction.NORTH);
+	private IItemHandlerModifiable[] createHandlers() {
+		return new IItemHandlerModifiable[] {
+				new SidedInvWrapper(this, Direction.UP),
+				new SidedInvWrapper(this, Direction.DOWN),
+				new SidedInvWrapper(this, Direction.NORTH)
+		};
 	}
 
 	private float getBurnModifier() {

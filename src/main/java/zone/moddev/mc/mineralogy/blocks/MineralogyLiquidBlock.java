@@ -20,11 +20,8 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 
 public class MineralogyLiquidBlock extends LiquidBlock {
-	private final Supplier<? extends FlowingFluid> fluidSupplier;
-
 	public MineralogyLiquidBlock(Supplier<? extends FlowingFluid> fluid, BlockBehaviour.Properties properties) {
-		super(fluid, properties);
-		this.fluidSupplier = fluid;
+		super(fluid.get(), properties);
 	}
 
 	@Override
@@ -34,7 +31,7 @@ public class MineralogyLiquidBlock extends LiquidBlock {
 
 	@Override
 	public boolean skipRendering(BlockState state, BlockState adjacentState, Direction direction) {
-		return adjacentState.getFluidState().getType().isSame(getFluid());
+		return adjacentState.getFluidState().getType().isSame(fluid);
 	}
 
 	@Override
@@ -61,22 +58,17 @@ public class MineralogyLiquidBlock extends LiquidBlock {
 	public ItemStack pickupBlock(Player player, LevelAccessor world, BlockPos pos, BlockState state) {
 		if (state.getValue(LEVEL) == 0) {
 			world.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
-			return new ItemStack(getFluid().getBucket());
+			return new ItemStack(fluid.getBucket());
 		}
 		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public Optional<SoundEvent> getPickupSound() {
-		return getFluid().getPickupSound();
-	}
-
-	@Override
-	public FlowingFluid getFluid() {
-		return fluidSupplier.get();
+		return fluid.getPickupSound();
 	}
 
 	private void scheduleFluidTick(LevelAccessor world, BlockPos pos, BlockState state) {
-		world.scheduleTick(pos, state.getFluidState().getType(), getFluid().getTickDelay(world));
+		world.scheduleTick(pos, state.getFluidState().getType(), fluid.getTickDelay(world));
 	}
 }

@@ -1,22 +1,18 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:gneiss_brick"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/gneiss"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:gneiss_brick",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": {
+      "tag": "mineralogy:stones/gneiss"
+    }
+  },
+  "result": {
+    "id": "mineralogy:gneiss_brick",
+    "count": 4
+  },
+  "show_notification": true
 }

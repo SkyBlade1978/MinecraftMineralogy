@@ -1,29 +1,25 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:novaculite_relief_hammer"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "zxz",
-                    "zyz",
-                    "zzz"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:novaculite_smooth"
-                      },
-                "y":  {
-                          "item":  "minecraft:stick"
-                      },
-                "z":  {
-                          "item":  "mineralogy:novaculite_relief_blank"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:novaculite_relief_hammer",
-                   "count":  7
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "zxz",
+    "zyz",
+    "zzz"
+  ],
+  "key": {
+    "x": {
+      "item": "mineralogy:novaculite_smooth"
+    },
+    "y": {
+      "item": "minecraft:stick"
+    },
+    "z": {
+      "item": "mineralogy:novaculite_relief_blank"
+    }
+  },
+  "result": {
+    "id": "mineralogy:novaculite_relief_hammer",
+    "count": 7
+  },
+  "show_notification": true
 }

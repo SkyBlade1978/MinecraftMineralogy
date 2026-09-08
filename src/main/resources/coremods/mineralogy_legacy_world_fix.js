@@ -1,5 +1,5 @@
 var Opcodes = Java.type('org.objectweb.asm.Opcodes');
-var ASMAPI = Java.type('net.minecraftforge.coremod.api.ASMAPI');
+var ASMAPI = Java.type('net.neoforged.coremod.api.ASMAPI');
 var InsnList = Java.type('org.objectweb.asm.tree.InsnList');
 var IntInsnNode = Java.type('org.objectweb.asm.tree.IntInsnNode');
 var InsnNode = Java.type('org.objectweb.asm.tree.InsnNode');
@@ -56,12 +56,12 @@ function initializeCoreMod() {
         'mineralogy_legacy_level_registry': {
             'target': {
                 'type': 'CLASS',
-                'name': 'net.minecraftforge.common.ForgeHooks'
+                'name': 'net.neoforged.neoforge.common.CommonHooks'
             },
             'transformer': function(classNode) {
                 for (var methodIndex = 0; methodIndex < classNode.methods.size(); ++methodIndex) {
                     var method = classNode.methods.get(methodIndex);
-                    if (method.desc !== '(Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;Lnet/minecraft/world/level/storage/LevelStorageSource$LevelDirectory;)V') {
+                    if (method.desc !== '(Lnet/minecraft/nbt/CompoundTag;Lnet/minecraft/world/level/storage/LevelStorageSource$LevelDirectory;)V') {
                         continue;
                     }
                     var prefix = new InsnList();
@@ -71,7 +71,7 @@ function initializeCoreMod() {
                             Opcodes.INVOKESTATIC,
                             'zone/moddev/mc/mineralogy/patching/LegacyWorldDataHook',
                             'captureLegacyLevelData',
-                            '(Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;Lnet/minecraft/world/level/storage/LevelStorageSource$LevelDirectory;)V',
+                            '(Lnet/minecraft/nbt/CompoundTag;Lnet/minecraft/world/level/storage/LevelStorageSource$LevelDirectory;)V',
                             false));
                     method.instructions.insert(prefix);
                 }

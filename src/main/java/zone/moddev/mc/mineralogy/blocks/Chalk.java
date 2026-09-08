@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootParams.Builder;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class Chalk extends Rock {
 	public Chalk() {
@@ -24,7 +24,7 @@ public class Chalk extends Rock {
 			return Collections.singletonList(new ItemStack(this));
 		}
 
-		Item dust = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "chalk_dust"));
+		Item dust = BuiltInRegistries.ITEM.get(new ResourceLocation(Mineralogy.MODID, "chalk_dust"));
 		if (dust != null) {
 			return Collections.singletonList(new ItemStack(dust, 4));
 		}

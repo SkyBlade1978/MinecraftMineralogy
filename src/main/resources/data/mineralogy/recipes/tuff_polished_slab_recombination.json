@@ -1,29 +1,16 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:tuff_smooth_slab"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:tuff_smooth"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:tuff_smooth_slab"
-                        },
-                        {
-                            "item":  "mineralogy:tuff_smooth_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:tuff_smooth",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "mineralogy:tuff_smooth_slab"
+    },
+    {
+      "item": "mineralogy:tuff_smooth_slab"
+    }
+  ],
+  "result": {
+    "id": "mineralogy:tuff_smooth",
+    "count": 1
+  }
 }

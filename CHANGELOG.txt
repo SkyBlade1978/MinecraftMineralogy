@@ -1,4 +1,15 @@
-Mineralogy 6.1.2.120061 for Minecraft 1.20.6
+Mineralogy 6.1.2.120062 for Minecraft 1.20.6 NeoForge
+
+- Added the first NeoForge Mineralogy baseline while retaining gameplay,
+  world, registry, configuration, migration, recipe, documentation, relief,
+  mining-tag, and furnace-state parity with the accepted Forge 1.20.6 release.
+- Replaced Forge loader wiring with NeoForge 20.6 events, registries,
+  capabilities, fluids, conditions, metadata, NeoGradle builds, and isolated
+  CI. Forge and NeoForge artifacts remain deliberately separate.
+- Made `c:` the canonical interoperability namespace while retaining narrow
+  `forge:` aliases for historical consumers. Configurable vanilla recipes use
+  dynamically rebound union tags in both modes; optional Mineralogy recipes
+  use top-level `neoforge:conditions`.
 
 - Updated all pickaxe and harvest-tier tags to the supported optional
   tag-entry object format. This restores normal mining speed and drops for all
@@ -7,7 +18,7 @@ Mineralogy 6.1.2.120061 for Minecraft 1.20.6
   before reattaching it during lit/unlit transitions, preventing stale chunk
   state while preserving fuel, contents, and progress.
 - Delegated terrain, strata, ore, and covered fluid-deposit generation to the
-  released OreSpawn 4.0.16.120061 provider engine, retaining the supported
+  released OreSpawn 4.0.16.120062 provider engine, retaining the supported
   `[4.0.6,5.0.0)` range; removed Mineralogy's parallel
   geology, geome, ore, noise, and stone-replacement generators.
 - Preserved all world-facing registry, tile, NBT, recipe, asset, patch, and
@@ -15,7 +26,7 @@ Mineralogy 6.1.2.120061 for Minecraft 1.20.6
   zone.moddev.mc.mineralogy. Existing 1.10/1.12 chunks are protected during
   1.20.6's flattening conversion. Legacy rock-furnace IDs are established
   before Mojang data fixing, then all pre-namespaced tile IDs are made safe
-  before Forge constructs tile entities, so inventories and progress survive
+  before NeoForge constructs block entities, so inventories and progress survive
   and an uppercase vanilla ID cannot abort the complete chunk load.
   Legacy state tables now support the complete 12-bit mod block-ID range in
   both development and packaged runtimes, and each selected save reinstalls
@@ -30,9 +41,9 @@ Mineralogy 6.1.2.120061 for Minecraft 1.20.6
   mounted on floors, walls, or ceilings.
 - Made the historical `COBBLESTONE_EQUIVILENT` option functional through
   target-native per-family block and item tags, including vanilla aliases,
-  reapplied after data reloads by updating the exact immutable tag objects
-  retained by already-parsed Forge 50 recipe ingredients. Chert and pumice
-  remain unconditional cobblestone equivalents.
+  reapplied after data reloads by rebinding the canonical tag sets and clearing
+  the caches held by already-parsed NeoForge 20.6 recipe ingredients. Chert and
+  pumice remain unconditional cobblestone equivalents.
 - Added isolated Mineralogy crude-oil source and flowing fluids, block, bucket,
   rendering resources, and the covered Ocean deposit declaration.
 - Uses Minecraft 1.20.6's native granite, diorite, andesite, basalt, and tuff for
@@ -64,19 +75,19 @@ Mineralogy 6.1.2.120061 for Minecraft 1.20.6
 - Extended Minecraft 1.20.6's native stone crafting and tool-material tags so
   every enabled cobblestone equivalent, including all 27 legacy rock families
   and target-native aliases, works in the complete vanilla contract. Nineteen
-  conditional JSON overrides cover furnaces, brewing stands, redstone and
+  JSON overrides backed by dynamically rebound tags cover furnaces, brewing stands, redstone and
   conversion recipes, and all stone tools without changing their IDs,
   patterns, outputs or other ingredients. Disabled mode restores the native
   ingredients and keeps blackstone, chert and pumice valid. Matching-slab
   rock-furnace upgrades and vanilla cobblestone construction recipes remain
   distinct.
-- Added conditional overrides for the coast, sentry, and vex armor-trim
+- Added configurable tag-backed overrides for the coast, sentry, and vex armor-trim
   template duplication recipes. Enabled mode accepts the Mineralogy
   cobblestone union; disabled mode restores exact vanilla cobblestone. Their
   existing template-owned advancements remain untouched.
 - Added `sends_telemetry_event: false` to every generated recipe advancement,
-  including all conditional Minecraft advancement branches.
-- Prevented Forge 50 from silently reducing optional carbon- or coal-dust
+  including every overridden Minecraft advancement.
+- Prevented NeoForge 20.6 from silently reducing optional carbon- or coal-dust
   gunpowder recipes to nitrate plus sulfur when their compatibility tag is
   empty; every loaded gunpowder recipe now requires all three components.
 - Added 17 reviewed UTF-8 JSON locales with the same 938 ordered keys, including
@@ -84,7 +95,7 @@ Mineralogy 6.1.2.120061 for Minecraft 1.20.6
   Russian.
 - Added first-start player, developer, content, provider, and version guides,
   plus an exact provider example. Existing exported guides are never
-  overwritten. Forge 50 Eclipse launches keep their required merged
+  overwritten. NeoGradle Eclipse launches keep their required processed
   `bin/main` mod output; if Eclipse removes Gradle's staged guide copies, the
   exporter reads the authoritative source-checkout guides without weakening
   packaged-jar validation.
@@ -100,10 +111,10 @@ Mineralogy 6.1.2.120061 for Minecraft 1.20.6
   loot tables, fluid APIs, rendering setup, and pack format 32 resources.
 - Added reproducible Java 21 main, sources, and Javadoc artifacts, exact released
   OreSpawn dependency verification, guarded 1.20.6 CI, and the four-component
-  release tag `6.1.2.120061`.
-- Kept ForgeGradle 7 while sealing Forge 50's audited zero-repair Mavenizer
-  fixture by SHA-256. The build-only tool runs on Java 25; Mineralogy compiles
-  and ships exclusively as Java 21, and release audits reject fixture leakage.
+  release tag `6.1.2.120062`.
+- Adopted NeoGradle 7.1.38 and Gradle 9.2.1 on the pinned Java 21 toolchain.
+  The NeoForge build no longer carries ForgeGradle's Mavenizer or auxiliary
+  Java 8/25 toolchains, and release audits reject fixture leakage.
 - Isolated CI's verified OreSpawn artifact in an exclusive Gradle repository so
   dependency resolution cannot fall through to an unverified public copy.
   Release verification also enforces Maven coordinate

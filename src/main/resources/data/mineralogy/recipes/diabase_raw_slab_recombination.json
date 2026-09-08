@@ -1,29 +1,16 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:diabase_slab"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:diabase"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:diabase_slab"
-                        },
-                        {
-                            "item":  "mineralogy:diabase_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:diabase",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "mineralogy:diabase_slab"
+    },
+    {
+      "item": "mineralogy:diabase_slab"
+    }
+  ],
+  "result": {
+    "id": "mineralogy:diabase",
+    "count": 1
+  }
 }

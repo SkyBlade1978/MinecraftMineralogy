@@ -1,29 +1,16 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:conglomerate_slab"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:conglomerate"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:conglomerate_slab"
-                        },
-                        {
-                            "item":  "mineralogy:conglomerate_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:conglomerate",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "mineralogy:conglomerate_slab"
+    },
+    {
+      "item": "mineralogy:conglomerate_slab"
+    }
+  ],
+  "result": {
+    "id": "mineralogy:conglomerate",
+    "count": 1
+  }
 }

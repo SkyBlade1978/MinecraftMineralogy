@@ -21,9 +21,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 /**
- * Checks generated recipe branches before the loader-side recipe-manager smoke.
- * Forge 50's component and condition registries are deliberately unavailable to
- * a plain JUnit VM, so real codec loading and matching are exercised in Forge.
+ * Checks generated recipe data before the loader-side recipe-manager smoke.
+ * NeoForge's component and condition registries are deliberately unavailable to
+ * a plain JUnit VM, so real codec loading and matching are exercised in NeoForge.
  */
 public class NativeRecipeManagerTest {
     private static final File RECIPE_ROOT = new File("src/main/resources/data/minecraft/recipes");
@@ -34,7 +34,7 @@ public class NativeRecipeManagerTest {
     public void enabledBranchesUseExpandedMaterialsForEveryCoveredVanillaRecipe()
             throws Exception {
         for (String name : recipeNames()) {
-            JsonObject recipe = selectedRecipe(json(new File(RECIPE_ROOT, name + ".json")), true);
+            JsonObject recipe = json(new File(RECIPE_ROOT, name + ".json"));
             assertNotNull(name, recipe);
             assertTrue(name, containsIngredient(recipe, enabledMaterial(name)));
             assertEquals(name, expectedOutput(name), recipe.getAsJsonObject("result")
@@ -45,21 +45,21 @@ public class NativeRecipeManagerTest {
     }
 
     @Test
-    public void disabledBranchesRetainExactTargetNativeMaterials() throws Exception {
+    public void stableRecipesUseTagsWhoseDisabledMembershipIsReboundAtRuntime() throws Exception {
         for (String name : recipeNames()) {
-            JsonObject recipe = selectedRecipe(json(new File(RECIPE_ROOT, name + ".json")), false);
+            JsonObject recipe = json(new File(RECIPE_ROOT, name + ".json"));
             assertNotNull(name, recipe);
-            assertTrue(name, containsIngredient(recipe, disabledMaterial(name)));
-            assertFalse(name, containsIngredient(recipe, enabledMaterial(name)));
+            assertTrue(name, containsIngredient(recipe, enabledMaterial(name)));
             assertEquals(name, expectedOutput(name), recipe.getAsJsonObject("result")
                     .get("id").getAsString());
         }
 
-        assertCompositeTag("cobblestone_equivalents", "#forge:cobblestone");
+        assertCompositeTag("cobblestone_equivalents", "#c:cobblestones");
         assertCompositeTag("stone_crafting_materials", "#minecraft:stone_crafting_materials");
         assertCompositeTag("stone_tool_materials", "#minecraft:stone_tool_materials");
-        assertTagContains("data/forge/tags/items/cobblestone.json",
+        assertTagContains("data/c/tags/items/cobblestones.json",
                 "mineralogy:chert", "mineralogy:pumice");
+        assertTagContains("data/forge/tags/items/cobblestone.json", "#c:cobblestones");
     }
 
     @Test
@@ -88,31 +88,7 @@ public class NativeRecipeManagerTest {
                 .getAsJsonObject().get("item").getAsString());
         assertEquals(name, result, recipe.getAsJsonObject("result").get("id").getAsString());
         assertEquals(name, 1, resultCount(recipe));
-        JsonObject condition = recipe.getAsJsonObject("forge:condition");
-        assertEquals(name, "forge:and", condition.get("type").getAsString());
-        assertEquals(name, 2, condition.getAsJsonArray("values").size());
-    }
-
-    private static JsonObject selectedRecipe(JsonObject wrapper, boolean enabled) {
-        for (JsonElement element : wrapper.getAsJsonArray("recipes")) {
-            JsonObject branch = element.getAsJsonObject();
-            if (conditionMatches(branch.getAsJsonObject("forge:condition"), enabled)) {
-                return branch.getAsJsonObject("recipe");
-            }
-        }
-        return null;
-    }
-
-    private static boolean conditionMatches(JsonObject condition, boolean enabled) {
-        String type = condition.get("type").getAsString();
-        if ("mineralogy:config".equals(type)) {
-            assertEquals("COBBLESTONE_EQUIVILENT", condition.get("flag").getAsString());
-            return enabled;
-        }
-        if ("forge:not".equals(type)) {
-            return !conditionMatches(condition.getAsJsonObject("value"), enabled);
-        }
-        throw new AssertionError("Unexpected recipe condition " + type);
+        assertFalse(name, recipe.has("neoforge:conditions"));
     }
 
     private static String enabledMaterial(String name) {
@@ -123,17 +99,6 @@ public class NativeRecipeManagerTest {
             return "#mineralogy:stone_tool_materials";
         }
         return "#mineralogy:cobblestone_equivalents";
-    }
-
-    private static String disabledMaterial(String name) {
-        if ("furnace".equals(name) || "brewing_stand".equals(name)) {
-            return "#minecraft:stone_crafting_materials";
-        }
-        if (name.startsWith("stone_") || "stone_sword".equals(name)) {
-            return "#minecraft:stone_tool_materials";
-        }
-        if (isTrimTemplateRecipe(name)) return "minecraft:cobblestone";
-        return "#forge:cobblestone";
     }
 
     private static boolean containsIngredient(JsonElement element, String wanted) {

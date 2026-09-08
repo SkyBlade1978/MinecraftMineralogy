@@ -1,4 +1,4 @@
 {
-  "loader": "forge:fluid_container",
+  "loader": "neoforge:fluid_container",
   "fluid": "mineralogy:crude_oil"
 }

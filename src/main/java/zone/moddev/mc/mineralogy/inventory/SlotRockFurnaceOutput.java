@@ -15,7 +15,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.event.EventHooks;
 
 public class SlotRockFurnaceOutput extends Slot {
 	private final Player player;
@@ -65,7 +65,7 @@ public class SlotRockFurnaceOutput extends Slot {
 		}
 
 		removeCount = 0;
-		ForgeEventFactory.firePlayerSmeltedEvent(player, stack);
+		EventHooks.firePlayerSmeltedEvent(player, stack);
 	}
 
 	private void spawnExperience() {

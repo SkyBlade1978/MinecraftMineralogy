@@ -1,41 +1,37 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:gabbro_relief_axe"
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:gabbro_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:gabbro_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:gabbro_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:gabbro_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:gabbro_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:gabbro_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:gabbro_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:gabbro_relief_blank"
-                        },
-                        {
-                            "item":  "minecraft:stone_axe"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:gabbro_relief_axe",
-                   "count":  8
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "mineralogy:gabbro_relief_blank"
+    },
+    {
+      "item": "mineralogy:gabbro_relief_blank"
+    },
+    {
+      "item": "mineralogy:gabbro_relief_blank"
+    },
+    {
+      "item": "mineralogy:gabbro_relief_blank"
+    },
+    {
+      "item": "mineralogy:gabbro_relief_blank"
+    },
+    {
+      "item": "mineralogy:gabbro_relief_blank"
+    },
+    {
+      "item": "mineralogy:gabbro_relief_blank"
+    },
+    {
+      "item": "mineralogy:gabbro_relief_blank"
+    },
+    {
+      "item": "minecraft:stone_axe"
+    }
+  ],
+  "result": {
+    "id": "mineralogy:gabbro_relief_axe",
+    "count": 8
+  }
 }
