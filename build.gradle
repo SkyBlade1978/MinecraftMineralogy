@@ -225,7 +225,15 @@ configurations {
 }
 
 dependencies {
-    implementation minecraft.dependency("net.minecraftforge:forge:${project.mc_version}-${project.forge_version}")
+    implementation(minecraft.dependency("net.minecraftforge:forge:${project.mc_version}-${project.forge_version}")) {
+        // Forge 65 exposes mixinextras-common only for compilation and embeds
+        // the complete MixinExtras runtime in mixinextras-forge. Buildship
+        // otherwise places both jars on an Eclipse launch module path, where
+        // their shared packages fail Java 25 module resolution before Forge
+        // starts. Mineralogy uses Sponge Mixin only, so the common annotation
+        // artifact is unnecessary here.
+        exclude group: 'io.github.llamalad7', module: 'mixinextras-common'
+    }
     // Forge 65 uses official names in both development and production, so the
     // exact released OreSpawn artifact is suitable for ordinary runtime use.
     runtimeOnly "curse.maven:mmd-orespawn-${project.orespawn_curse_project_id}:${project.orespawn_curse_file_id}"
@@ -1378,15 +1386,15 @@ tasks.register('verifyEclipseProductionClasspath') {
                 }
             }
         }
-        Set<String> eclipseMixinExtras = configurations.runtimeClasspath.resolvedConfiguration
+        Set<String> eclipseMixinExtras = configurations.compileClasspath.resolvedConfiguration
                 .resolvedArtifacts
                 .findAll { it.moduleVersion.id.group == 'io.github.llamalad7'
                         && it.name.startsWith('mixinextras-') }
                 .collect { "${it.moduleVersion.id.group}:${it.name}:${it.moduleVersion.id.version}" }
                 .toSet()
-        if (eclipseMixinExtras != ['io.github.llamalad7:mixinextras-forge:0.5.4'] as Set) {
+        if (eclipseMixinExtras.any { it.startsWith('io.github.llamalad7:mixinextras-common:') }) {
             throw new GradleException(
-                    "Forge 65 runtime must contain exactly one MixinExtras module: ${eclipseMixinExtras}")
+                    "Eclipse production classpath contains duplicate MixinExtras common module: ${eclipseMixinExtras}")
         }
         ['runClient.launch', 'runServer.launch'].each { name ->
             String launch = file(name).getText('UTF-8')

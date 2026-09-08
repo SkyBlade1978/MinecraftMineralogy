@@ -132,9 +132,9 @@ public class WorkflowContractTest {
         assertTrue(build.contains("Eclipse must use processed production resources"));
         assertTrue(build.contains("defaultOutputDir = file('bin/default')"));
         assertTrue(build.contains("Eclipse outputs must be disjoint bin/default, bin/main and bin/test"));
-        assertFalse(build.contains("exclude group: 'io.github.llamalad7', module: 'mixinextras-common'"));
-        assertTrue(build.contains("mixinextras-forge:0.5.4"));
-        assertTrue(build.contains("Forge 65 runtime must contain exactly one MixinExtras module"));
+        assertTrue(build.contains("exclude group: 'io.github.llamalad7', module: 'mixinextras-common'"));
+        assertTrue(build.contains("configurations.compileClasspath.resolvedConfiguration"));
+        assertTrue(build.contains("Eclipse production classpath contains duplicate MixinExtras common module"));
     }
 
     private static String text(String path) throws Exception {
