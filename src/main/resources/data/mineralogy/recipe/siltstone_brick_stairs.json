@@ -1,0 +1,19 @@
+{
+    "type":  "minecraft:crafting_shaped",
+    "category":  "building",
+    "pattern":  [
+                    "x  ",
+                    "xx ",
+                    "xxx"
+                ],
+    "key":  {
+                "x":  {
+                          "tag":  "mineralogy:stones/siltstone/brick"
+                      }
+            },
+    "result":  {
+                   "id":  "mineralogy:siltstone_brick_stairs",
+                   "count":  4
+               },
+    "show_notification":  true
+}

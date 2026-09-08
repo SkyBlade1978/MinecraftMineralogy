@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:gabbro_relief_left"
+                        },
+                        {
+                            "item":  "mineralogy:gabbro_relief_left"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:gabbro_relief_right",
+                   "count":  2
+               }
+}

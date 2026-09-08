@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:schist_smooth_slab"
+                        },
+                        {
+                            "item":  "mineralogy:schist_smooth_slab"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:schist_smooth",
+                   "count":  1
+               }
+}

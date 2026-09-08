@@ -1,0 +1,37 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:amphibolite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:amphibolite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:amphibolite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:amphibolite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:amphibolite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:amphibolite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:amphibolite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:amphibolite_relief_blank"
+                        },
+                        {
+                            "item":  "minecraft:stone_axe"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:amphibolite_relief_axe",
+                   "count":  8
+               }
+}

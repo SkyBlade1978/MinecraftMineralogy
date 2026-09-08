@@ -1,0 +1,19 @@
+{
+    "type":  "minecraft:crafting_shaped",
+    "category":  "building",
+    "pattern":  [
+                    "x  ",
+                    " x ",
+                    "  x"
+                ],
+    "key":  {
+                "x":  {
+                          "item":  "mineralogy:hornfels_relief_blank"
+                      }
+            },
+    "result":  {
+                   "id":  "mineralogy:hornfels_relief_left",
+                   "count":  3
+               },
+    "show_notification":  true
+}

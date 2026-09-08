@@ -79,9 +79,9 @@ public final class HistoricalOilCompatibilityProbe {
         Item mineralogyBucket = requireItem("mineralogy", "crude_oil_bucket");
         Item historicalBucket = requireItem(MODID, "crude_oil_bucket");
         TagKey<Fluid> oilTag = TagKey.create(Registries.FLUID,
-                new ResourceLocation("c", "crude_oil"));
+                ResourceLocation.fromNamespaceAndPath("c", "crude_oil"));
         TagKey<Item> bucketTag = TagKey.create(Registries.ITEM,
-                new ResourceLocation("c", "buckets/crude_oil"));
+                ResourceLocation.fromNamespaceAndPath("c", "buckets/crude_oil"));
 
         boolean distinctFluids = mineralogy != historical;
         boolean distinctBuckets = mineralogyBucket != historicalBucket;
@@ -90,7 +90,9 @@ public final class HistoricalOilCompatibilityProbe {
         boolean additiveBucketTag = new ItemStack(mineralogyBucket).is(bucketTag)
                 && new ItemStack(historicalBucket).is(bucketTag);
         if (!distinctFluids || !distinctBuckets || !additiveFluidTag || !additiveBucketTag) {
-            throw new IllegalStateException("Historical crude-oil coexistence contract failed");
+            throw new IllegalStateException("Historical crude-oil coexistence contract failed: distinctFluids="
+                    + distinctFluids + ", distinctBuckets=" + distinctBuckets + ", additiveFluidTag="
+                    + additiveFluidTag + ", additiveBucketTag=" + additiveBucketTag);
         }
 
         String result = "mineralogy_fluid=mineralogy:crude_oil\n"
@@ -107,11 +109,12 @@ public final class HistoricalOilCompatibilityProbe {
         } catch (IOException exception) {
             throw new IllegalStateException("Could not write oil compatibility marker", exception);
         }
+        event.getServer().halt(false);
     }
 
     private static Fluid requireFluid(String namespace, String path) {
         Fluid result = BuiltInRegistries.FLUID.get(
-                new ResourceLocation(namespace, path));
+                ResourceLocation.fromNamespaceAndPath(namespace, path));
         if (result == null) {
             throw new IllegalStateException("Missing fluid " + namespace + ':' + path);
         }
@@ -120,7 +123,7 @@ public final class HistoricalOilCompatibilityProbe {
 
     private static Item requireItem(String namespace, String path) {
         Item result = BuiltInRegistries.ITEM.get(
-                new ResourceLocation(namespace, path));
+                ResourceLocation.fromNamespaceAndPath(namespace, path));
         if (result == null) {
             throw new IllegalStateException("Missing item " + namespace + ':' + path);
         }

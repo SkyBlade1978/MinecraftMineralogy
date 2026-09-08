@@ -1,0 +1,18 @@
+{
+    "type":  "minecraft:crafting_shaped",
+    "category":  "building",
+    "pattern":  [
+                    "xxx",
+                    "xxx"
+                ],
+    "key":  {
+                "x":  {
+                          "tag":  "mineralogy:stones/dolomite/smooth_brick"
+                      }
+            },
+    "result":  {
+                   "id":  "mineralogy:dolomite_smooth_brick_wall",
+                   "count":  6
+               },
+    "show_notification":  true
+}

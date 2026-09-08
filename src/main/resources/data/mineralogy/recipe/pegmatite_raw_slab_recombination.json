@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:pegmatite_slab"
+                        },
+                        {
+                            "item":  "mineralogy:pegmatite_slab"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:pegmatite",
+                   "count":  1
+               }
+}

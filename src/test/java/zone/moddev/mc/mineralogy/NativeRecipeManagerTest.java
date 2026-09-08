@@ -26,9 +26,9 @@ import com.google.gson.JsonParser;
  * a plain JUnit VM, so real codec loading and matching are exercised in NeoForge.
  */
 public class NativeRecipeManagerTest {
-    private static final File RECIPE_ROOT = new File("src/main/resources/data/minecraft/recipes");
+    private static final File RECIPE_ROOT = new File("src/main/resources/data/minecraft/recipe");
     private static final File MINERALOGY_RECIPE_ROOT = new File(
-            "src/main/resources/data/mineralogy/recipes");
+            "src/main/resources/data/mineralogy/recipe");
 
     @Test
     public void enabledBranchesUseExpandedMaterialsForEveryCoveredVanillaRecipe()
@@ -57,9 +57,9 @@ public class NativeRecipeManagerTest {
         assertCompositeTag("cobblestone_equivalents", "#c:cobblestones");
         assertCompositeTag("stone_crafting_materials", "#minecraft:stone_crafting_materials");
         assertCompositeTag("stone_tool_materials", "#minecraft:stone_tool_materials");
-        assertTagContains("data/c/tags/items/cobblestones.json",
+        assertTagContains("data/c/tags/item/cobblestones.json",
                 "mineralogy:chert", "mineralogy:pumice");
-        assertTagContains("data/forge/tags/items/cobblestone.json", "#c:cobblestones");
+        assertTagContains("data/forge/tags/item/cobblestone.json", "#c:cobblestones");
     }
 
     @Test
@@ -77,6 +77,18 @@ public class NativeRecipeManagerTest {
                     "minecraft:polished_" + family + "_slab",
                     "mineralogy:" + family + "_smooth_slab");
         }
+        assertSlabConversion("tuff_slab_to_vanilla",
+                "mineralogy:tuff_slab", "minecraft:tuff_slab");
+        assertSlabConversion("tuff_slab_from_vanilla",
+                "minecraft:tuff_slab", "mineralogy:tuff_slab");
+        assertSlabConversion("tuff_smooth_slab_to_vanilla",
+                "mineralogy:tuff_smooth_slab", "minecraft:polished_tuff_slab");
+        assertSlabConversion("tuff_smooth_slab_from_vanilla",
+                "minecraft:polished_tuff_slab", "mineralogy:tuff_smooth_slab");
+        assertSlabConversion("tuff_brick_slab_to_vanilla",
+                "mineralogy:tuff_brick_slab", "minecraft:tuff_brick_slab");
+        assertSlabConversion("tuff_brick_slab_from_vanilla",
+                "minecraft:tuff_brick_slab", "mineralogy:tuff_brick_slab");
     }
 
     private static void assertSlabConversion(String name, String source, String result)
@@ -137,7 +149,7 @@ public class NativeRecipeManagerTest {
     }
 
     private static void assertCompositeTag(String name, String base) throws Exception {
-        JsonArray values = json(new File("src/main/resources/data/mineralogy/tags/items/"
+        JsonArray values = json(new File("src/main/resources/data/mineralogy/tags/item/"
                 + name + ".json")).getAsJsonArray("values");
         assertEquals(name, 28, values.size());
         assertEquals(name, base, values.get(0).getAsString());

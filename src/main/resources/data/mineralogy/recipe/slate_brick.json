@@ -1,0 +1,18 @@
+{
+    "type":  "minecraft:crafting_shaped",
+    "category":  "building",
+    "pattern":  [
+                    "xx",
+                    "xx"
+                ],
+    "key":  {
+                "x":  {
+                          "tag":  "mineralogy:stones/slate"
+                      }
+            },
+    "result":  {
+                   "id":  "mineralogy:slate_brick",
+                   "count":  4
+               },
+    "show_notification":  true
+}

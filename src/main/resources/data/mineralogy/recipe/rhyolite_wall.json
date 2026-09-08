@@ -1,0 +1,18 @@
+{
+    "type":  "minecraft:crafting_shaped",
+    "category":  "building",
+    "pattern":  [
+                    "xxx",
+                    "xxx"
+                ],
+    "key":  {
+                "x":  {
+                          "tag":  "mineralogy:stones/rhyolite"
+                      }
+            },
+    "result":  {
+                   "id":  "mineralogy:rhyolite_wall",
+                   "count":  6
+               },
+    "show_notification":  true
+}

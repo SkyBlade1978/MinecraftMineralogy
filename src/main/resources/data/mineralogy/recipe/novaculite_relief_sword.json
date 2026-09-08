@@ -1,0 +1,37 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:novaculite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:novaculite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:novaculite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:novaculite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:novaculite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:novaculite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:novaculite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:novaculite_relief_blank"
+                        },
+                        {
+                            "item":  "minecraft:stone_sword"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:novaculite_relief_sword",
+                   "count":  8
+               }
+}

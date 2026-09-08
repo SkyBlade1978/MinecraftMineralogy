@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:gabbro_slab"
+                        },
+                        {
+                            "item":  "mineralogy:gabbro_slab"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:gabbro",
+                   "count":  1
+               }
+}

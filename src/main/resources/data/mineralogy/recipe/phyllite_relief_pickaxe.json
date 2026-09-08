@@ -1,0 +1,37 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:phyllite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:phyllite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:phyllite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:phyllite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:phyllite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:phyllite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:phyllite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:phyllite_relief_blank"
+                        },
+                        {
+                            "item":  "minecraft:stone_pickaxe"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:phyllite_relief_pickaxe",
+                   "count":  8
+               }
+}

@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:quartzite_smooth_slab"
+                        },
+                        {
+                            "item":  "mineralogy:quartzite_smooth_slab"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:quartzite_smooth",
+                   "count":  1
+               }
+}

@@ -1,0 +1,37 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:hornfels_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:hornfels_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:hornfels_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:hornfels_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:hornfels_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:hornfels_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:hornfels_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:hornfels_relief_blank"
+                        },
+                        {
+                            "item":  "minecraft:stone_sword"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:hornfels_relief_sword",
+                   "count":  8
+               }
+}
