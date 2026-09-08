@@ -43,7 +43,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootParams.Builder;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class RockFurnace extends BaseEntityBlock implements NamedMineralogyBlock {
 	public static final net.minecraft.world.level.block.state.properties.DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
@@ -242,7 +242,7 @@ public class RockFurnace extends BaseEntityBlock implements NamedMineralogyBlock
 	}
 
 	private static Block getStateBlock(Block block, boolean active) {
-		ResourceLocation name = ForgeRegistries.BLOCKS.getKey(block);
+		ResourceLocation name = BuiltInRegistries.BLOCK.getKey(block);
 		if (name == null) {
 			return block;
 		}
@@ -254,7 +254,7 @@ public class RockFurnace extends BaseEntityBlock implements NamedMineralogyBlock
 			path = path.substring(4);
 		}
 
-		Block stateBlock = ForgeRegistries.BLOCKS.getValue(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, path));
+		Block stateBlock = BuiltInRegistries.BLOCK.get(new ResourceLocation(Mineralogy.MODID, path));
 		return stateBlock == null ? block : stateBlock;
 	}
 

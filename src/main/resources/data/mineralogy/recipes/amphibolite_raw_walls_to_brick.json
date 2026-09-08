@@ -1,31 +1,18 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:amphibolite_wall"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:amphibolite_brick_wall"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:amphibolite_wall"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:amphibolite_brick_wall",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": {
+      "item": "mineralogy:amphibolite_wall"
+    }
+  },
+  "result": {
+    "id": "mineralogy:amphibolite_brick_wall",
+    "count": 4
+  },
+  "show_notification": true
 }

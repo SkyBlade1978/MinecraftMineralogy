@@ -98,7 +98,7 @@ public class GameplayContractTest {
     public void cobblestonePolicyReappliesAfterReloadAndKeepsSpecialCases() throws Exception {
         String policy = text("src/main/java/zone/moddev/mc/mineralogy/compat/CobblestoneTagPolicy.java");
         assertTrue(policy.contains("onTagsUpdated(TagsUpdatedEvent event)"));
-        assertFalse(policy.contains("onServerAboutToStart"));
+        assertTrue(policy.contains("onServerAboutToStart(ServerAboutToStartEvent event)"));
         assertTrue(policy.contains("event.getRegistryAccess()"));
         assertTrue(policy.contains("event.shouldUpdateStaticData()"));
         assertTrue(policy.contains("MaterialData.allIncludingRockSalt()"));
@@ -110,25 +110,37 @@ public class GameplayContractTest {
         assertTrue(policy.contains("itemRegistry.bindTags(itemTags)"));
         assertTrue(policy.contains("STONE_CRAFTING_MATERIALS"));
         assertTrue(policy.contains("STONE_TOOL_MATERIALS"));
+        assertTrue(policy.contains("COMMON_COBBLESTONES"));
+        assertTrue(policy.contains("COMMON_NORMAL_COBBLESTONES"));
+        assertTrue(policy.contains("MINERALOGY_COBBLESTONE"));
         assertTrue(policy.contains("TagKey.create"));
         assertFalse(policy.contains("java.lang.reflect"));
-        assertTrue(policy.contains("Ingredient.invalidateAll()"));
+        assertFalse(policy.contains("Ingredient.invalidateAll()"));
+        assertTrue(policy.contains("invalidateRecipeIngredients"));
+        assertTrue(policy.contains("ingredient.itemStacks = null"));
+        assertTrue(policy.contains("ingredient.stackingIds = null"));
+        String accessTransformer = text("src/main/resources/META-INF/accesstransformer.cfg");
+        assertTrue(accessTransformer.contains("Ingredient itemStacks"));
+        assertTrue(accessTransformer.contains("Ingredient stackingIds"));
+        String metadata = text("src/main/resources/META-INF/neoforge.mods.toml");
+        assertTrue(metadata.contains("[[accessTransformers]]"));
+        assertTrue(metadata.contains("file=\"META-INF/accesstransformer.cfg\""));
     }
 
     @Test
     public void optionalGunpowderDustsCannotCollapseToTwoIngredients() throws Exception {
         String generator = text("scripts/generate-recipes.ps1");
-        assertTrue(generator.contains("ItemTagNotEmptyCondition 'forge:dusts/carbon'"));
-        assertTrue(generator.contains("ItemTagNotEmptyCondition 'forge:dusts/coal'"));
-        assertTrue(generator.contains("type = 'forge:not'"));
-        assertTrue(generator.contains("type = 'forge:tag_empty'"));
+        assertTrue(generator.contains("ItemTagNotEmptyCondition 'c:dusts/carbon'"));
+        assertTrue(generator.contains("ItemTagNotEmptyCondition 'c:dusts/coal'"));
+        assertTrue(generator.contains("type = 'neoforge:not'"));
+        assertTrue(generator.contains("type = 'neoforge:tag_empty'"));
     }
 
     @Test
-    public void forge50UsesModelBlockLayersAndNativeFlowingFluidRendering() throws Exception {
+    public void neoforge20UsesModelBlockLayersAndNativeFlowingFluidRendering() throws Exception {
         String fluid = text("src/main/java/zone/moddev/mc/mineralogy/init/MineralogyFluids.java");
-        assertTrue(fluid.contains("ForgeFlowingFluid.Source"));
-        assertTrue(fluid.contains("ForgeFlowingFluid.Flowing"));
+        assertTrue(fluid.contains("BaseFlowingFluid.Source"));
+        assertTrue(fluid.contains("BaseFlowingFluid.Flowing"));
         assertTrue(fluid.contains("LiquidBlock"));
         assertTrue(fluid.contains("MineralogyBucketItem"));
         assertTrue(fluid.contains("blocks/crude_oil_still"));
@@ -166,9 +178,9 @@ public class GameplayContractTest {
 		assertTrue(mappings.contains("DIRT_PATH"));
 		assertTrue(mappings.contains("SWEET_BERRIES_PICK"));
 		assertTrue(mappings.contains("SWEET_BERRY_BUSH_PICK"));
-		assertTrue(mappings.contains("ForgeRegistries.SOUND_EVENTS"));
-		assertTrue(mappings.contains("@Mod.EventBusSubscriber(modid = Mineralogy.MODID)"));
-		assertTrue(mappings.contains("event.getMappings(ForgeRegistries.Keys.BLOCKS"));
+        assertTrue(mappings.contains("DeferredRegister.create(BuiltInRegistries.SOUND_EVENT"));
+		assertTrue(mappings.contains("addAlias(SWEET_BERRIES_PICK, SWEET_BERRY_BUSH_PICK)"));
+		assertTrue(mappings.contains("registerAliases(IEventBus modBus)"));
     }
 
     @Test
@@ -178,23 +190,24 @@ public class GameplayContractTest {
         assertTrue(hook.contains("type.getComponentType() != Dynamic.class"));
         assertTrue(hook.contains("legacyStates[stateId] = BlockStateData.parse(stateNbt)"));
         assertTrue(hook.contains("unsafe.putObjectVolatile(base, offset, expanded)"));
-        assertTrue(hook.contains("captureLegacyLevelData(LevelStorageSource.LevelStorageAccess access,"));
+        assertTrue(hook.contains("captureLegacyLevelData(CompoundTag root,"));
         assertTrue(hook.contains("LevelStorageSource.LevelDirectory levelDirectory)"));
-        assertTrue(hook.contains("access.getDataTagRaw(false)"));
-        assertTrue(hook.contains("access.getDataTagRaw(true)"));
+        assertTrue(hook.contains("root.getCompound(\"FML\")"));
+        assertTrue(hook.contains("root.getCompound(\"fml\")"));
         String transformer = text("src/main/resources/coremods/mineralogy_legacy_world_fix.js");
+        assertTrue(transformer.contains("net.neoforged.neoforge.common.CommonHooks"));
         assertTrue(transformer.contains("net/minecraft/world/level/storage/LevelStorageSource$LevelDirectory"));
         assertTrue(hook.contains("writeSidecar(levelDat.getParentFile(), blocks)"));
         assertTrue(hook.contains("prepareLegacyWorld(levelDat)"));
 
         String build = text("build.gradle");
         assertTrue(build.contains("dependsOn tasks.named('processResources')"));
-        assertTrue(build.contains("mineralogy%%${mainOutput}"));
-        assertTrue(build.contains("from processedResources"));
+        assertTrue(build.contains("from layout.buildDirectory.dir('resources/main')"));
+        assertTrue(build.contains("into layout.projectDirectory.dir('bin/main')"));
         assertTrue(build.contains("data/mineralogy/orespawn/provider.json"));
-        assertTrue(build.contains("Eclipse output contains stale processed production resources"));
+        assertTrue(build.contains("Eclipse must consume only Gradle-processed production resources"));
         assertTrue(build.contains("examples/mineralogy-provider.json"));
-        assertTrue(build.contains("Eclipse output is missing bundled documentation"));
+        assertTrue(build.contains("Eclipse output is missing ${relative}"));
     }
 
     private static String text(String path) throws Exception {

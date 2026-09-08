@@ -58,7 +58,11 @@ function ItemId([string] $path) {
 }
 
 function ItemCondition([string] $item) {
-    return [ordered]@{ type = 'forge:item_exists'; item = $item }
+    # Every Mineralogy item referenced by this target's generated recipes is
+    # registered unconditionally. The old Forge generator guarded those
+    # guaranteed entries with item-exists wrappers; NeoForge does not need
+    # those wrappers and loads the native recipe object directly.
+    return $null
 }
 
 function ConfigCondition([string] $flag) {
@@ -66,20 +70,20 @@ function ConfigCondition([string] $flag) {
 }
 
 function NotCondition([System.Collections.IDictionary] $condition) {
-    return [ordered]@{ type = 'forge:not'; value = $condition }
+    return [ordered]@{ type = 'neoforge:not'; value = $condition }
 }
 
 function CombinedCondition([object[]] $conditions) {
     $present = @($conditions | Where-Object { $null -ne $_ })
     if ($present.Count -eq 0) { return $null }
     if ($present.Count -eq 1) { return $present[0] }
-    return [ordered]@{ type = 'forge:and'; values = $present }
+    return [ordered]@{ type = 'neoforge:and'; values = $present }
 }
 
 function ItemTagNotEmptyCondition([string] $tag) {
     return [ordered]@{
-        type = 'forge:not'
-        value = [ordered]@{ type = 'forge:tag_empty'; tag = $tag }
+        type = 'neoforge:not'
+        value = [ordered]@{ type = 'neoforge:tag_empty'; tag = $tag }
     }
 }
 
@@ -128,17 +132,17 @@ function AdvancementPredicate([object] $ingredient) {
 }
 
 function OreIngredient([string] $ore) {
-    if ($ore -eq 'sand') { return [ordered]@{ tag = 'forge:sand' } }
-    if ($ore -eq 'paper') { return [ordered]@{ tag = 'forge:paper' } }
+    if ($ore -eq 'sand') { return [ordered]@{ tag = 'c:sands' } }
+    if ($ore -eq 'paper') { return [ordered]@{ tag = 'c:paper' } }
     if ($ore -eq 'drywallWhite') { return [ordered]@{ tag = 'mineralogy:drywall/white' } }
-    if ($ore -eq 'lampRocksalt') { return [ordered]@{ tag = 'forge:lamps/rock_salt' } }
+    if ($ore -eq 'lampRocksalt') { return [ordered]@{ tag = 'c:lamps/rock_salt' } }
     if ($ore -match '^dust(.+)$') {
         $name = $Matches[1] -replace 'Rock_salt', 'rock_salt'
-        return [ordered]@{ tag = "forge:dusts/$($name.ToLowerInvariant())" }
+        return [ordered]@{ tag = "c:dusts/$($name.ToLowerInvariant())" }
     }
     if ($ore -match '^block(.+)$') {
         $name = $Matches[1] -replace 'Rocksalt', 'rock_salt'
-        return [ordered]@{ tag = "forge:storage_blocks/$($name.ToLowerInvariant())" }
+        return [ordered]@{ tag = "c:storage_blocks/$($name.ToLowerInvariant())" }
     }
     if ($ore -match '^stone(.+?)(SmoothBrick|Smooth|Brick)?$') {
         $family = Convert-CamelToSnake $Matches[1]
@@ -262,13 +266,10 @@ function Write-ConditionalMinecraftRecipe(
     [System.Collections.IDictionary] $enabledRecipe,
     [System.Collections.IDictionary] $fallbackRecipe
 ) {
-    Write-Json (Join-Path $minecraftRecipeRoot "$name.json") ([ordered]@{
-        type = 'forge:conditional'
-        recipes = @(
-            [ordered]@{ 'forge:condition' = $condition; recipe = $enabledRecipe },
-            [ordered]@{ 'forge:condition' = (NotCondition $condition); recipe = $fallbackRecipe }
-        )
-    })
+    # The NeoForge port changes the union tags in place when the option changes,
+    # so one stable recipe ID works in both modes and recipe-book predicates can
+    # use exactly the same tag.
+    Write-Json (Join-Path $minecraftRecipeRoot "$name.json") $enabledRecipe
 }
 
 function ConditionsFor([string] $result, [object[]] $extra = @()) {
@@ -439,7 +440,7 @@ function Write-ShapedRecipe(
     [int] $count,
     [object[]] $conditions
 ) {
-    if ($type.StartsWith('forge:ore_')) { $type = 'minecraft:crafting_shaped' }
+    if ($type.StartsWith('mineralogy:ore_')) { $type = 'minecraft:crafting_shaped' }
     $recipe = [ordered]@{
         type = $type
         category = CraftingCategoryForResult $result
@@ -449,7 +450,7 @@ function Write-ShapedRecipe(
         show_notification = $true
     }
     $condition = CombinedCondition $conditions
-    if ($null -ne $condition) { $recipe.Insert(0, 'forge:condition', $condition) }
+    if ($null -ne $condition) { $recipe.Insert(0, 'neoforge:conditions', @($condition)) }
     Write-Recipe $name $recipe
 }
 
@@ -461,7 +462,7 @@ function Write-ShapelessRecipe(
     [int] $count,
     [object[]] $conditions
 ) {
-    if ($type.StartsWith('forge:ore_')) { $type = 'minecraft:crafting_shapeless' }
+    if ($type.StartsWith('mineralogy:ore_')) { $type = 'minecraft:crafting_shapeless' }
     $recipe = [ordered]@{
         type = $type
         category = CraftingCategoryForResult $result
@@ -469,7 +470,7 @@ function Write-ShapelessRecipe(
         result = RecipeResult $result $count
     }
     $condition = CombinedCondition $conditions
-    if ($null -ne $condition) { $recipe.Insert(0, 'forge:condition', $condition) }
+    if ($null -ne $condition) { $recipe.Insert(0, 'neoforge:conditions', @($condition)) }
     Write-Recipe $name $recipe
 }
 
@@ -488,12 +489,12 @@ function Write-BaseFamilyRecipes([string] $family) {
     $smoothBrick = ItemId "${family}_smooth_brick"
     $smoothBrickOre = FamilyOreName 'stone' $family 'SmoothBrick'
 
-    Write-ShapelessRecipe "${family}_cobblestone" 'forge:ore_shapeless' @(
+    Write-ShapelessRecipe "${family}_cobblestone" 'mineralogy:ore_shapeless' @(
         (OreIngredient $rawOre), (OreIngredient $rawOre),
         (ItemIngredient 'minecraft:gravel'), (ItemIngredient 'minecraft:gravel')
     ) 'minecraft:cobblestone' 4 @()
 
-    Write-ShapedRecipe "${family}_stairs" 'forge:ore_shaped' @('x  ', 'xx ', 'xxx') `
+    Write-ShapedRecipe "${family}_stairs" 'mineralogy:ore_shaped' @('x  ', 'xx ', 'xxx') `
         ([ordered]@{ x = ConstructionFormIngredient $family 'raw' 'stairs' $raw $rawOre }) `
         (ItemId "${family}_stairs") 4 `
         (ConditionsFor (ItemId "${family}_stairs"))
@@ -501,35 +502,35 @@ function Write-BaseFamilyRecipes([string] $family) {
         ([ordered]@{ x = ConstructionFormIngredient $family 'raw' 'slab' $raw $rawOre }) `
         (ItemId "${family}_slab") 6 `
         (ConditionsFor (ItemId "${family}_slab"))
-    Write-ShapedRecipe "${family}_furnace" 'forge:ore_shaped' @('xxx', 'xyx', 'xxx') `
+    Write-ShapedRecipe "${family}_furnace" 'mineralogy:ore_shaped' @('xxx', 'xyx', 'xxx') `
         ([ordered]@{ x = OreIngredient (FamilyOreName 'slab' $family); y = ItemIngredient 'minecraft:furnace' }) `
         (ItemId "${family}_furnace") 1 (ConditionsFor (ItemId "${family}_furnace"))
-    Write-ShapedRecipe "${family}_wall" 'forge:ore_shaped' @('xxx', 'xxx') `
+    Write-ShapedRecipe "${family}_wall" 'mineralogy:ore_shaped' @('xxx', 'xxx') `
         ([ordered]@{ x = ConstructionFormIngredient $family 'raw' 'wall' $raw $rawOre }) `
         (ItemId "${family}_wall") 6 `
         (ConditionsFor (ItemId "${family}_wall"))
 
-    Write-ShapedRecipe "${family}_brick" 'forge:ore_shaped' @('xx', 'xx') `
+    Write-ShapedRecipe "${family}_brick" 'mineralogy:ore_shaped' @('xx', 'xx') `
         ([ordered]@{ x = ConstructionFormIngredient $family 'raw' 'brick' $raw $rawOre }) `
         $brick 4 (ConditionsFor $brick)
-    Write-ShapedRecipe "${family}_brick_stairs" 'forge:ore_shaped' @('x  ', 'xx ', 'xxx') `
+    Write-ShapedRecipe "${family}_brick_stairs" 'mineralogy:ore_shaped' @('x  ', 'xx ', 'xxx') `
         ([ordered]@{ x = OreIngredient $brickOre }) (ItemId "${family}_brick_stairs") 4 `
         (ConditionsFor (ItemId "${family}_brick_stairs"))
     Write-ShapedRecipe "${family}_brick_slab" 'minecraft:crafting_shaped' @('xxx') `
         ([ordered]@{ x = ItemIngredient $brick }) (ItemId "${family}_brick_slab") 6 `
         (ConditionsFor (ItemId "${family}_brick_slab"))
-    Write-ShapedRecipe "${family}_brick_furnace" 'forge:ore_shaped' @('xxx', 'xyx', 'xxx') `
+    Write-ShapedRecipe "${family}_brick_furnace" 'mineralogy:ore_shaped' @('xxx', 'xyx', 'xxx') `
         ([ordered]@{ x = OreIngredient (FamilyOreName 'slab' $family 'Brick'); y = ItemIngredient 'minecraft:furnace' }) `
         (ItemId "${family}_brick_furnace") 1 (ConditionsFor (ItemId "${family}_brick_furnace"))
-    Write-ShapedRecipe "${family}_brick_wall" 'forge:ore_shaped' @('xxx', 'xxx') `
+    Write-ShapedRecipe "${family}_brick_wall" 'mineralogy:ore_shaped' @('xxx', 'xxx') `
         ([ordered]@{ x = OreIngredient $brickOre }) (ItemId "${family}_brick_wall") 6 `
         (ConditionsFor (ItemId "${family}_brick_wall"))
 
-    Write-ShapelessRecipe "${family}_smooth" 'forge:ore_shapeless' @(
+    Write-ShapelessRecipe "${family}_smooth" 'mineralogy:ore_shapeless' @(
         (ConstructionFormIngredient $family 'raw' 'smooth' $raw $rawOre),
         (ItemIngredient 'minecraft:sand' 0)
     ) $smooth 1 (ConditionsFor $smooth)
-    Write-ShapedRecipe "${family}_smooth_stairs" 'forge:ore_shaped' @('x  ', 'xx ', 'xxx') `
+    Write-ShapedRecipe "${family}_smooth_stairs" 'mineralogy:ore_shaped' @('x  ', 'xx ', 'xxx') `
         ([ordered]@{ x = ConstructionFormIngredient $family 'smooth' 'stairs' $smooth $smoothOre }) `
         (ItemId "${family}_smooth_stairs") 4 `
         (ConditionsFor (ItemId "${family}_smooth_stairs"))
@@ -537,26 +538,26 @@ function Write-BaseFamilyRecipes([string] $family) {
         ([ordered]@{ x = ConstructionFormIngredient $family 'smooth' 'slab' $smooth $smoothOre }) `
         (ItemId "${family}_smooth_slab") 6 `
         (ConditionsFor (ItemId "${family}_smooth_slab"))
-    Write-ShapedRecipe "${family}_smooth_furnace" 'forge:ore_shaped' @('xxx', 'xyx', 'xxx') `
+    Write-ShapedRecipe "${family}_smooth_furnace" 'mineralogy:ore_shaped' @('xxx', 'xyx', 'xxx') `
         ([ordered]@{ x = OreIngredient (FamilyOreName 'slab' $family 'Smooth'); y = ItemIngredient 'minecraft:furnace' }) `
         (ItemId "${family}_smooth_furnace") 1 (ConditionsFor (ItemId "${family}_smooth_furnace"))
-    Write-ShapedRecipe "${family}_smooth_wall" 'forge:ore_shaped' @('xxx', 'xxx') `
+    Write-ShapedRecipe "${family}_smooth_wall" 'mineralogy:ore_shaped' @('xxx', 'xxx') `
         ([ordered]@{ x = ConstructionFormIngredient $family 'smooth' 'wall' $smooth $smoothOre }) `
         (ItemId "${family}_smooth_wall") 6 `
         (ConditionsFor (ItemId "${family}_smooth_wall"))
 
-    Write-ShapedRecipe "${family}_smooth_brick" 'forge:ore_shaped' @('xx', 'xx') `
+    Write-ShapedRecipe "${family}_smooth_brick" 'mineralogy:ore_shaped' @('xx', 'xx') `
         ([ordered]@{ x = OreIngredient $smoothOre }) $smoothBrick 4 (ConditionsFor $smoothBrick)
-    Write-ShapedRecipe "${family}_smooth_brick_stairs" 'forge:ore_shaped' @('x  ', 'xx ', 'xxx') `
+    Write-ShapedRecipe "${family}_smooth_brick_stairs" 'mineralogy:ore_shaped' @('x  ', 'xx ', 'xxx') `
         ([ordered]@{ x = OreIngredient $smoothBrickOre }) (ItemId "${family}_smooth_brick_stairs") 4 `
         (ConditionsFor (ItemId "${family}_smooth_brick_stairs"))
     Write-ShapedRecipe "${family}_smooth_brick_slab" 'minecraft:crafting_shaped' @('xxx') `
         ([ordered]@{ x = ItemIngredient $smoothBrick }) (ItemId "${family}_smooth_brick_slab") 6 `
         (ConditionsFor (ItemId "${family}_smooth_brick_slab"))
-    Write-ShapedRecipe "${family}_smooth_brick_furnace" 'forge:ore_shaped' @('xxx', 'xyx', 'xxx') `
+    Write-ShapedRecipe "${family}_smooth_brick_furnace" 'mineralogy:ore_shaped' @('xxx', 'xyx', 'xxx') `
         ([ordered]@{ x = OreIngredient (FamilyOreName 'slab' $family 'SmoothBrick'); y = ItemIngredient 'minecraft:furnace' }) `
         (ItemId "${family}_smooth_brick_furnace") 1 (ConditionsFor (ItemId "${family}_smooth_brick_furnace"))
-    Write-ShapedRecipe "${family}_smooth_brick_wall" 'forge:ore_shaped' @('xxx', 'xxx') `
+    Write-ShapedRecipe "${family}_smooth_brick_wall" 'mineralogy:ore_shaped' @('xxx', 'xxx') `
         ([ordered]@{ x = OreIngredient $smoothBrickOre }) (ItemId "${family}_smooth_brick_wall") 6 `
         (ConditionsFor (ItemId "${family}_smooth_brick_wall"))
 }
@@ -648,7 +649,7 @@ function Write-ConstructionRecipes([string] $family) {
         [ordered]@{ name = 'brick'; source = $forms.brick; target = $forms.polished_brick }
     )) {
         foreach ($shape in @('stairs', 'slab', 'wall')) {
-            Write-ShapelessRecipe "${family}_$($polishing.name)_${shape}_polishing" 'forge:ore_shapeless' `
+            Write-ShapelessRecipe "${family}_$($polishing.name)_${shape}_polishing" 'mineralogy:ore_shapeless' `
                 @((ItemIngredient $polishing.source[$shape]), (OreIngredient 'sand')) `
                 $polishing.target[$shape] 1 `
                 @((ItemCondition $polishing.source[$shape]), (ItemCondition $polishing.target[$shape]))
@@ -657,7 +658,7 @@ function Write-ConstructionRecipes([string] $family) {
         }
     }
 
-    Write-ShapelessRecipe "${family}_brick_block_polishing" 'forge:ore_shapeless' `
+    Write-ShapelessRecipe "${family}_brick_block_polishing" 'mineralogy:ore_shapeless' `
         @((ItemIngredient $forms.brick.block), (OreIngredient 'sand')) $forms.polished_brick.block 1 `
         @((ItemCondition $forms.brick.block), (ItemCondition $forms.polished_brick.block))
     Register-UnlockSource "${family}_brick_block_polishing" $forms.brick.block
@@ -667,7 +668,7 @@ function Write-GlobalRecipes() {
     $drywallCondition = ConfigCondition 'ENABLE_DRYWALLS'
     for ($metadata = 0; $metadata -lt $colors.Count; $metadata++) {
         $result = ItemId "drywall_$($colors[$metadata])"
-        Write-ShapelessRecipe "drywall_$($colors[$metadata])" 'forge:ore_shapeless' @(
+        Write-ShapelessRecipe "drywall_$($colors[$metadata])" 'mineralogy:ore_shapeless' @(
             (OreIngredient 'drywallWhite'), (ItemIngredient 'minecraft:dye' $metadata)
         ) $result 1 (ConditionsFor $result @($drywallCondition))
         Register-UnlockSource "drywall_$($colors[$metadata])" (ItemId 'drywall_white')
@@ -675,22 +676,22 @@ function Write-GlobalRecipes() {
 
     $dustCondition = ConfigCondition 'ENABLE_MINERAL_DUSTS'
     $gunpowderTail = @((OreIngredient 'dustNitrate'), (OreIngredient 'dustSulfur'))
-    Write-ShapelessRecipe 'gunpowder_from_sugar' 'forge:ore_shapeless' `
+    Write-ShapelessRecipe 'gunpowder_from_sugar' 'mineralogy:ore_shapeless' `
         (@((ItemIngredient 'minecraft:sugar')) + $gunpowderTail) 'minecraft:gunpowder' 4 @($dustCondition)
     Register-UnlockSource 'gunpowder_from_sugar' (ItemId 'nitrate_dust')
-    Write-ShapelessRecipe 'gunpowder_from_charcoal' 'forge:ore_shapeless' `
+    Write-ShapelessRecipe 'gunpowder_from_charcoal' 'mineralogy:ore_shapeless' `
         (@((ItemIngredient 'minecraft:coal' 1)) + $gunpowderTail) 'minecraft:gunpowder' 4 @($dustCondition)
     Register-UnlockSource 'gunpowder_from_charcoal' (ItemId 'nitrate_dust')
-    Write-ShapelessRecipe 'gunpowder_from_carbon_dust' 'forge:ore_shapeless' `
+    Write-ShapelessRecipe 'gunpowder_from_carbon_dust' 'mineralogy:ore_shapeless' `
         (@((OreIngredient 'dustCarbon')) + $gunpowderTail) 'minecraft:gunpowder' 4 `
-        @($dustCondition, (ItemTagNotEmptyCondition 'forge:dusts/carbon'))
+        @($dustCondition, (ItemTagNotEmptyCondition 'c:dusts/carbon'))
     Register-UnlockSource 'gunpowder_from_carbon_dust' (ItemId 'nitrate_dust')
-    Write-ShapelessRecipe 'gunpowder_from_coal_dust' 'forge:ore_shapeless' `
+    Write-ShapelessRecipe 'gunpowder_from_coal_dust' 'mineralogy:ore_shapeless' `
         (@((OreIngredient 'dustCoal')) + $gunpowderTail) 'minecraft:gunpowder' 4 `
-        @($dustCondition, (ItemTagNotEmptyCondition 'forge:dusts/coal'))
+        @($dustCondition, (ItemTagNotEmptyCondition 'c:dusts/coal'))
     Register-UnlockSource 'gunpowder_from_coal_dust' (ItemId 'nitrate_dust')
 
-    Write-ShapelessRecipe 'mineralfertilizer' 'forge:ore_shapeless' @(
+    Write-ShapelessRecipe 'mineralfertilizer' 'mineralogy:ore_shapeless' @(
         (OreIngredient 'dustNitrate'), (OreIngredient 'dustPhosphorous')
     ) (ItemId 'mineral_fertilizer') 1 `
         (ConditionsFor (ItemId 'mineral_fertilizer') @((ConfigCondition 'ENABLE_MINERAL_FERTILIZER')))
@@ -708,16 +709,16 @@ function Write-GlobalRecipes() {
         [ordered]@{ name = 'rock_salt'; dust = 'dustRock_salt'; blockOre = 'blockRocksalt'; dustItem = 'rock_salt_dust'; blockItem = 'rock_salt' }
     )) {
         $block = ItemId $storage.blockItem
-        Write-ShapedRecipe $storage.name 'forge:ore_shaped' @('xx', 'xx') `
+        Write-ShapedRecipe $storage.name 'mineralogy:ore_shaped' @('xx', 'xx') `
             ([ordered]@{ x = OreIngredient $storage.dust }) $block 1 (ConditionsFor $block)
         Register-UnlockSource $storage.name (ItemId $storage.dustItem)
-        Write-ShapelessRecipe "$($storage.name)_dust" 'forge:ore_shapeless' @(
+        Write-ShapelessRecipe "$($storage.name)_dust" 'mineralogy:ore_shapeless' @(
             (OreIngredient $storage.blockOre)
         ) (ItemId $storage.dustItem) 4 (ConditionsFor (ItemId $storage.dustItem))
         Register-UnlockSource "$($storage.name)_dust" $block
     }
 
-    Write-ShapedRecipe 'drywall' 'forge:ore_shaped' @('pgp', 'pgp', 'pgp') `
+    Write-ShapedRecipe 'drywall' 'mineralogy:ore_shaped' @('pgp', 'pgp', 'pgp') `
         ([ordered]@{ p = OreIngredient 'paper'; g = OreIngredient 'dustGypsum' }) `
         (ItemId 'drywall_white') 3 `
         (ConditionsFor (ItemId 'drywall_white') @($drywallCondition))
@@ -730,7 +731,7 @@ function Write-GlobalRecipes() {
     ) (ItemId 'rocksaltlamp') 1 `
         (ConditionsFor (ItemId 'rocksaltlamp') @($lampCondition))
     Register-UnlockSource 'rocksaltlamp' (ItemId 'rock_salt')
-    Write-ShapedRecipe 'rocksaltstreetlamp' 'forge:ore_shaped' @('x', 'y', 'y') `
+    Write-ShapedRecipe 'rocksaltstreetlamp' 'mineralogy:ore_shaped' @('x', 'y', 'y') `
         ([ordered]@{ x = OreIngredient 'lampRocksalt'; y = ItemIngredient 'minecraft:iron_ingot' }) `
         (ItemId 'rocksaltstreetlamp') 1 `
         (ConditionsFor (ItemId 'rocksaltstreetlamp') @($lampCondition))
@@ -744,7 +745,7 @@ function Write-GlobalRecipes() {
             ([ordered]@{ x = ItemIngredient $dust }) $block 1 `
             (ConditionsFor $block @($dustCondition))
         Register-UnlockSource "${mineral}_block" $dust
-        Write-ShapelessRecipe "${mineral}_dust" 'forge:ore_shapeless' @(
+        Write-ShapelessRecipe "${mineral}_dust" 'mineralogy:ore_shapeless' @(
             (OreIngredient "block$material")
         ) $dust 9 (ConditionsFor $dust @($dustCondition))
         Register-UnlockSource "${mineral}_dust" $block
@@ -783,8 +784,8 @@ function Ensure-MissingRecipeAdvancements() {
         $requirements = Get-UnlockRequirements $sandMode
 
         $generatedAdvancement = [ordered]@{}
-        if ($null -ne $recipe.'forge:condition') {
-            $generatedAdvancement['forge:condition'] = $recipe.'forge:condition'
+        if ($null -ne $recipe.'neoforge:conditions') {
+            $generatedAdvancement['neoforge:conditions'] = $recipe.'neoforge:conditions'
         }
         $generatedAdvancement.rewards = [ordered]@{ recipes = @("mineralogy:$recipeName") }
         $generatedAdvancement.criteria = $criteria
@@ -843,8 +844,8 @@ function Synchronize-AdvancementConditions() {
         $requirements = Get-UnlockRequirements $sandMode
 
         $ordered = [ordered]@{}
-        if ($null -ne $recipe.'forge:condition') {
-            $ordered['forge:condition'] = $recipe.'forge:condition'
+        if ($null -ne $recipe.'neoforge:conditions') {
+            $ordered['neoforge:conditions'] = $recipe.'neoforge:conditions'
         }
         foreach ($property in $advancement.PSObject.Properties) {
             if ($property.Name -eq 'criteria') {
@@ -853,7 +854,7 @@ function Synchronize-AdvancementConditions() {
             elseif ($property.Name -eq 'requirements') {
                 $ordered[$property.Name] = $requirements
             }
-            elseif ($property.Name -ne 'forge:condition') {
+            elseif ($property.Name -ne 'forge:condition' -and $property.Name -ne 'neoforge:conditions') {
                 $ordered[$property.Name] = $property.Value
             }
         }
@@ -939,7 +940,7 @@ function Write-CobblestoneRecipeTags() {
     $familyTags = @($families | ForEach-Object { "#mineralogy:stones/$_" })
     Write-Json (Join-Path $itemTagRoot 'cobblestone_equivalents.json') ([ordered]@{
         replace = $false
-        values = @('#forge:cobblestone') + $familyTags
+        values = @('#c:cobblestones') + $familyTags
     })
     Write-Json (Join-Path $itemTagRoot 'stone_crafting_materials.json') ([ordered]@{
         replace = $false
@@ -984,31 +985,14 @@ function Write-ConditionalMinecraftAdvancement(
 ) {
     $directory = Join-Path $minecraftAdvancementRoot $category
     New-Item -ItemType Directory -Force -Path $directory | Out-Null
-    Write-Json (Join-Path $directory "$recipeName.json") ([ordered]@{
-        advancements = @(
-            (Add-ConditionToAdvancement $condition `
-                (VanillaRecipeAdvancement $recipeName $criterionName $enabledIngredient)),
-            (Add-ConditionToAdvancement (NotCondition $condition) `
-                (VanillaRecipeAdvancement $recipeName $criterionName $fallbackIngredient))
-        )
-    })
-}
-
-function Add-ConditionToAdvancement(
-    [System.Collections.IDictionary] $condition,
-    [System.Collections.IDictionary] $advancement
-) {
-    $result = [ordered]@{ 'forge:condition' = $condition }
-    foreach ($entry in $advancement.GetEnumerator()) {
-        $result[$entry.Key] = $entry.Value
-    }
-    return $result
+    Write-Json (Join-Path $directory "$recipeName.json") `
+        (VanillaRecipeAdvancement $recipeName $criterionName $enabledIngredient)
 }
 
 function Write-CobblestoneRecipeOverrides() {
     $condition = ConfigCondition 'COBBLESTONE_EQUIVILENT'
     $enabledCobblestone = [ordered]@{ tag = 'mineralogy:cobblestone_equivalents' }
-    $fallbackCobblestone = [ordered]@{ tag = 'forge:cobblestone' }
+    $fallbackCobblestone = [ordered]@{ tag = 'c:cobblestones' }
     $enabledCrafting = [ordered]@{ tag = 'mineralogy:stone_crafting_materials' }
     $fallbackCrafting = [ordered]@{ tag = 'minecraft:stone_crafting_materials' }
     $enabledTools = [ordered]@{ tag = 'mineralogy:stone_tool_materials' }

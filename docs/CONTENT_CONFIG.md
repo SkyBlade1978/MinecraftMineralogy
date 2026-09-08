@@ -38,7 +38,7 @@ These four keys default to `true`:
 | `ENABLE_MINERAL_FERTILIZER` | Hides mineral fertilizer and omits its recipe. |
 
 These switches never unregister content. Existing blocks, inventory stacks,
-drops, Forge tag entries, and integrations remain valid. The dust and
+drops, common/compatibility tag entries, and integrations remain valid. The dust and
 fertilizer switches are independent, so enabled fertilizer may use dusts from
 existing ore, OreSpawn-generated ore, or another mod.
 
@@ -65,7 +65,7 @@ GROUP_TABS_BY_TYPE = true
 ## Rock recipe compatibility
 
 With `COBBLESTONE_EQUIVILENT=true`, all 27 raw Mineralogy rock families,
-including rock salt, participate in Forge `cobblestone` tag recipes such
+including rock salt, participate in common cobblestone-tag recipes such
 as levers, pistons, dispensers, droppers, and brewing stands. Setting it to
 `false` removes ordinary rocks from the nineteen covered cobblestone, stone-tool,
 and stone-crafting recipes while restoring their target-native ingredients.

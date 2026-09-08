@@ -8,7 +8,7 @@ engine.
   server copying.
 - [Content Configuration](CONTENT_CONFIG.md): every Mineralogy content and
   compatibility option.
-- [Developer Guide](DEVELOPER_GUIDE.md): ownership boundaries, Forge tag
+- [Developer Guide](DEVELOPER_GUIDE.md): ownership boundaries, NeoForge tag
   integration, builds, and compatibility rules.
 - [Provider Reference](PROVIDER.md): Mineralogy's packaged OreSpawn declaration
   and pack override.

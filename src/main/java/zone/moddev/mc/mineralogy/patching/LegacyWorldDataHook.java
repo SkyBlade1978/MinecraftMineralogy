@@ -43,8 +43,8 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.StairsShape;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.level.storage.LevelStorageSource;
-import net.minecraftforge.event.server.ServerAboutToStartEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,32 +62,20 @@ public final class LegacyWorldDataHook {
 	private static volatile boolean legacyWorldActive;
 
 	static {
-		BLOCK_ALIASES.put(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "pummice"),
-				ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "pumice"));
-		BLOCK_ALIASES.put(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "saprolite"),
-				ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "limestone"));
+		BLOCK_ALIASES.put(new ResourceLocation(Mineralogy.MODID, "pummice"),
+				new ResourceLocation(Mineralogy.MODID, "pumice"));
+		BLOCK_ALIASES.put(new ResourceLocation(Mineralogy.MODID, "saprolite"),
+				new ResourceLocation(Mineralogy.MODID, "limestone"));
 	}
 
 	private LegacyWorldDataHook() {
 	}
 
-	/** Called from Forge's raw additional-level-data reader before legacy FML data is discarded. */
-	public static void captureLegacyLevelData(LevelStorageSource.LevelStorageAccess access,
+	/** Called from NeoForge's additional-level-data reader before legacy FML data is discarded. */
+	public static void captureLegacyLevelData(CompoundTag root,
 			LevelStorageSource.LevelDirectory levelDirectory) {
-		if (access == null || levelDirectory == null) {
+		if (root == null || levelDirectory == null) {
 			return;
-		}
-		CompoundTag root;
-		try {
-			root = access.getDataTagRaw(false);
-		} catch (IOException primaryFailure) {
-			try {
-				root = access.getDataTagRaw(true);
-			} catch (IOException fallbackFailure) {
-				LOGGER.warn("Could not inspect primary or fallback level data in '{}' for legacy Mineralogy mappings",
-						levelDirectory.path(), fallbackFailure);
-				return;
-			}
 		}
 		Path levelPath = levelDirectory.path();
 		if (root.contains("FML", 10)) {
@@ -294,7 +282,7 @@ public final class LegacyWorldDataHook {
 			if (!key.startsWith(Mineralogy.MODID + ":")) {
 				continue;
 			}
-			ResourceLocation id = ResourceLocation.parse(key);
+			ResourceLocation id = new ResourceLocation(key);
 			int numericId = savedId.getInt("V");
 			mineralogyIds.put(id, numericId);
 			highestStateId = Math.max(highestStateId, (numericId << 4) | 15);
@@ -431,10 +419,10 @@ public final class LegacyWorldDataHook {
 
 	private static Block resolveCurrentBlock(ResourceLocation oldId) {
 		ResourceLocation target = BLOCK_ALIASES.getOrDefault(oldId, oldId);
-		if (!ForgeRegistries.BLOCKS.containsKey(target)) {
+		if (!BuiltInRegistries.BLOCK.containsKey(target)) {
 			throw new IllegalStateException("Legacy Mineralogy block has no current replacement: " + oldId);
 		}
-		return ForgeRegistries.BLOCKS.getValue(target);
+		return BuiltInRegistries.BLOCK.get(target);
 	}
 
 	private static BlockState legacyState(Block block, int meta) {

@@ -29,13 +29,13 @@ import zone.moddev.mc.mineralogy.data.MaterialData;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegisterEvent;
+import net.minecraft.core.registries.Registries;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.registries.RegisterEvent.RegisterHelper;
 
-@Mod.EventBusSubscriber(modid = Mineralogy.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Mineralogy.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class Blocks {
 
     public static Rock andesite = null;
@@ -246,10 +246,10 @@ public class Blocks {
 
     @SubscribeEvent
     public static void registerBlocks(RegisterEvent event) {
-		if (!ForgeRegistries.Keys.BLOCKS.equals(event.getRegistryKey())) {
+		if (!Registries.BLOCK.equals(event.getRegistryKey())) {
 			return;
 		}
-		IForgeRegistry<Block> registry = event.getForgeRegistry();
+		event.register(Registries.BLOCK, registry -> {
 
 		for (zone.moddev.mc.mineralogy.data.Material material : MaterialData.toArray()) {
 			registerMaterialFamily(registry, material, material.toRock(false, false));
@@ -272,11 +272,10 @@ public class Blocks {
 		);
 
 		//event.getRegistry().register(MaterialData.BASALT.toRockWall(false, false));
-
-
+		});
     }
 
-	private static void registerSpecialGeologyBlocks(IForgeRegistry<Block> registry) {
+	private static void registerSpecialGeologyBlocks(RegisterHelper<Block> registry) {
 		Block chert = new Chert();
 		Block gypsum = new Gypsum();
 		Block chalk = new Chalk();
@@ -286,13 +285,13 @@ public class Blocks {
 
 	}
 
-	private static void registerDryWalls(IForgeRegistry<Block> registry) {
+	private static void registerDryWalls(RegisterHelper<Block> registry) {
 		for (String color : zone.moddev.mc.mineralogy.Constants.colorSuffixes) {
 			register(registry, new DryWall(color));
 		}
 	}
 
-	private static void registerMaterialFamily(IForgeRegistry<Block> registry,
+	private static void registerMaterialFamily(RegisterHelper<Block> registry,
 			zone.moddev.mc.mineralogy.data.Material material, Rock baseRock) {
 		register(registry, baseRock);
 
@@ -369,7 +368,7 @@ public class Blocks {
 		}
 	}
 
-	private static void registerSlabPair(IForgeRegistry<Block> registry, RockSlab slab, Block fullBlock,
+	private static void registerSlabPair(RegisterHelper<Block> registry, RockSlab slab, Block fullBlock,
 			zone.moddev.mc.mineralogy.data.Material material, boolean isSmooth, boolean isBrick) {
 		register(registry, slab);
 		register(registry, createDoubleSlab(slab, fullBlock, material, isSmooth, isBrick));
@@ -402,7 +401,7 @@ public class Blocks {
 				getVariantName(material, isSmooth, isBrick) + "_double_slab");
 	}
 
-	private static void registerFurnacePair(IForgeRegistry<Block> registry,
+	private static void registerFurnacePair(RegisterHelper<Block> registry,
 			zone.moddev.mc.mineralogy.data.Material material, boolean isSmooth, boolean isBrick) {
 		String name = getVariantName(material, isSmooth, isBrick) + "_furnace";
 		float burnModifier = (float) (1.0D + ((material.hardness - 3.0D) / 10.0D));
@@ -413,7 +412,7 @@ public class Blocks {
 				material.toolHardnessLevel, true, burnModifier, "lit_" + name));
 	}
 
-	private static void registerReliefs(IForgeRegistry<Block> registry,
+	private static void registerReliefs(RegisterHelper<Block> registry,
 			zone.moddev.mc.mineralogy.data.Material material) {
 		String name = material.materialName.toLowerCase();
 		String[] suffixes = new String[] {
@@ -439,13 +438,13 @@ public class Blocks {
 		}
 	}
 
-	private static void registerAll(IForgeRegistry<Block> registry, Block... blocks) {
+	private static void registerAll(RegisterHelper<Block> registry, Block... blocks) {
 		for (Block block : blocks) {
 			register(registry, block);
 		}
 	}
 
-	private static <T extends Block> T register(IForgeRegistry<Block> registry, T block) {
+	private static <T extends Block> T register(RegisterHelper<Block> registry, T block) {
 		if (!(block instanceof NamedMineralogyBlock)) {
 			throw new IllegalArgumentException("Mineralogy block has no stable registry path: " + block.getClass());
 		}
@@ -453,7 +452,7 @@ public class Blocks {
 		if (path == null || path.isEmpty()) {
 			throw new IllegalArgumentException("Mineralogy block has an empty registry path: " + block.getClass());
 		}
-		registry.register(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, path), block);
+		registry.register(new ResourceLocation(Mineralogy.MODID, path), block);
 		bindLegacyBlockField(path, block);
 		return block;
 	}

@@ -1,40 +1,10 @@
 {
-    "type":  "forge:conditional",
-    "recipes":  [
-                    {
-                        "forge:condition":  {
-                                                "type":  "forge:item_exists",
-                                                "item":  "mineralogy:andesite_smooth_slab"
-                                            },
-                        "recipe":  {
-                                       "type":  "minecraft:stonecutting",
-                                       "ingredient":  {
-                                                          "item":  "minecraft:andesite"
-                                                      },
-                                       "result":  {
-                                                      "id":  "mineralogy:andesite_smooth_slab",
-                                                      "count":  2
-                                                  }
-                                   }
-                    },
-                    {
-                        "forge:condition":  {
-                                                "type":  "forge:not",
-                                                "value":  {
-                                                              "type":  "forge:item_exists",
-                                                              "item":  "mineralogy:andesite_smooth_slab"
-                                                          }
-                                            },
-                        "recipe":  {
-                                       "type":  "minecraft:stonecutting",
-                                       "ingredient":  {
-                                                          "item":  "minecraft:andesite"
-                                                      },
-                                       "result":  {
-                                                      "id":  "minecraft:polished_andesite_slab",
-                                                      "count":  2
-                                                  }
-                                   }
-                    }
-                ]
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:andesite"
+  },
+  "result": {
+    "id": "mineralogy:andesite_smooth_slab",
+    "count": 2
+  }
 }

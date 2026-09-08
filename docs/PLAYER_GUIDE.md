@@ -2,8 +2,8 @@
 
 ## Installing
 
-Mineralogy 6 needs Minecraft 1.20.6, Forge 50.2.0, and OreSpawn
-4.0.16.120061.
+Mineralogy 6 needs Minecraft 1.20.6, NeoForge 20.6.139, and OreSpawn
+4.0.16.120062. Do not mix this NeoForge jar with the separate Forge build.
 Install matching Mineralogy and OreSpawn jars on both clients and servers. Do
 not open a world containing Mineralogy blocks without Mineralogy installed.
 

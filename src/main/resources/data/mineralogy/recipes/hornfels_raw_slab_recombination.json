@@ -1,29 +1,16 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:hornfels_slab"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:hornfels"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:hornfels_slab"
-                        },
-                        {
-                            "item":  "mineralogy:hornfels_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:hornfels",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "mineralogy:hornfels_slab"
+    },
+    {
+      "item": "mineralogy:hornfels_slab"
+    }
+  ],
+  "result": {
+    "id": "mineralogy:hornfels",
+    "count": 1
+  }
 }

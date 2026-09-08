@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "mineralogy:chert",
-    "mineralogy:pumice"
+    "#c:cobblestones"
   ]
 }

@@ -1,29 +1,16 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:and",
-                            "values":  [
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:granite_slab"
-                                           },
-                                           {
-                                               "type":  "forge:item_exists",
-                                               "item":  "mineralogy:granite"
-                                           }
-                                       ]
-                        },
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:granite_slab"
-                        },
-                        {
-                            "item":  "mineralogy:granite_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:granite",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "mineralogy:granite_slab"
+    },
+    {
+      "item": "mineralogy:granite_slab"
+    }
+  ],
+  "result": {
+    "id": "mineralogy:granite",
+    "count": 1
+  }
 }

@@ -1,23 +1,19 @@
 {
-    "forge:condition":  {
-                            "type":  "forge:item_exists",
-                            "item":  "mineralogy:novaculite_stairs"
-                        },
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "x  ",
-                    "xx ",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/novaculite"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:novaculite_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "x  ",
+    "xx ",
+    "xxx"
+  ],
+  "key": {
+    "x": {
+      "tag": "mineralogy:stones/novaculite"
+    }
+  },
+  "result": {
+    "id": "mineralogy:novaculite_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }
