@@ -3,6 +3,7 @@ package zone.moddev.mc.mineralogy.compat;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -20,6 +21,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.server.Bootstrap;
+import net.neoforged.fml.loading.LoadingModList;
+import net.neoforged.neoforge.registries.GameData;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,7 +36,11 @@ public class CobblestoneTagPolicyTest {
             field.setAccessible(true);
             if (!field.getBoolean(null)) {
                 field.setBoolean(null, true);
+                LoadingModList.of(Collections.emptyList(), Collections.emptyList(),
+                        Collections.emptyList(), Collections.emptyList(), Collections.emptyMap());
+                BuiltInRegistries.BLOCK.size();
                 BuiltInRegistries.bootStrap();
+                GameData.vanillaSnapshot();
             }
         } catch (ReflectiveOperationException exception) {
             throw new AssertionError("Unable to initialize the isolated tag registry", exception);
@@ -45,7 +52,7 @@ public class CobblestoneTagPolicyTest {
         Holder<Item> vanilla = holder(Blocks.COBBLESTONE.asItem());
         Holder<Item> mineralogyStandIn = holder(Blocks.BASALT.asItem());
         TagKey<Item> cobblestone = TagKey.create(Registries.ITEM,
-                new ResourceLocation("forge", "cobblestone"));
+                ResourceLocation.fromNamespaceAndPath("forge", "cobblestone"));
         Map<TagKey<Item>, List<Holder<Item>>> tags = new IdentityHashMap<>();
         tags.put(cobblestone, list(vanilla));
 

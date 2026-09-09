@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:novaculite_slab"
+                        },
+                        {
+                            "item":  "mineralogy:novaculite_slab"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:novaculite",
+                   "count":  1
+               }
+}

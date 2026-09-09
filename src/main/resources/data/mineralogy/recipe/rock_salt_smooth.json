@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "tag":  "mineralogy:stones/rock_salt"
+                        },
+                        {
+                            "item":  "minecraft:sand"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:rock_salt_smooth",
+                   "count":  1
+               }
+}

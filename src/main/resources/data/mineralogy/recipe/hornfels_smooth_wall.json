@@ -1,0 +1,18 @@
+{
+    "type":  "minecraft:crafting_shaped",
+    "category":  "building",
+    "pattern":  [
+                    "xxx",
+                    "xxx"
+                ],
+    "key":  {
+                "x":  {
+                          "tag":  "mineralogy:stones/hornfels/smooth"
+                      }
+            },
+    "result":  {
+                   "id":  "mineralogy:hornfels_smooth_wall",
+                   "count":  6
+               },
+    "show_notification":  true
+}

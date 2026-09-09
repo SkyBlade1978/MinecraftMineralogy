@@ -35,7 +35,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 public final class MineralogyConfig {
     public static final String FILE_NAME = "mineralogy-common.toml";
     private static final ResourceLocation CONFIG_CONDITION_ID =
-            new ResourceLocation(Mineralogy.MODID, "config");
+            ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "config");
     private static DeferredRegister<MapCodec<? extends ICondition>> conditionCodecs;
 
     private static boolean smeltableGravel = true;

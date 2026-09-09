@@ -1,0 +1,37 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:limestone_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:limestone_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:limestone_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:limestone_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:limestone_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:limestone_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:limestone_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:limestone_relief_blank"
+                        },
+                        {
+                            "item":  "minecraft:stone_axe"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:limestone_relief_axe",
+                   "count":  8
+               }
+}

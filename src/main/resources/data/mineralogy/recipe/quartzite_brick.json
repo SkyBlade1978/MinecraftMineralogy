@@ -1,0 +1,18 @@
+{
+    "type":  "minecraft:crafting_shaped",
+    "category":  "building",
+    "pattern":  [
+                    "xx",
+                    "xx"
+                ],
+    "key":  {
+                "x":  {
+                          "tag":  "mineralogy:stones/quartzite"
+                      }
+            },
+    "result":  {
+                   "id":  "mineralogy:quartzite_brick",
+                   "count":  4
+               },
+    "show_notification":  true
+}

@@ -1,0 +1,37 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:conglomerate_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:conglomerate_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:conglomerate_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:conglomerate_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:conglomerate_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:conglomerate_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:conglomerate_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:conglomerate_relief_blank"
+                        },
+                        {
+                            "item":  "minecraft:stone_hoe"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:conglomerate_relief_hoe",
+                   "count":  8
+               }
+}

@@ -254,7 +254,7 @@ public class RockFurnace extends BaseEntityBlock implements NamedMineralogyBlock
 			path = path.substring(4);
 		}
 
-		Block stateBlock = BuiltInRegistries.BLOCK.get(new ResourceLocation(Mineralogy.MODID, path));
+		Block stateBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, path));
 		return stateBlock == null ? block : stateBlock;
 	}
 

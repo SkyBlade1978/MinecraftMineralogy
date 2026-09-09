@@ -13,9 +13,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.storage.loot.LootParams.Builder;
 import net.minecraft.core.registries.BuiltInRegistries;
 
@@ -41,14 +38,8 @@ public class Ore extends Block implements NamedMineralogyBlock {
 		return registryPath;
 	}
 
-	@Override
-	public int getExpDrop(BlockState state, LevelReader world, RandomSource random, BlockPos pos,
-			int fortune, int silktouch) {
-		return 0;
-	}
-
 	public ItemLike getItemDropped() {
-		Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(Mineralogy.MODID, dropItemName));
+		Item item = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, dropItemName));
 		return item == null ? this : item;
 	}
 

@@ -1,0 +1,18 @@
+{
+    "type":  "minecraft:crafting_shaped",
+    "category":  "building",
+    "pattern":  [
+                    "xx",
+                    "xx"
+                ],
+    "key":  {
+                "x":  {
+                          "item":  "mineralogy:granite_wall"
+                      }
+            },
+    "result":  {
+                   "id":  "mineralogy:granite_brick_wall",
+                   "count":  4
+               },
+    "show_notification":  true
+}

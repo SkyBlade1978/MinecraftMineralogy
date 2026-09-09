@@ -62,10 +62,10 @@ public final class LegacyWorldDataHook {
 	private static volatile boolean legacyWorldActive;
 
 	static {
-		BLOCK_ALIASES.put(new ResourceLocation(Mineralogy.MODID, "pummice"),
-				new ResourceLocation(Mineralogy.MODID, "pumice"));
-		BLOCK_ALIASES.put(new ResourceLocation(Mineralogy.MODID, "saprolite"),
-				new ResourceLocation(Mineralogy.MODID, "limestone"));
+		BLOCK_ALIASES.put(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "pummice"),
+				ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "pumice"));
+		BLOCK_ALIASES.put(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "saprolite"),
+				ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "limestone"));
 	}
 
 	private LegacyWorldDataHook() {
@@ -282,7 +282,7 @@ public final class LegacyWorldDataHook {
 			if (!key.startsWith(Mineralogy.MODID + ":")) {
 				continue;
 			}
-			ResourceLocation id = new ResourceLocation(key);
+			ResourceLocation id = ResourceLocation.parse(key);
 			int numericId = savedId.getInt("V");
 			mineralogyIds.put(id, numericId);
 			highestStateId = Math.max(highestStateId, (numericId << 4) | 15);
@@ -310,7 +310,7 @@ public final class LegacyWorldDataHook {
 	}
 
 	/**
-	 * Minecraft 1.20.6 still fixes the pre-flattening state table at 4,096 entries,
+	 * Minecraft 1.21.1 still fixes the pre-flattening state table at 4,096 entries,
 	 * while Forge 1.12 worlds commonly assign mod blocks higher numeric IDs.
 	 * Replace that exact static-final array before writing any recovered states.
 	 */

@@ -38,7 +38,7 @@ public class TileEntities {
 				.of(TileEntityRockFurnace::new, furnaceBlocks.toArray(new Block[furnaceBlocks.size()]))
 				.build(null);
 		event.register(Registries.BLOCK_ENTITY_TYPE,
-				new ResourceLocation(Mineralogy.MODID, "rock_furnace"),
+				ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "rock_furnace"),
 				() -> rock_furnace);
 	}
 

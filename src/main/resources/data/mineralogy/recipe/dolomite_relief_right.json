@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:dolomite_relief_left"
+                        },
+                        {
+                            "item":  "mineralogy:dolomite_relief_left"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:dolomite_relief_right",
+                   "count":  2
+               }
+}

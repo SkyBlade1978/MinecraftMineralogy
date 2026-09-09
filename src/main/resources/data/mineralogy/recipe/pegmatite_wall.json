@@ -1,0 +1,18 @@
+{
+    "type":  "minecraft:crafting_shaped",
+    "category":  "building",
+    "pattern":  [
+                    "xxx",
+                    "xxx"
+                ],
+    "key":  {
+                "x":  {
+                          "tag":  "mineralogy:stones/pegmatite"
+                      }
+            },
+    "result":  {
+                   "id":  "mineralogy:pegmatite_wall",
+                   "count":  6
+               },
+    "show_notification":  true
+}

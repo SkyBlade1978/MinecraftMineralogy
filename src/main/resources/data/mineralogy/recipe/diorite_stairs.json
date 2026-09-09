@@ -1,0 +1,19 @@
+{
+    "type":  "minecraft:crafting_shaped",
+    "category":  "building",
+    "pattern":  [
+                    "x  ",
+                    "xx ",
+                    "xxx"
+                ],
+    "key":  {
+                "x":  {
+                          "item":  "mineralogy:diorite"
+                      }
+            },
+    "result":  {
+                   "id":  "mineralogy:diorite_stairs",
+                   "count":  4
+               },
+    "show_notification":  true
+}

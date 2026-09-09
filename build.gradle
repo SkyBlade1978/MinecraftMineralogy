@@ -44,8 +44,8 @@ def versionParts = project.mod_version.toString().tokenize('.')
 if (versionParts.size() != 4 || !versionParts.every { it ==~ /\d+/ }) {
     throw new GradleException("mod_version must use Major.Minor.Bug.Target numeric form: ${project.mod_version}")
 }
-if (versionParts[3] != '120062') {
-    throw new GradleException("Mineralogy 1.20.6 NeoForge releases must use target 120062: ${project.mod_version}")
+if (versionParts[3] != '121012') {
+    throw new GradleException("Mineralogy 1.21.1 NeoForge releases must use target 121012: ${project.mod_version}")
 }
 
 java {
@@ -130,28 +130,57 @@ runs {
 
 minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
 
-def orespawnModule = "mmd-orespawn-${project.orespawn_curse_project_id}"
+def orespawnMavenGroup = 'zone.moddev.mc.orespawn'
+def orespawnMavenArtifact = 'OreSpawn'
+def orespawnCoordinate = "${orespawnMavenGroup}:${orespawnMavenArtifact}:${project.orespawn_version}"
+def orespawnCurseModule = "mmd-orespawn-${project.orespawn_curse_project_id}"
 def orespawnVerificationRepository = project.findProperty('orespawnVerificationRepository')
+def orespawnMmdRepository = project.findProperty('orespawnMmdRepository')
+        ?: 'https://maven.moddev.zone/releases'
+def orespawnCurseRepository = project.findProperty('orespawnCurseRepository')
+        ?: 'https://www.cursemaven.com'
 repositories {
     mavenCentral()
 
-    // The staged CI mirror is the only permitted source for this exact
-    // OreSpawn module. Without exclusive routing, a transient HTTP error from
-    // Maven Central aborts resolution before Gradle reaches the verified jar.
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = orespawnVerificationRepository == null
-                        ? 'CurseMaven'
-                        : 'OreSpawnReleaseVerificationMirror'
-                url = orespawnVerificationRepository == null
-                        ? uri('https://www.cursemaven.com')
-                        : uri(orespawnVerificationRepository)
-                metadataSources { artifact() }
+    // Prefer MMD's Maven publication. Gradle treats HTTP 429 as fatal rather
+    // than trying the next repository, so CurseMaven cannot be the primary if
+    // it is to serve as a useful fallback. CI may prepend its sealed local
+    // mirror while retaining the same published Maven coordinate.
+    def orespawnRepositories = []
+    if (orespawnVerificationRepository != null) {
+        orespawnRepositories.add(ivy {
+            name = 'OreSpawnReleaseVerificationMirror'
+            url = uri(orespawnVerificationRepository)
+            patternLayout {
+                artifact "curse/maven/${orespawnCurseModule}/${project.orespawn_curse_file_id}/${orespawnCurseModule}-${project.orespawn_curse_file_id}.[ext]"
             }
+            metadataSources { artifact() }
+        })
+    }
+    orespawnRepositories.add(maven {
+        name = 'MMDMaven'
+        url = uri(orespawnMmdRepository)
+        metadataSources {
+            mavenPom()
+            artifact()
         }
+    })
+    orespawnRepositories.add(ivy {
+        name = 'CurseMavenOreSpawnFallback'
+        url = uri(orespawnCurseRepository)
+        patternLayout {
+            artifact "curse/maven/${orespawnCurseModule}/${project.orespawn_curse_file_id}/${orespawnCurseModule}-${project.orespawn_curse_file_id}.[ext]"
+        }
+        metadataSources { artifact() }
+    })
+
+    // Prevent this module from falling through to unrelated plugin or public
+    // repositories; only the sealed mirror and the two audited release hosts
+    // may provide it.
+    exclusiveContent {
+        forRepositories(orespawnRepositories as org.gradle.api.artifacts.repositories.ArtifactRepository[])
         filter {
-            includeModule('curse.maven', orespawnModule)
+            includeModule(orespawnMavenGroup, orespawnMavenArtifact)
         }
     }
 }
@@ -162,15 +191,15 @@ configurations {
 
 dependencies {
     implementation "net.neoforged:neoforge:${project.neo_version}"
-    // NeoForge 20.6 uses official names in both development and production, so the
+    // NeoForge 21.1 uses official names in both development and production, so the
     // exact released OreSpawn artifact is suitable for ordinary runtime use.
-    runtimeOnly "curse.maven:mmd-orespawn-${project.orespawn_curse_project_id}:${project.orespawn_curse_file_id}"
-    orespawnRelease "curse.maven:mmd-orespawn-${project.orespawn_curse_project_id}:${project.orespawn_curse_file_id}"
+    runtimeOnly(orespawnCoordinate) { transitive = false }
+    orespawnRelease(orespawnCoordinate) { transitive = false }
     testImplementation 'junit:junit:4.13.2'
 }
 
 configurations.named('testRuntimeClasspath') {
-    exclude group: 'curse.maven', module: "mmd-orespawn-${project.orespawn_curse_project_id}"
+    exclude group: orespawnMavenGroup, module: orespawnMavenArtifact
 }
 
 tasks.withType(Test).configureEach {
@@ -431,13 +460,13 @@ tasks.register('verifyMavenCoordinates') {
 
 tasks.register('verifyReleaseConfiguration') {
     group = 'verification'
-    description = 'Verifies the exact Mineralogy 1.20.6 NeoForge release identity.'
+    description = 'Verifies the exact Mineralogy 1.21.1 NeoForge release identity.'
     doLast {
-        if (project.mod_version != '6.1.2.120062'
+        if (project.mod_version != '6.1.2.121012'
                 || project.mod_group != expectedMavenGroup
-                || project.minecraft_version != '1.20.6'
-                || project.neo_version != '20.6.139') {
-            throw new GradleException('Unexpected Mineralogy 1.20.6 NeoForge release identity')
+                || project.minecraft_version != '1.21.1'
+                || project.neo_version != '21.1.247') {
+            throw new GradleException('Unexpected Mineralogy 1.21.1 NeoForge release identity')
         }
     }
 }
@@ -446,9 +475,9 @@ tasks.register('verifyReleaseDependencies') {
     group = 'verification'
     description = 'Resolves and verifies the exact released OreSpawn dependency.'
     doLast {
-        if (project.mod_version != '6.1.2.120062'
+        if (project.mod_version != '6.1.2.121012'
                 || project.minecraft_version != project.mc_version
-                || project.mc_version != '1.20.6'
+                || project.mc_version != '1.21.1'
                 || project.loader_name != 'neoforge'
                 || project.loader_code != '2'
                 || project.java_version != '21'
@@ -457,13 +486,18 @@ tasks.register('verifyReleaseDependencies') {
                 || project.curseforge_project_id != '240974') {
             throw new GradleException('Unexpected generic release dispatcher metadata')
         }
-        if (project.orespawn_version != '4.0.16.120062' ||
+        if (project.orespawn_version != '4.0.16.121012' ||
                 project.orespawn_curse_project_id != '245586' ||
-                project.orespawn_curse_file_id != '8800065') {
+                project.orespawn_curse_file_id != '8807135') {
             throw new GradleException('Unexpected OreSpawn release coordinates')
         }
         File artifact = configurations.orespawnRelease.resolvedConfiguration.resolvedArtifacts
-                .find { it.moduleVersion.id.group == 'curse.maven' && it.file.name.endsWith('.jar') }?.file
+                .find {
+                    it.moduleVersion.id.group == orespawnMavenGroup
+                            && it.moduleVersion.id.name == orespawnMavenArtifact
+                            && it.moduleVersion.id.version == project.orespawn_version
+                            && it.file.name.endsWith('.jar')
+                }?.file
         if (artifact == null || !artifact.isFile()) {
             throw new GradleException('Released OreSpawn artifact did not resolve')
         }
@@ -543,10 +577,16 @@ tasks.register('verifyReleaseArtifacts') {
                     it == 'AGENTS.md' || it.contains('/agent-notes/') }) {
                 throw new GradleException('Release jar contains a retired, test, probe, or agent-only path')
             }
+            if (names.any { name ->
+                    name.matches('data/[^/]+/(recipes|advancements|loot_tables)/.*') ||
+                    name.matches('data/[^/]+/tags/(items|blocks|fluids)/.*')
+            }) {
+                throw new GradleException('Release jar contains a stale pre-1.21 plural data directory')
+            }
             def miningTagContracts = [
-                    'data/minecraft/tags/blocks/mineable/pickaxe.json': [1133, 1080],
-                    'data/minecraft/tags/blocks/needs_iron_tool.json': [123, 120],
-                    'data/minecraft/tags/blocks/needs_stone_tool.json': [329, 320]
+                    'data/minecraft/tags/block/mineable/pickaxe.json': [1133, 1080],
+                    'data/minecraft/tags/block/needs_iron_tool.json': [123, 120],
+                    'data/minecraft/tags/block/needs_stone_tool.json': [329, 320]
             ]
             miningTagContracts.each { tagName, contract ->
                 def entry = zip.getEntry(tagName)
@@ -589,7 +629,7 @@ tasks.register('verifyReleaseArtifacts') {
                     ?.dimensions?.get('minecraft:overworld')
             if (!provider.rocks.values().every { it.min_y == -64 && it.max_y == 319 }
                     || oil?.min_y != -48 || oil?.max_y != 48) {
-                throw new GradleException('Packaged provider does not use Minecraft 1.20.6 world heights')
+                throw new GradleException('Packaged provider does not use Minecraft 1.21.1 world heights')
             }
             if (provider.rocks['mineralogy:rock/minecraft/basalt']?.block != 'minecraft:basalt' ||
                     provider.rocks['mineralogy:rock/minecraft/tuff']?.block != 'minecraft:tuff' ||
@@ -605,7 +645,7 @@ tasks.register('verifyReleaseArtifacts') {
                         ore.dimensions?.get('minecraft:overworld')?.host_tags ==
                                 ['minecraft:stone_ore_replaceables', 'minecraft:deepslate_ore_replaceables']
                     }) {
-                throw new GradleException('Packaged provider does not use the Minecraft 1.20.6 native-rock and deepslate contract')
+                throw new GradleException('Packaged provider does not use the Minecraft 1.21.1 native-rock and deepslate contract')
             }
             byte[] providerBytes = zip.getInputStream(
                     zip.getEntry('data/mineralogy/orespawn/provider.json')).bytes
@@ -614,20 +654,20 @@ tasks.register('verifyReleaseArtifacts') {
             if (!java.util.Arrays.equals(providerBytes, exampleBytes)) {
                 throw new GradleException('Packaged provider example differs from the authoritative provider')
             }
-            String recipePrefix = 'data/mineralogy/recipes/'
-            String advancementPrefix = 'data/mineralogy/advancements/recipes/'
+            String recipePrefix = 'data/mineralogy/recipe/'
+            String advancementPrefix = 'data/mineralogy/advancement/recipes/'
             def recipes = names.findAll { it.startsWith(recipePrefix) && it.endsWith('.json') &&
                     !it.substring(recipePrefix.length()).contains('/') }
             def advancements = names.findAll { it.startsWith(advancementPrefix) && it.endsWith('.json') &&
                     !it.substring(advancementPrefix.length()).contains('/') }
-            if (recipes.size() != 1427 || advancements.size() != 1427) {
-                throw new GradleException("Release jar must contain 1427 recipes and advancements, found ${recipes.size()} and ${advancements.size()}")
+            if (recipes.size() != 1433 || advancements.size() != 1433) {
+                throw new GradleException("Release jar must contain 1433 recipes and advancements, found ${recipes.size()} and ${advancements.size()}")
             }
             def allTheRocks = new JsonSlurper().parse(zip.getInputStream(zip.getEntry(
-                    'data/mineralogy/advancements/mineralogy/all_the_rocks.json')))
+                    'data/mineralogy/advancement/mineralogy/all_the_rocks.json')))
             if (allTheRocks.display?.icon?.id != 'mineralogy:basalt'
                     || allTheRocks.display.icon.containsKey('item')) {
-                throw new GradleException('Custom advancement icon must use the Minecraft 1.20.6 item-stack id field')
+                throw new GradleException('Custom advancement icon must use the Minecraft 1.21.1 item-stack id field')
             }
             def verifyAdvancementPredicates = { advancement, String source ->
                 advancement.criteria?.each { criterionName, criterion ->
@@ -640,18 +680,18 @@ tasks.register('verifyReleaseArtifacts') {
                                     ? holderSet.isEmpty() || holderSet.any { !(it instanceof String) || it.isEmpty() }
                                     : !(holderSet instanceof String) || holderSet.isEmpty()
                         }) {
-                            throw new GradleException("Invalid Minecraft 1.20.6 item predicate in ${source}: ${criterionName}")
+                            throw new GradleException("Invalid Minecraft 1.21.1 item predicate in ${source}: ${criterionName}")
                         }
                     }
                 }
             }
             names.findAll {
-                it.startsWith('data/mineralogy/advancements/recipes/') && it.endsWith('.json') &&
+                it.startsWith('data/mineralogy/advancement/recipes/') && it.endsWith('.json') &&
                         !it.endsWith('/_factories.json')
             }.each { entryName ->
                 def advancement = new JsonSlurper().parse(zip.getInputStream(zip.getEntry(entryName)))
                 if (advancement.sends_telemetry_event != false) {
-                    throw new GradleException("Minecraft 1.20.6 recipe advancement must disable telemetry: ${entryName}")
+                    throw new GradleException("Minecraft 1.21.1 recipe advancement must disable telemetry: ${entryName}")
                 }
                 if (advancement.criteria != null) verifyAdvancementPredicates(advancement, entryName)
             }
@@ -663,11 +703,19 @@ tasks.register('verifyReleaseArtifacts') {
                         [name: "${family}_smooth_slab_from_vanilla", source: "minecraft:polished_${family}_slab", result: "mineralogy:${family}_smooth_slab"]
                 ]
             }
+            slabBridges.addAll([
+                    [name: 'tuff_slab_to_vanilla', source: 'mineralogy:tuff_slab', result: 'minecraft:tuff_slab'],
+                    [name: 'tuff_slab_from_vanilla', source: 'minecraft:tuff_slab', result: 'mineralogy:tuff_slab'],
+                    [name: 'tuff_smooth_slab_to_vanilla', source: 'mineralogy:tuff_smooth_slab', result: 'minecraft:polished_tuff_slab'],
+                    [name: 'tuff_smooth_slab_from_vanilla', source: 'minecraft:polished_tuff_slab', result: 'mineralogy:tuff_smooth_slab'],
+                    [name: 'tuff_brick_slab_to_vanilla', source: 'mineralogy:tuff_brick_slab', result: 'minecraft:tuff_brick_slab'],
+                    [name: 'tuff_brick_slab_from_vanilla', source: 'minecraft:tuff_brick_slab', result: 'mineralogy:tuff_brick_slab']
+            ])
             slabBridges.each { bridge ->
                 def recipe = new JsonSlurper().parse(zip.getInputStream(zip.getEntry(
-                        "data/mineralogy/recipes/${bridge.name}.json")))
+                        "data/mineralogy/recipe/${bridge.name}.json")))
                 def advancement = new JsonSlurper().parse(zip.getInputStream(zip.getEntry(
-                        "data/mineralogy/advancements/recipes/${bridge.name}.json")))
+                        "data/mineralogy/advancement/recipes/${bridge.name}.json")))
                 if (recipe.type != 'minecraft:crafting_shapeless' || recipe.ingredients?.size() != 1 ||
                         recipe.ingredients[0].item != bridge.source || recipe.result?.id != bridge.result ||
                         recipe.result?.count != 1 || recipe.containsKey('neoforge:conditions') ||
@@ -676,7 +724,7 @@ tasks.register('verifyReleaseArtifacts') {
                     throw new GradleException("Invalid native/Mineralogy slab conversion: ${bridge.name}")
                 }
             }
-            def minecraftRecipes = names.findAll { it.startsWith('data/minecraft/recipes/') && it.endsWith('.json') }
+            def minecraftRecipes = names.findAll { it.startsWith('data/minecraft/recipe/') && it.endsWith('.json') }
             def cobblestoneOverrides = ['furnace', 'brewing_stand', 'lever', 'piston',
                     'dispenser', 'dropper', 'observer', 'mossy_cobblestone_from_vine',
                     'mossy_cobblestone_from_moss_block', 'andesite', 'diorite', 'stone_axe',
@@ -689,18 +737,24 @@ tasks.register('verifyReleaseArtifacts') {
                  "${family}_slab_from_${family}_stonecutting",
                  "polished_${family}_slab_from_${family}_stonecutting",
                  "polished_${family}_slab_from_polished_${family}_stonecutting"]
-            }
-            def polishedOverrides = ['andesite', 'basalt', 'diorite', 'granite'].collect {
+            } + ['tuff_slab', 'polished_tuff_slab', 'tuff_brick_slab',
+                 'tuff_slab_from_tuff_stonecutting',
+                 'polished_tuff_slab_from_tuff_stonecutting',
+                 'polished_tuff_slab_from_polished_tuff_stonecutting',
+                 'tuff_brick_slab_from_tuff_stonecutting',
+                 'tuff_brick_slab_from_polished_tuff_stonecutting',
+                 'tuff_brick_slab_from_tuff_bricks_stonecutting']
+            def polishedOverrides = ['andesite', 'basalt', 'diorite', 'granite', 'tuff'].collect {
                 "polished_${it}"
             }
             def expectedMinecraftRecipes = (cobblestoneOverrides + slabOverrides + polishedOverrides).collect {
-                "data/minecraft/recipes/${it}.json"
+                "data/minecraft/recipe/${it}.json"
             } as Set
-            if ((minecraftRecipes as Set) != expectedMinecraftRecipes || minecraftRecipes.size() != 38) {
-                throw new GradleException('Release jar must contain exactly 19 cobblestone, 15 slab, and four polished-block recipe overrides')
+            if ((minecraftRecipes as Set) != expectedMinecraftRecipes || minecraftRecipes.size() != 48) {
+                throw new GradleException('Release jar must contain exactly 19 cobblestone, 24 slab, and five polished-block recipe overrides')
             }
             cobblestoneOverrides.each { recipe ->
-                def data = new JsonSlurper().parse(zip.getInputStream(zip.getEntry("data/minecraft/recipes/${recipe}.json")))
+                def data = new JsonSlurper().parse(zip.getInputStream(zip.getEntry("data/minecraft/recipe/${recipe}.json")))
                 if (data.containsKey('neoforge:conditions') || data.type == null) {
                     throw new GradleException("Invalid dynamic-tag cobblestone override: ${recipe}")
                 }
@@ -712,7 +766,7 @@ tasks.register('verifyReleaseArtifacts') {
             ['coast', 'sentry', 'vex'].each { template ->
                 String recipeName = "${template}_armor_trim_smithing_template"
                 def data = new JsonSlurper().parse(zip.getInputStream(zip.getEntry(
-                        "data/minecraft/recipes/${recipeName}.json")))
+                        "data/minecraft/recipe/${recipeName}.json")))
                 String result = "minecraft:${recipeName}"
                 if (data.key?.C?.tag != 'mineralogy:cobblestone_equivalents'
                         || data.pattern != ['#S#', '#C#', '###']
@@ -726,17 +780,17 @@ tasks.register('verifyReleaseArtifacts') {
                 }
             }
             slabOverrides.each { recipe ->
-                def data = new JsonSlurper().parse(zip.getInputStream(zip.getEntry("data/minecraft/recipes/${recipe}.json")))
+                def data = new JsonSlurper().parse(zip.getInputStream(zip.getEntry("data/minecraft/recipe/${recipe}.json")))
                 if (data.containsKey('neoforge:conditions')) {
                     throw new GradleException("Guaranteed Mineralogy slab override must be unconditional: ${recipe}")
                 }
                 if (recipe.endsWith('_stonecutting')) {
                     if (!(data.result instanceof Map) || data.result.id == null
                             || data.result.count != 2 || data.containsKey('count')) {
-                        throw new GradleException("Invalid Minecraft 1.20.6 stonecutting result: ${recipe}")
+                        throw new GradleException("Invalid Minecraft 1.21.1 stonecutting result: ${recipe}")
                     }
                 } else if (data.result?.id == null) {
-                    throw new GradleException("Invalid Minecraft 1.20.6 slab result: ${recipe}")
+                    throw new GradleException("Invalid Minecraft 1.21.1 slab result: ${recipe}")
                 }
             }
             def families = ['andesite', 'basalt', 'diorite', 'granite', 'rhyolite',
@@ -750,12 +804,12 @@ tasks.register('verifyReleaseArtifacts') {
                 stone_tool_materials: '#minecraft:stone_tool_materials'
             ]
             unionTags.each { tag, base ->
-                def entry = zip.getEntry("data/mineralogy/tags/items/${tag}.json")
+                def entry = zip.getEntry("data/mineralogy/tags/item/${tag}.json")
                 def values = entry == null ? [] : new JsonSlurper().parse(zip.getInputStream(entry)).values
                 def expected = [base] + families.collect { "#mineralogy:stones/${it}" }
                 if (values != expected) throw new GradleException("Invalid Mineralogy recipe union tag: ${tag}")
             }
-            if (!families.every { names.contains("data/mineralogy/tags/blocks/stones/${it}.json".toString()) }) {
+            if (!families.every { names.contains("data/mineralogy/tags/block/stones/${it}.json".toString()) }) {
                 throw new GradleException('Release jar must contain all 27 raw-rock family block tags')
             }
             def advancementCategories = [
@@ -768,27 +822,27 @@ tasks.register('verifyReleaseArtifacts') {
                 stone_shovel: 'tools', stone_sword: 'combat'
             ]
             def expectedMinecraftAdvancements = advancementCategories.collect { recipe, category ->
-                "data/minecraft/advancements/recipes/${category}/${recipe}.json"
+                "data/minecraft/advancement/recipes/${category}/${recipe}.json"
             } as Set
-            expectedMinecraftAdvancements.addAll(['andesite', 'basalt', 'diorite', 'granite'].collect {
-                "data/minecraft/advancements/recipes/building_blocks/polished_${it}.json"
+            expectedMinecraftAdvancements.addAll(['andesite', 'basalt', 'diorite', 'granite', 'tuff'].collect {
+                "data/minecraft/advancement/recipes/building_blocks/polished_${it}.json"
             })
             def minecraftAdvancements = names.findAll {
-                it.startsWith('data/minecraft/advancements/recipes/') && it.endsWith('.json')
+                it.startsWith('data/minecraft/advancement/recipes/') && it.endsWith('.json')
             } as Set
             if (minecraftAdvancements != expectedMinecraftAdvancements) {
-                throw new GradleException('Release jar must contain exactly 16 cobblestone and four polished-block advancement overrides')
+                throw new GradleException('Release jar must contain exactly 16 cobblestone and five polished-block advancement overrides')
             }
             advancementCategories.each { recipe, category ->
                 def data = new JsonSlurper().parse(zip.getInputStream(zip.getEntry(
-                        "data/minecraft/advancements/recipes/${category}/${recipe}.json")))
+                        "data/minecraft/advancement/recipes/${category}/${recipe}.json")))
                 if (data.containsKey('neoforge:conditions') || data.sends_telemetry_event != false) {
                     throw new GradleException("Stable dynamic-tag advancement must disable telemetry: ${recipe}")
                 }
                 verifyAdvancementPredicates(data, "minecraft:${category}/${recipe}")
             }
-            ['andesite', 'basalt', 'diorite', 'granite'].each { family ->
-                String entryName = "data/minecraft/advancements/recipes/building_blocks/polished_${family}.json"
+            ['andesite', 'basalt', 'diorite', 'granite', 'tuff'].each { family ->
+                String entryName = "data/minecraft/advancement/recipes/building_blocks/polished_${family}.json"
                 def advancement = new JsonSlurper().parse(zip.getInputStream(zip.getEntry(entryName)))
                 if (advancement.sends_telemetry_event != false) {
                     throw new GradleException("Polished-block advancement must disable telemetry: ${entryName}")
@@ -798,7 +852,7 @@ tasks.register('verifyReleaseArtifacts') {
             def wallBlockstates = names.findAll { it ==~ /assets\/mineralogy\/blockstates\/.+_wall\.json/ }
             def tallWallModels = names.findAll { it ==~ /assets\/mineralogy\/models\/block\/.+_wall_side_tall\.json/ }
             if (wallBlockstates.size() != 108 || tallWallModels.size() != 108) {
-                throw new GradleException("Release jar must contain all 108 NeoForge 20.6 wall blockstates and tall-side models")
+                throw new GradleException("Release jar must contain all 108 NeoForge 21.1 wall blockstates and tall-side models")
             }
         }
         finally {

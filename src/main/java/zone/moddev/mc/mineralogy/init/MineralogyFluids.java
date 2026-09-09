@@ -36,10 +36,8 @@ public final class MineralogyFluids {
 	private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM,
 			Mineralogy.MODID);
 
-	private static final ResourceLocation CRUDE_OIL_STILL = new ResourceLocation(Mineralogy.MODID,
-			"blocks/crude_oil_still");
-	private static final ResourceLocation CRUDE_OIL_FLOW = new ResourceLocation(Mineralogy.MODID,
-			"blocks/crude_oil_flow");
+	private static final ResourceLocation CRUDE_OIL_STILL = ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "blocks/crude_oil_still");
+	private static final ResourceLocation CRUDE_OIL_FLOW = ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "blocks/crude_oil_flow");
 
 	public static final DeferredHolder<FluidType, FluidType> CRUDE_OIL_TYPE = FLUID_TYPES.register("crude_oil",
 			() -> new FluidType(FluidType.Properties.create()

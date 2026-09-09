@@ -19,8 +19,8 @@ public class WorkflowContractTest {
         try (FileInputStream input = new FileInputStream("gradle.properties")) {
             properties.load(input);
         }
-        assertEquals("6.1.2.120062", properties.getProperty("mod_version"));
-        assertEquals("1.20.6", properties.getProperty("minecraft_version"));
+        assertEquals("6.1.2.121012", properties.getProperty("mod_version"));
+        assertEquals("1.21.1", properties.getProperty("minecraft_version"));
         assertEquals(properties.getProperty("mc_version"), properties.getProperty("minecraft_version"));
         assertEquals("neoforge", properties.getProperty("loader_name"));
         assertEquals("2", properties.getProperty("loader_code"));
@@ -29,9 +29,9 @@ public class WorkflowContractTest {
         assertEquals("21", properties.getProperty("gradle_java_version"));
         assertEquals("240974", properties.getProperty("curseforge_project_id"));
         assertEquals("zone.moddev.mc.mineralogy", properties.getProperty("mod_group"));
-        assertEquals("4.0.16.120062", properties.getProperty("orespawn_version"));
-        assertEquals("8800065", properties.getProperty("orespawn_curse_file_id"));
-        assertEquals("C3642CE69BE10E140BCE12345FBA1AF22C06E8A1D92F34B4C1E1356027D692F0",
+        assertEquals("4.0.16.121012", properties.getProperty("orespawn_version"));
+        assertEquals("8807135", properties.getProperty("orespawn_curse_file_id"));
+        assertEquals("B0659E071633D9EC42A96D9759895DE2F5126C205A4BDBFEE0EB8E3F226D158B",
                 properties.getProperty("orespawn_sha256"));
     }
 
@@ -42,7 +42,7 @@ public class WorkflowContractTest {
         String wrapper = text(".github/workflows/validate-gradle-build.yml");
         String staging = text("gradle/stage-orespawn-release.sh");
         assertTrue(ci.contains("name: Build, test, and audit"));
-        assertTrue(ci.contains("master-1.20.6-neo"));
+        assertTrue(ci.contains("master-1.21.1-neo"));
         assertTrue(ci.contains("java-version: '21.0.7+6.0.LTS'"));
         assertTrue(ci.contains("Install exact Java 21"));
         assertTrue(ci.contains("Cold NeoForge bootstrap"));
@@ -98,12 +98,18 @@ public class WorkflowContractTest {
     }
 
     @Test
-    public void stagedOreSpawnDependencyCannotFallThroughToPublicRepositories() throws Exception {
+    public void oreSpawnUsesMmdMavenWithCurseAndSealedMirrorFallbacks() throws Exception {
         String build = text("build.gradle");
         assertTrue(build.contains("exclusiveContent"));
-        assertTrue(build.contains("forRepository"));
-        assertTrue(build.contains("includeModule('curse.maven', orespawnModule)"));
+        assertTrue(build.contains("forRepositories"));
+        assertTrue(build.contains("includeModule(orespawnMavenGroup, orespawnMavenArtifact)"));
+        assertTrue(build.contains("?: 'https://maven.moddev.zone/releases'"));
+        assertTrue(build.contains("?: 'https://www.cursemaven.com'"));
+        assertTrue(build.contains("'CurseMavenOreSpawnFallback'"));
+        assertTrue(build.contains("curse/maven/${orespawnCurseModule}"));
         assertTrue(build.contains("'OreSpawnReleaseVerificationMirror'"));
+        assertTrue(build.contains("runtimeOnly(orespawnCoordinate) { transitive = false }"));
+        assertFalse(build.contains("runtimeOnly \"curse.maven:mmd-orespawn-"));
     }
 
     @Test

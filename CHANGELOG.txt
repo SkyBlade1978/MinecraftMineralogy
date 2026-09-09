@@ -1,3 +1,28 @@
+Mineralogy 6.1.2.121012 for Minecraft 1.21.1 NeoForge
+
+- Ported the accepted NeoForge feature and compatibility contract to Minecraft
+  1.21.1 and NeoForge 21.1.247 while preserving every registry, NBT, provider,
+  configuration, migration, crude-oil, recipe, locale, guide, relief, mining,
+  furnace, and legacy-world identity.
+- Converted server data to Minecraft 1.21.1's singular recipe, advancement,
+  loot-table, and tag directories, retaining NeoForge conditions and dynamic
+  cobblestone-tag rebinding without any Forge condition serializer.
+- Reconciled Minecraft 1.21.1's complete native tuff family. Mineralogy's
+  upright-capable slabs win three crafting and six stonecutting routes; six
+  new exact bridge recipes preserve access to native raw, polished, and brick
+  tuff slabs; native stairs, walls, bricks, polished, and chiseled forms remain
+  available through their non-conflicting vanilla recipes.
+- Increased the generated contract to 1,433 Mineralogy recipe/advancement
+  pairs, 18 slab bridges, 48 Minecraft recipe overrides, and 21 Minecraft
+  advancement overrides. Tuff plus sand produces vanilla polished tuff while
+  2x2 raw tuff remains Mineralogy's brick route.
+- Updated the build, metadata, CI, documentation, and exact OreSpawn pin for
+  Minecraft 1.21.1, NeoForge 21.1.247, OreSpawn 4.0.16.121012, Java 21, and
+  pack format 34. Mineralogy still registers no world generator.
+- Prefer the exact OreSpawn release from MMD Maven, with the matching
+  CurseForge file retained as a narrowly scoped fallback and SHA-256-verified
+  release provenance. This avoids CurseMaven rate limits breaking IDE sync.
+
 Mineralogy 6.1.2.120062 for Minecraft 1.20.6 NeoForge
 
 - Added the first NeoForge Mineralogy baseline while retaining gameplay,

@@ -1,0 +1,37 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:granite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:granite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:granite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:granite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:granite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:granite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:granite_relief_blank"
+                        },
+                        {
+                            "item":  "mineralogy:granite_relief_blank"
+                        },
+                        {
+                            "item":  "minecraft:stone_hoe"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:granite_relief_hoe",
+                   "count":  8
+               }
+}

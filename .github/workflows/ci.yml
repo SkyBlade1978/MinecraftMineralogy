@@ -1,19 +1,19 @@
-name: Mineralogy 1.20.6 NeoForge CI
+name: Mineralogy 1.21.1 NeoForge CI
 
 on:
   push:
     branches:
-      - master-1.20.6-neo
+      - master-1.21.1-neo
       - 'feature/**'
   pull_request:
     branches:
-      - master-1.20.6-neo
+      - master-1.21.1-neo
 
 permissions:
   contents: read
 
 concurrency:
-  group: mineralogy-1.20.6-neo-${{ github.workflow }}-${{ github.ref }}
+  group: mineralogy-1.21.1-neo-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -91,20 +91,20 @@ jobs:
       - name: Upload audited release candidate
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: Mineralogy-1.20.6-neoforge-${{ github.sha }}
+          name: Mineralogy-1.21.1-neoforge-${{ github.sha }}
           if-no-files-found: error
           retention-days: 30
           path: |
-            build/libs/Mineralogy-6.1.2.120062.jar
-            build/libs/Mineralogy-6.1.2.120062-sources.jar
-            build/libs/Mineralogy-6.1.2.120062-javadoc.jar
+            build/libs/Mineralogy-6.1.2.121012.jar
+            build/libs/Mineralogy-6.1.2.121012-sources.jar
+            build/libs/Mineralogy-6.1.2.121012-javadoc.jar
             build/release/SHA256SUMS
             CHANGELOG.txt
       - name: Upload diagnostics on failure
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: Mineralogy-1.20.6-neoforge-diagnostics-${{ github.sha }}
+          name: Mineralogy-1.21.1-neoforge-diagnostics-${{ github.sha }}
           if-no-files-found: ignore
           retention-days: 14
           path: |

@@ -28,22 +28,22 @@ import zone.moddev.mc.mineralogy.MineralogyConfig;
 import zone.moddev.mc.mineralogy.data.Material;
 import zone.moddev.mc.mineralogy.data.MaterialData;
 
-/** Applies the legacy cobblestone option to NeoForge 20.6 block and item tags. */
+/** Applies the legacy cobblestone option to NeoForge 21.1 block and item tags. */
 public final class CobblestoneTagPolicy {
-    private static final ResourceLocation COMMON_COBBLESTONES = new ResourceLocation("c", "cobblestones");
+    private static final ResourceLocation COMMON_COBBLESTONES = ResourceLocation.fromNamespaceAndPath("c", "cobblestones");
     private static final ResourceLocation COMMON_NORMAL_COBBLESTONES =
-            new ResourceLocation("c", "cobblestones/normal");
-    private static final ResourceLocation FORGE_COBBLESTONE = new ResourceLocation("forge", "cobblestone");
+            ResourceLocation.fromNamespaceAndPath("c", "cobblestones/normal");
+    private static final ResourceLocation FORGE_COBBLESTONE = ResourceLocation.fromNamespaceAndPath("forge", "cobblestone");
     private static final ResourceLocation MINERALOGY_COBBLESTONE =
-            new ResourceLocation(Mineralogy.MODID, "cobblestone_equivalents");
+            ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "cobblestone_equivalents");
     private static final ResourceLocation MINERALOGY_STONE_CRAFTING =
-            new ResourceLocation(Mineralogy.MODID, "stone_crafting_materials");
+            ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "stone_crafting_materials");
     private static final ResourceLocation MINERALOGY_STONE_TOOLS =
-            new ResourceLocation(Mineralogy.MODID, "stone_tool_materials");
+            ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "stone_tool_materials");
     private static final ResourceLocation STONE_CRAFTING_MATERIALS =
-            new ResourceLocation("minecraft", "stone_crafting_materials");
+            ResourceLocation.fromNamespaceAndPath("minecraft", "stone_crafting_materials");
     private static final ResourceLocation STONE_TOOL_MATERIALS =
-            new ResourceLocation("minecraft", "stone_tool_materials");
+            ResourceLocation.fromNamespaceAndPath("minecraft", "stone_tool_materials");
 
     private CobblestoneTagPolicy() {
     }
@@ -97,7 +97,7 @@ public final class CobblestoneTagPolicy {
                 configuredItems, enabled, "chert", "pumice");
         itemRegistry.bindTags(itemTags);
 
-        Mineralogy.LOGGER.debug("Applied NeoForge 20.6 cobblestone policy: enabled={}, rocks={}, "
+        Mineralogy.LOGGER.debug("Applied NeoForge 21.1 cobblestone policy: enabled={}, rocks={}, "
                 + "unionItems={}, commonItems={}, craftingItems={}, toolItems={}", enabled,
                 configuredItems.size(), size(itemRegistry, Registries.ITEM, MINERALOGY_COBBLESTONE),
                 size(itemRegistry, Registries.ITEM, COMMON_COBBLESTONES),
@@ -137,7 +137,7 @@ public final class CobblestoneTagPolicy {
         Set<Holder<T>> values = new LinkedHashSet<>();
         for (Material material : MaterialData.allIncludingRockSalt()) {
             TagKey<T> tag = TagKey.create(registryKey,
-                    new ResourceLocation(Mineralogy.MODID, "stones/" + material.id()));
+                    ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "stones/" + material.id()));
             registry.getTag(tag).ifPresent(named -> named.forEach(values::add));
         }
         return values;
@@ -154,7 +154,7 @@ public final class CobblestoneTagPolicy {
         }
         for (String name : unconditionalNames) {
             ResourceKey<T> valueKey = ResourceKey.create(registryKey,
-                    new ResourceLocation(Mineralogy.MODID, name));
+                    ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, name));
             registry.getHolder(valueKey).ifPresent(values::add);
         }
         tags.put(key, new ArrayList<>(values));

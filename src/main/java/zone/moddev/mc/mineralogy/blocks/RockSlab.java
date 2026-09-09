@@ -110,7 +110,7 @@ public class RockSlab extends Block implements NamedMineralogyBlock {
 		}
 
 		Block doubleSlab = BuiltInRegistries.BLOCK.get(
-				new ResourceLocation(Mineralogy.MODID, this.doubleSlabName));
+				ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, this.doubleSlabName));
 		if (!(doubleSlab instanceof DoubleSlab)) {
 			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 		}
