@@ -1,19 +1,17 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "x  ",
-                    "xx ",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/diabase/smooth"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:diabase_smooth_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "x  ",
+    "xx ",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:stones/diabase/smooth"
+  },
+  "result": {
+    "id": "mineralogy:diabase_smooth_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }

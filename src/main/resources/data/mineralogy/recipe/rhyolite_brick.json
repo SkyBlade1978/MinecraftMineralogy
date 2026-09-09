@@ -1,18 +1,16 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/rhyolite"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:rhyolite_brick",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": "#mineralogy:stones/rhyolite"
+  },
+  "result": {
+    "id": "mineralogy:rhyolite_brick",
+    "count": 4
+  },
+  "show_notification": true
 }

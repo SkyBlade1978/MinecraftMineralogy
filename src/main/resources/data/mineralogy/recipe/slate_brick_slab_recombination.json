@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:slate_brick_slab"
-                        },
-                        {
-                            "item":  "mineralogy:slate_brick_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:slate_brick",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:slate_brick_slab",
+    "mineralogy:slate_brick_slab"
+  ],
+  "result": {
+    "id": "mineralogy:slate_brick",
+    "count": 1
+  }
 }

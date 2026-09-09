@@ -1,18 +1,16 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:peridotite_slab"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:peridotite_brick_slab",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": "mineralogy:peridotite_slab"
+  },
+  "result": {
+    "id": "mineralogy:peridotite_brick_slab",
+    "count": 4
+  },
+  "show_notification": true
 }

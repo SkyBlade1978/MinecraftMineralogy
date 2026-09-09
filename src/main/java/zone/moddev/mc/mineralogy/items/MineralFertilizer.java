@@ -1,5 +1,7 @@
 package zone.moddev.mc.mineralogy.items;
 
+import zone.moddev.mc.mineralogy.init.RegistrationProperties;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.Items;
@@ -14,7 +16,7 @@ public class MineralFertilizer extends Item {
 	private final ItemStack phantomBonemeal = new ItemStack(Items.BONE_MEAL, 27);
 
 	public MineralFertilizer() {
-		super(new Item.Properties());
+		super(RegistrationProperties.item(new Item.Properties(), "mineral_fertilizer"));
 	}
 
 	@Override

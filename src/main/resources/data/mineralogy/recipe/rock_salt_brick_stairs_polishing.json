@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:rock_salt_brick_stairs"
-                        },
-                        {
-                            "tag":  "c:sands"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:rock_salt_smooth_brick_stairs",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:rock_salt_brick_stairs",
+    "#c:sands"
+  ],
+  "result": {
+    "id": "mineralogy:rock_salt_smooth_brick_stairs",
+    "count": 1
+  }
 }

@@ -3,16 +3,16 @@ package zone.moddev.mc.mineralogy.blocks;
 import java.util.Collections;
 import java.util.List;
 
+import zone.moddev.mc.mineralogy.init.RegistrationProperties;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.storage.loot.LootParams.Builder;
-import net.minecraft.world.phys.HitResult;
 
 public class DoubleSlab extends Block implements NamedMineralogyBlock {
 	private final Block drops;
@@ -27,8 +27,9 @@ public class DoubleSlab extends Block implements NamedMineralogyBlock {
 
 	public DoubleSlab(float hardness, float blastResistance, int toolHardnessLevel, SoundType sound, Block drops,
 			Block fullBlock, String name) {
-		super(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.STONE).strength(hardness, blastResistance).sound(sound)
-				.requiresCorrectToolForDrops());
+		super(RegistrationProperties.block(
+				BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.STONE)
+						.strength(hardness, blastResistance).sound(sound).requiresCorrectToolForDrops(), name));
 		this.drops = drops;
 		this.fullBlock = fullBlock;
 		this.toolHardnessLevel = toolHardnessLevel;
@@ -41,8 +42,7 @@ public class DoubleSlab extends Block implements NamedMineralogyBlock {
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader world, BlockPos pos,
-			Player player) {
+	protected ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state, boolean includeData) {
 		return new ItemStack(drops);
 	}
 

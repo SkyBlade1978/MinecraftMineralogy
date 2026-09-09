@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:diabase_stairs"
-                        },
-                        {
-                            "tag":  "c:sands"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:diabase_smooth_stairs",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:diabase_stairs",
+    "#c:sands"
+  ],
+  "result": {
+    "id": "mineralogy:diabase_smooth_stairs",
+    "count": 1
+  }
 }

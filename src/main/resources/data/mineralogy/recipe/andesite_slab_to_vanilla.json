@@ -1,13 +1,11 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:andesite_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "minecraft:andesite_slab",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:andesite_slab"
+  ],
+  "result": {
+    "id": "minecraft:andesite_slab",
+    "count": 1
+  }
 }

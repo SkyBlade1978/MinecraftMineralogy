@@ -1,17 +1,14 @@
 package zone.moddev.mc.mineralogy.init;
 
-import java.util.function.Consumer;
-
 import zone.moddev.mc.mineralogy.Mineralogy;
 import zone.moddev.mc.mineralogy.blocks.MineralogyLiquidBlock;
 import zone.moddev.mc.mineralogy.items.MineralogyBucketItem;
 
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.SoundActions;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -36,8 +33,8 @@ public final class MineralogyFluids {
 	private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM,
 			Mineralogy.MODID);
 
-	private static final ResourceLocation CRUDE_OIL_STILL = ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "blocks/crude_oil_still");
-	private static final ResourceLocation CRUDE_OIL_FLOW = ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "blocks/crude_oil_flow");
+	private static final Identifier CRUDE_OIL_STILL = Identifier.fromNamespaceAndPath(Mineralogy.MODID, "blocks/crude_oil_still");
+	private static final Identifier CRUDE_OIL_FLOW = Identifier.fromNamespaceAndPath(Mineralogy.MODID, "blocks/crude_oil_flow");
 
 	public static final DeferredHolder<FluidType, FluidType> CRUDE_OIL_TYPE = FLUID_TYPES.register("crude_oil",
 			() -> new FluidType(FluidType.Properties.create()
@@ -45,22 +42,7 @@ public final class MineralogyFluids {
 					.viscosity(6000)
 					.temperature(300)
 					.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
-					.sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)) {
-				@Override
-				public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-					consumer.accept(new IClientFluidTypeExtensions() {
-						@Override
-						public ResourceLocation getStillTexture() {
-							return CRUDE_OIL_STILL;
-						}
-
-						@Override
-						public ResourceLocation getFlowingTexture() {
-							return CRUDE_OIL_FLOW;
-						}
-					});
-				}
-			});
+					.sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)));
 
 	private static final BaseFlowingFluid.Properties CRUDE_OIL_PROPERTIES =
 			new BaseFlowingFluid.Properties(MineralogyFluids::crudeOilType,
@@ -79,18 +61,27 @@ public final class MineralogyFluids {
 			FLUIDS.register("flowing_crude_oil", () -> new BaseFlowingFluid.Flowing(CRUDE_OIL_PROPERTIES));
 	public static final DeferredHolder<net.minecraft.world.level.block.Block, LiquidBlock> CRUDE_OIL_BLOCK = BLOCKS.register("crude_oil",
 			() -> new MineralogyLiquidBlock(MineralogyFluids::crudeOilFlowing,
-					BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable()
-							.noCollission().strength(100.0F).noLootTable().liquid()
-							.pushReaction(PushReaction.DESTROY)));
+					RegistrationProperties.block(BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable()
+							.noCollision().strength(100.0F).noLootTable().liquid()
+							.pushReaction(PushReaction.DESTROY), "crude_oil")));
 	public static final DeferredHolder<Item, Item> CRUDE_OIL_BUCKET = ITEMS.register("crude_oil_bucket",
 			() -> new MineralogyBucketItem(MineralogyFluids::crudeOil,
-					new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+					RegistrationProperties.item(
+							new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1), "crude_oil_bucket")));
 
-	public static void register(IEventBus modBus) {
-		FLUID_TYPES.register(modBus);
-		FLUIDS.register(modBus);
-		BLOCKS.register(modBus);
-		ITEMS.register(modBus);
+	public static void register(IEventBus modEventBus) {
+		FLUID_TYPES.register(modEventBus);
+		FLUIDS.register(modEventBus);
+		BLOCKS.register(modEventBus);
+		ITEMS.register(modEventBus);
+	}
+
+	public static Identifier crudeOilStillTexture() {
+		return CRUDE_OIL_STILL;
+	}
+
+	public static Identifier crudeOilFlowTexture() {
+		return CRUDE_OIL_FLOW;
 	}
 
 	public static Fluid crudeOil() {

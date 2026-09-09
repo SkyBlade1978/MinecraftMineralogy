@@ -12,7 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.EventHooks;
@@ -57,22 +58,24 @@ public class SlotRockFurnaceOutput extends Slot {
 
 	@Override
 	protected void checkTakeAchievements(ItemStack stack) {
-		stack.onCraftedBy(player.level(), player, removeCount);
+		int craftedCount = removeCount;
+		stack.onCraftedBy(player, craftedCount);
 
-		if (!player.level().isClientSide) {
+		if (!player.level().isClientSide()) {
 			spawnExperience();
 			furnace.onCrafting(player);
 		}
 
 		removeCount = 0;
-		EventHooks.firePlayerSmeltedEvent(player, stack);
+		EventHooks.firePlayerSmeltedEvent(player, stack, craftedCount);
 	}
 
 	private void spawnExperience() {
-		for (Map.Entry<ResourceLocation, Integer> entry : furnace.getRecipeUseCounts().entrySet()) {
-			RecipeHolder<?> recipe = player.level().getRecipeManager().byKey(entry.getKey()).orElse(null);
+		for (Map.Entry<ResourceKey<Recipe<?>>, Integer> entry : furnace.getRecipeUseCounts().entrySet()) {
+			RecipeHolder<?> recipe = player.level() instanceof ServerLevel serverLevel
+					? serverLevel.recipeAccess().byKey(entry.getKey()).orElse(null) : null;
 			float experience = recipe != null && recipe.value() instanceof SmeltingRecipe
-					? ((SmeltingRecipe) recipe.value()).getExperience() : 0.0F;
+					? ((SmeltingRecipe) recipe.value()).experience() : 0.0F;
 			int amount = getExperienceAmount(entry.getValue().intValue(), experience);
 
 			if (amount > 0 && player.level() instanceof ServerLevel) {

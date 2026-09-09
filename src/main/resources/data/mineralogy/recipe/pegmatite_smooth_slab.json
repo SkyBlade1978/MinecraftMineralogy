@@ -1,17 +1,15 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:pegmatite_smooth"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:pegmatite_smooth_slab",
-                   "count":  6
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx"
+  ],
+  "key": {
+    "x": "mineralogy:pegmatite_smooth"
+  },
+  "result": {
+    "id": "mineralogy:pegmatite_smooth_slab",
+    "count": 6
+  },
+  "show_notification": true
 }

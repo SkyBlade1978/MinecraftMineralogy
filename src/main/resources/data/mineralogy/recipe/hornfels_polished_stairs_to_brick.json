@@ -1,18 +1,16 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:hornfels_smooth_stairs"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:hornfels_smooth_brick_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": "mineralogy:hornfels_smooth_stairs"
+  },
+  "result": {
+    "id": "mineralogy:hornfels_smooth_brick_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }

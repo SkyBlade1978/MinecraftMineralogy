@@ -12,7 +12,7 @@ import zone.moddev.mc.mineralogy.blocks.RockWall;
 import net.minecraft.network.chat.Component;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -24,7 +24,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
-@EventBusSubscriber(modid = Mineralogy.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Mineralogy.MODID)
 public final class MineralogyItemGroups {
 	private static CreativeModeTab mineralogy;
 	private static CreativeModeTab rocks;
@@ -64,7 +64,7 @@ public final class MineralogyItemGroups {
 		}
 
 		for (Item item : BuiltInRegistries.ITEM.stream().toList()) {
-			ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
+			Identifier id = BuiltInRegistries.ITEM.getKey(item);
 			if (id == null || !Mineralogy.MODID.equals(id.getNamespace())) {
 				continue;
 			}
@@ -111,12 +111,12 @@ public final class MineralogyItemGroups {
 				.icon(() -> icon(iconItemName))
 				.withSearchBar()
 				.build();
-		helper.register(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, name), tab);
+		helper.register(Identifier.fromNamespaceAndPath(Mineralogy.MODID, name), tab);
 		return tab;
 	}
 
 	private static ItemStack icon(String itemName) {
-		Item item = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, itemName));
+		Item item = BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(Mineralogy.MODID, itemName));
 		return new ItemStack(item == null ? net.minecraft.world.item.Items.IRON_PICKAXE : item);
 	}
 }

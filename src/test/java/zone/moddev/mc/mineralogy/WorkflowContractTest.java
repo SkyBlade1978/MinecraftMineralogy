@@ -19,8 +19,8 @@ public class WorkflowContractTest {
         try (FileInputStream input = new FileInputStream("gradle.properties")) {
             properties.load(input);
         }
-        assertEquals("6.1.2.121012", properties.getProperty("mod_version"));
-        assertEquals("1.21.1", properties.getProperty("minecraft_version"));
+        assertEquals("6.1.2.121112", properties.getProperty("mod_version"));
+        assertEquals("1.21.11", properties.getProperty("minecraft_version"));
         assertEquals(properties.getProperty("mc_version"), properties.getProperty("minecraft_version"));
         assertEquals("neoforge", properties.getProperty("loader_name"));
         assertEquals("2", properties.getProperty("loader_code"));
@@ -29,10 +29,12 @@ public class WorkflowContractTest {
         assertEquals("21", properties.getProperty("gradle_java_version"));
         assertEquals("240974", properties.getProperty("curseforge_project_id"));
         assertEquals("zone.moddev.mc.mineralogy", properties.getProperty("mod_group"));
-        assertEquals("4.0.16.121012", properties.getProperty("orespawn_version"));
-        assertEquals("8807135", properties.getProperty("orespawn_curse_file_id"));
-        assertEquals("B0659E071633D9EC42A96D9759895DE2F5126C205A4BDBFEE0EB8E3F226D158B",
+        assertEquals("4.0.16.121112", properties.getProperty("orespawn_version"));
+        assertEquals("8809764", properties.getProperty("orespawn_curse_file_id"));
+        assertEquals("F7F2840D11090EC3B6A7A73AD380CFCAC3C034D3C8FCD9914CA1AAD4219E19E9",
                 properties.getProperty("orespawn_sha256"));
+        String wrapper = text("gradle/wrapper/gradle-wrapper.properties");
+        assertTrue(wrapper.contains("gradle-9.2.1-bin.zip"));
     }
 
     @Test
@@ -42,7 +44,7 @@ public class WorkflowContractTest {
         String wrapper = text(".github/workflows/validate-gradle-build.yml");
         String staging = text("gradle/stage-orespawn-release.sh");
         assertTrue(ci.contains("name: Build, test, and audit"));
-        assertTrue(ci.contains("master-1.21.1-neo"));
+        assertTrue(ci.contains("master-1.21.11-neo"));
         assertTrue(ci.contains("java-version: '21.0.7+6.0.LTS'"));
         assertTrue(ci.contains("Install exact Java 21"));
         assertTrue(ci.contains("Cold NeoForge bootstrap"));
@@ -83,6 +85,12 @@ public class WorkflowContractTest {
         assertTrue(build.contains("def releaseJar = tasks.named('jar', Jar)"));
         assertTrue(build.contains("preserveFileTimestamps = false"));
         assertTrue(build.contains("reproducibleFileOrder = true"));
+        assertTrue(build.contains("filesMatching('META-INF/neoforge.mods.toml')"));
+        assertTrue(build.contains("from('docs')"));
+        assertTrue(build.contains("NeoForge 21.11 uses official names"));
+        assertTrue(build.contains("'zone/moddev/mc/mineralogy/Mineralogy.class'"));
+        assertTrue(build.contains("928 NeoForge 21.11 item definitions"));
+        assertTrue(build.contains("assets/mineralogy/items/"));
         assertTrue(build.contains("def preparedReleaseDir = project.findProperty('preparedReleaseDir')"));
         assertTrue(build.contains("tasks.register('verifyPreparedReleaseArtifacts')"));
         assertTrue(build.contains("tasks.withType(PublishToMavenRepository).configureEach"));

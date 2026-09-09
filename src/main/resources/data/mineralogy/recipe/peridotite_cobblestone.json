@@ -1,22 +1,14 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "tag":  "mineralogy:stones/peridotite"
-                        },
-                        {
-                            "tag":  "mineralogy:stones/peridotite"
-                        },
-                        {
-                            "item":  "minecraft:gravel"
-                        },
-                        {
-                            "item":  "minecraft:gravel"
-                        }
-                    ],
-    "result":  {
-                   "id":  "minecraft:cobblestone",
-                   "count":  4
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "#mineralogy:stones/peridotite",
+    "#mineralogy:stones/peridotite",
+    "minecraft:gravel",
+    "minecraft:gravel"
+  ],
+  "result": {
+    "id": "minecraft:cobblestone",
+    "count": 4
+  }
 }

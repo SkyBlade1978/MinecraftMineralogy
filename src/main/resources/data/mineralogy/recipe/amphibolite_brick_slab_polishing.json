@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:amphibolite_brick_slab"
-                        },
-                        {
-                            "tag":  "c:sands"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:amphibolite_smooth_brick_slab",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:amphibolite_brick_slab",
+    "#c:sands"
+  ],
+  "result": {
+    "id": "mineralogy:amphibolite_smooth_brick_slab",
+    "count": 1
+  }
 }

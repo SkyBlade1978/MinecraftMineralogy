@@ -1,18 +1,16 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/limestone/smooth"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:limestone_smooth_wall",
-                   "count":  6
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:stones/limestone/smooth"
+  },
+  "result": {
+    "id": "mineralogy:limestone_smooth_wall",
+    "count": 6
+  },
+  "show_notification": true
 }

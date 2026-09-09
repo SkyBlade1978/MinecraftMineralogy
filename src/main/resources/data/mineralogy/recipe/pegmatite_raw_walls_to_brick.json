@@ -1,18 +1,16 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:pegmatite_wall"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:pegmatite_brick_wall",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": "mineralogy:pegmatite_wall"
+  },
+  "result": {
+    "id": "mineralogy:pegmatite_brick_wall",
+    "count": 4
+  },
+  "show_notification": true
 }

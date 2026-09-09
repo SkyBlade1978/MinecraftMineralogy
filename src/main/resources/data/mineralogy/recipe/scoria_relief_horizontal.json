@@ -1,17 +1,15 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:scoria_relief_blank"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:scoria_relief_horizontal",
-                   "count":  3
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx"
+  ],
+  "key": {
+    "x": "mineralogy:scoria_relief_blank"
+  },
+  "result": {
+    "id": "mineralogy:scoria_relief_horizontal",
+    "count": 3
+  },
+  "show_notification": true
 }

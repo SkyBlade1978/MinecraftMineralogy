@@ -1,22 +1,18 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "misc",
-    "pattern":  [
-                    "xxx",
-                    "xyx",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:slabs/limestone"
-                      },
-                "y":  {
-                          "item":  "minecraft:furnace"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:limestone_furnace",
-                   "count":  1
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "xxx",
+    "xyx",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:slabs/limestone",
+    "y": "minecraft:furnace"
+  },
+  "result": {
+    "id": "mineralogy:limestone_furnace",
+    "count": 1
+  },
+  "show_notification": true
 }

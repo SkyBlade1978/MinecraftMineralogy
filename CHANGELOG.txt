@@ -1,3 +1,40 @@
+Mineralogy 6.1.2.121112 for Minecraft 1.21.11 NeoForge
+
+- Ported the accepted NeoForge 1.21.1 product to Minecraft 1.21.11 and
+  NeoForge 21.11.45 while preserving registry, NBT, provider, configuration,
+  migration, crude-oil, recipe, locale, guide, relief, mining, furnace, and
+  world identities.
+- Replaced NeoForge 1.21.1's JavaScript conversion coremod with required
+  Mixins for legacy state-table expansion, level-data capture, protected chunk
+  writes, and converted chunk preparation/finalization. All 18,192 legacy
+  mappings, selected-world restoration, sidecars, and furnace normalization
+  remain intact.
+- Adapted registrations, fluids, block entities, fuel handling, item
+  definitions, identifiers, tags, and JSON recipes to Minecraft 1.21.11.
+  Runtime cobblestone membership is rebound in place through named holder sets
+  and holder invalidation callbacks; obsolete ingredient-cache access is gone.
+- Retained rock-furnace block entities through 1.21.11's changed-state hook so
+  lit and unlit transitions preserve contents without a block-state mismatch.
+  Added canonical `c:paper` and `c:lamps/rock_salt` tags so every retained
+  Mineralogy recipe resolves under the target tag conventions.
+- Restored the NeoForge mod-bus subscription for creative-tab content builds,
+  so the registered Mineralogy tab or five grouped tabs contain their intended
+  visible blocks and items.
+- Matched Mineralogy's native-equivalent andesite, diorite, granite, basalt,
+  and tuff models to Minecraft's textures, including upright slabs, stairs,
+  walls, furnaces, and reliefs. Basalt preserves its separate top and side
+  surfaces; tuff bricks use native tuff-brick artwork. Mineralogy-only brick
+  finishes and custom furnace fronts remain distinct, while resource packs can
+  now restyle each shared family consistently.
+- Retained the complete native-rock and tuff contract: 1,433 Mineralogy
+  recipe/advancement pairs, 18 slab bridges, 48 Minecraft recipe overrides,
+  21 Minecraft advancement overrides, and all 19 configurable cobblestone
+  routes.
+- Updated metadata, CI, documentation, exact OreSpawn pin, and release audits
+  for Minecraft 1.21.11, NeoForge 21.11.45, OreSpawn 4.0.16.121112, Java 21,
+  resource format 75, and data format 94.1. Mineralogy still registers no
+  world generator.
+
 Mineralogy 6.1.2.121012 for Minecraft 1.21.1 NeoForge
 
 - Ported the accepted NeoForge feature and compatibility contract to Minecraft

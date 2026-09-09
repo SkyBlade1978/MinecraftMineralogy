@@ -1,18 +1,16 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:limestone_smooth_slab"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:limestone_smooth_brick_slab",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": "mineralogy:limestone_smooth_slab"
+  },
+  "result": {
+    "id": "mineralogy:limestone_smooth_brick_slab",
+    "count": 4
+  },
+  "show_notification": true
 }

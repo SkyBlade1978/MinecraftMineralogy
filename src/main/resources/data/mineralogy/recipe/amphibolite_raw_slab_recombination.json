@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:amphibolite_slab"
-                        },
-                        {
-                            "item":  "mineralogy:amphibolite_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:amphibolite",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:amphibolite_slab",
+    "mineralogy:amphibolite_slab"
+  ],
+  "result": {
+    "id": "mineralogy:amphibolite",
+    "count": 1
+  }
 }

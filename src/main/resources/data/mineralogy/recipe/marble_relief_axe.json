@@ -1,37 +1,19 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:marble_relief_blank"
-                        },
-                        {
-                            "item":  "minecraft:stone_axe"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:marble_relief_axe",
-                   "count":  8
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:marble_relief_blank",
+    "mineralogy:marble_relief_blank",
+    "mineralogy:marble_relief_blank",
+    "mineralogy:marble_relief_blank",
+    "mineralogy:marble_relief_blank",
+    "mineralogy:marble_relief_blank",
+    "mineralogy:marble_relief_blank",
+    "mineralogy:marble_relief_blank",
+    "minecraft:stone_axe"
+  ],
+  "result": {
+    "id": "mineralogy:marble_relief_axe",
+    "count": 8
+  }
 }

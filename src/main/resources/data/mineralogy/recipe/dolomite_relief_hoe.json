@@ -1,37 +1,19 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:dolomite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:dolomite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:dolomite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:dolomite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:dolomite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:dolomite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:dolomite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:dolomite_relief_blank"
-                        },
-                        {
-                            "item":  "minecraft:stone_hoe"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:dolomite_relief_hoe",
-                   "count":  8
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:dolomite_relief_blank",
+    "mineralogy:dolomite_relief_blank",
+    "mineralogy:dolomite_relief_blank",
+    "mineralogy:dolomite_relief_blank",
+    "mineralogy:dolomite_relief_blank",
+    "mineralogy:dolomite_relief_blank",
+    "mineralogy:dolomite_relief_blank",
+    "mineralogy:dolomite_relief_blank",
+    "minecraft:stone_hoe"
+  ],
+  "result": {
+    "id": "mineralogy:dolomite_relief_hoe",
+    "count": 8
+  }
 }

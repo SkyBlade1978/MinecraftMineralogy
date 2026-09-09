@@ -587,10 +587,11 @@
             "igneous_intrusive",
             "igneous_volcanic"
           ],
-          "host_tags": [
-            "minecraft:stone_ore_replaceables",
-            "minecraft:deepslate_ore_replaceables"
-          ]
+          "host_blocks": [
+            "minecraft:stone",
+            "minecraft:deepslate"
+          ],
+          "host_tags": []
         }
       },
       "block": "mineralogy:sulfur_ore"
@@ -611,10 +612,11 @@
             "igneous_intrusive",
             "igneous_volcanic"
           ],
-          "host_tags": [
-            "minecraft:stone_ore_replaceables",
-            "minecraft:deepslate_ore_replaceables"
-          ]
+          "host_blocks": [
+            "minecraft:stone",
+            "minecraft:deepslate"
+          ],
+          "host_tags": []
         }
       },
       "block": "mineralogy:phosphorous_ore"
@@ -635,10 +637,11 @@
             "igneous_intrusive",
             "igneous_volcanic"
           ],
-          "host_tags": [
-            "minecraft:stone_ore_replaceables",
-            "minecraft:deepslate_ore_replaceables"
-          ]
+          "host_blocks": [
+            "minecraft:stone",
+            "minecraft:deepslate"
+          ],
+          "host_tags": []
         }
       },
       "block": "mineralogy:nitrate_ore"

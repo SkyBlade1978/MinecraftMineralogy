@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:novaculite_stairs"
-                        },
-                        {
-                            "tag":  "c:sands"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:novaculite_smooth_stairs",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:novaculite_stairs",
+    "#c:sands"
+  ],
+  "result": {
+    "id": "mineralogy:novaculite_smooth_stairs",
+    "count": 1
+  }
 }

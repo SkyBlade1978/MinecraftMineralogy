@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "tag":  "mineralogy:stones/schist"
-                        },
-                        {
-                            "item":  "minecraft:sand"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:schist_smooth",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "#mineralogy:stones/schist",
+    "minecraft:sand"
+  ],
+  "result": {
+    "id": "mineralogy:schist_smooth",
+    "count": 1
+  }
 }

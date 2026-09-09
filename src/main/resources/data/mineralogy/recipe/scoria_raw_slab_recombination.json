@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:scoria_slab"
-                        },
-                        {
-                            "item":  "mineralogy:scoria_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:scoria",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:scoria_slab",
+    "mineralogy:scoria_slab"
+  ],
+  "result": {
+    "id": "mineralogy:scoria",
+    "count": 1
+  }
 }
