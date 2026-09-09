@@ -130,28 +130,57 @@ runs {
 
 minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
 
-def orespawnModule = "mmd-orespawn-${project.orespawn_curse_project_id}"
+def orespawnMavenGroup = 'zone.moddev.mc.orespawn'
+def orespawnMavenArtifact = 'OreSpawn'
+def orespawnCoordinate = "${orespawnMavenGroup}:${orespawnMavenArtifact}:${project.orespawn_version}"
+def orespawnCurseModule = "mmd-orespawn-${project.orespawn_curse_project_id}"
 def orespawnVerificationRepository = project.findProperty('orespawnVerificationRepository')
+def orespawnMmdRepository = project.findProperty('orespawnMmdRepository')
+        ?: 'https://maven.moddev.zone/releases'
+def orespawnCurseRepository = project.findProperty('orespawnCurseRepository')
+        ?: 'https://www.cursemaven.com'
 repositories {
     mavenCentral()
 
-    // The staged CI mirror is the only permitted source for this exact
-    // OreSpawn module. Without exclusive routing, a transient HTTP error from
-    // Maven Central aborts resolution before Gradle reaches the verified jar.
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = orespawnVerificationRepository == null
-                        ? 'CurseMaven'
-                        : 'OreSpawnReleaseVerificationMirror'
-                url = orespawnVerificationRepository == null
-                        ? uri('https://www.cursemaven.com')
-                        : uri(orespawnVerificationRepository)
-                metadataSources { artifact() }
+    // Prefer MMD's Maven publication. Gradle treats HTTP 429 as fatal rather
+    // than trying the next repository, so CurseMaven cannot be the primary if
+    // it is to serve as a useful fallback. CI may prepend its sealed local
+    // mirror while retaining the same published Maven coordinate.
+    def orespawnRepositories = []
+    if (orespawnVerificationRepository != null) {
+        orespawnRepositories.add(ivy {
+            name = 'OreSpawnReleaseVerificationMirror'
+            url = uri(orespawnVerificationRepository)
+            patternLayout {
+                artifact "curse/maven/${orespawnCurseModule}/${project.orespawn_curse_file_id}/${orespawnCurseModule}-${project.orespawn_curse_file_id}.[ext]"
             }
+            metadataSources { artifact() }
+        })
+    }
+    orespawnRepositories.add(maven {
+        name = 'MMDMaven'
+        url = uri(orespawnMmdRepository)
+        metadataSources {
+            mavenPom()
+            artifact()
         }
+    })
+    orespawnRepositories.add(ivy {
+        name = 'CurseMavenOreSpawnFallback'
+        url = uri(orespawnCurseRepository)
+        patternLayout {
+            artifact "curse/maven/${orespawnCurseModule}/${project.orespawn_curse_file_id}/${orespawnCurseModule}-${project.orespawn_curse_file_id}.[ext]"
+        }
+        metadataSources { artifact() }
+    })
+
+    // Prevent this module from falling through to unrelated plugin or public
+    // repositories; only the sealed mirror and the two audited release hosts
+    // may provide it.
+    exclusiveContent {
+        forRepositories(orespawnRepositories as org.gradle.api.artifacts.repositories.ArtifactRepository[])
         filter {
-            includeModule('curse.maven', orespawnModule)
+            includeModule(orespawnMavenGroup, orespawnMavenArtifact)
         }
     }
 }
@@ -164,13 +193,13 @@ dependencies {
     implementation "net.neoforged:neoforge:${project.neo_version}"
     // NeoForge 21.1 uses official names in both development and production, so the
     // exact released OreSpawn artifact is suitable for ordinary runtime use.
-    runtimeOnly "curse.maven:mmd-orespawn-${project.orespawn_curse_project_id}:${project.orespawn_curse_file_id}"
-    orespawnRelease "curse.maven:mmd-orespawn-${project.orespawn_curse_project_id}:${project.orespawn_curse_file_id}"
+    runtimeOnly(orespawnCoordinate) { transitive = false }
+    orespawnRelease(orespawnCoordinate) { transitive = false }
     testImplementation 'junit:junit:4.13.2'
 }
 
 configurations.named('testRuntimeClasspath') {
-    exclude group: 'curse.maven', module: "mmd-orespawn-${project.orespawn_curse_project_id}"
+    exclude group: orespawnMavenGroup, module: orespawnMavenArtifact
 }
 
 tasks.withType(Test).configureEach {
@@ -463,7 +492,12 @@ tasks.register('verifyReleaseDependencies') {
             throw new GradleException('Unexpected OreSpawn release coordinates')
         }
         File artifact = configurations.orespawnRelease.resolvedConfiguration.resolvedArtifacts
-                .find { it.moduleVersion.id.group == 'curse.maven' && it.file.name.endsWith('.jar') }?.file
+                .find {
+                    it.moduleVersion.id.group == orespawnMavenGroup
+                            && it.moduleVersion.id.name == orespawnMavenArtifact
+                            && it.moduleVersion.id.version == project.orespawn_version
+                            && it.file.name.endsWith('.jar')
+                }?.file
         if (artifact == null || !artifact.isFile()) {
             throw new GradleException('Released OreSpawn artifact did not resolve')
         }

@@ -19,6 +19,9 @@ Mineralogy 6.1.2.121012 for Minecraft 1.21.1 NeoForge
 - Updated the build, metadata, CI, documentation, and exact OreSpawn pin for
   Minecraft 1.21.1, NeoForge 21.1.247, OreSpawn 4.0.16.121012, Java 21, and
   pack format 34. Mineralogy still registers no world generator.
+- Prefer the exact OreSpawn release from MMD Maven, with the matching
+  CurseForge file retained as a narrowly scoped fallback and SHA-256-verified
+  release provenance. This avoids CurseMaven rate limits breaking IDE sync.
 
 Mineralogy 6.1.2.120062 for Minecraft 1.20.6 NeoForge
 

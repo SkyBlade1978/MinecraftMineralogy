@@ -98,12 +98,18 @@ public class WorkflowContractTest {
     }
 
     @Test
-    public void stagedOreSpawnDependencyCannotFallThroughToPublicRepositories() throws Exception {
+    public void oreSpawnUsesMmdMavenWithCurseAndSealedMirrorFallbacks() throws Exception {
         String build = text("build.gradle");
         assertTrue(build.contains("exclusiveContent"));
-        assertTrue(build.contains("forRepository"));
-        assertTrue(build.contains("includeModule('curse.maven', orespawnModule)"));
+        assertTrue(build.contains("forRepositories"));
+        assertTrue(build.contains("includeModule(orespawnMavenGroup, orespawnMavenArtifact)"));
+        assertTrue(build.contains("?: 'https://maven.moddev.zone/releases'"));
+        assertTrue(build.contains("?: 'https://www.cursemaven.com'"));
+        assertTrue(build.contains("'CurseMavenOreSpawnFallback'"));
+        assertTrue(build.contains("curse/maven/${orespawnCurseModule}"));
         assertTrue(build.contains("'OreSpawnReleaseVerificationMirror'"));
+        assertTrue(build.contains("runtimeOnly(orespawnCoordinate) { transitive = false }"));
+        assertFalse(build.contains("runtimeOnly \"curse.maven:mmd-orespawn-"));
     }
 
     @Test

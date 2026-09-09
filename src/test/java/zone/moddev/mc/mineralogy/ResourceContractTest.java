@@ -595,7 +595,9 @@ public class ResourceContractTest {
         assertTrue(properties.contains("mod_version=6.1.2.121012"));
         assertTrue(properties.contains("orespawn_curse_file_id=8807135"));
         String build = new String(Files.readAllBytes(new File("build.gradle").toPath()), StandardCharsets.UTF_8);
-        assertTrue(build.contains("runtimeOnly \"curse.maven:mmd-orespawn-"));
+        assertTrue(build.contains("runtimeOnly(orespawnCoordinate)"));
+        assertTrue(build.contains("https://maven.moddev.zone/releases"));
+        assertTrue(build.contains("CurseMavenOreSpawnFallback"));
         assertTrue(build.contains("orespawnRelease"));
         String metadata = new String(Files.readAllBytes(new File(ROOT, "META-INF/neoforge.mods.toml").toPath()), StandardCharsets.UTF_8);
         assertTrue(metadata.contains("loaderVersion=\"${loader_version_range}\""));
