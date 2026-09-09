@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:rhyolite_brick_slab"
+                        },
+                        {
+                            "item":  "mineralogy:rhyolite_brick_slab"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:rhyolite_brick",
+                   "count":  1
+               }
+}

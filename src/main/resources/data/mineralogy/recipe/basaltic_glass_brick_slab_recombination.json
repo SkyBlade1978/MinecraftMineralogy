@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:basaltic_glass_brick_slab"
+                        },
+                        {
+                            "item":  "mineralogy:basaltic_glass_brick_slab"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:basaltic_glass_brick",
+                   "count":  1
+               }
+}

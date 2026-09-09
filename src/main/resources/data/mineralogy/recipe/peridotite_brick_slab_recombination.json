@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:peridotite_brick_slab"
+                        },
+                        {
+                            "item":  "mineralogy:peridotite_brick_slab"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:peridotite_brick",
+                   "count":  1
+               }
+}

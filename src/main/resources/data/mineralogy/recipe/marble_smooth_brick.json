@@ -1,0 +1,18 @@
+{
+    "type":  "minecraft:crafting_shaped",
+    "category":  "building",
+    "pattern":  [
+                    "xx",
+                    "xx"
+                ],
+    "key":  {
+                "x":  {
+                          "tag":  "mineralogy:stones/marble/smooth"
+                      }
+            },
+    "result":  {
+                   "id":  "mineralogy:marble_smooth_brick",
+                   "count":  4
+               },
+    "show_notification":  true
+}

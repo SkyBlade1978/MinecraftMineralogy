@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:phyllite_stairs"
+                        },
+                        {
+                            "tag":  "c:sands"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:phyllite_smooth_stairs",
+                   "count":  1
+               }
+}

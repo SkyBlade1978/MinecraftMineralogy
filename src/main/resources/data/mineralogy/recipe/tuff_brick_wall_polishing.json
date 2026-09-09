@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:tuff_brick_wall"
+                        },
+                        {
+                            "tag":  "c:sands"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:tuff_smooth_brick_wall",
+                   "count":  1
+               }
+}

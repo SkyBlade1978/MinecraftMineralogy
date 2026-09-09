@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:siltstone_slab"
+                        },
+                        {
+                            "item":  "mineralogy:siltstone_slab"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:siltstone",
+                   "count":  1
+               }
+}

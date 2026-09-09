@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:conglomerate_slab"
+                        },
+                        {
+                            "item":  "mineralogy:conglomerate_slab"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:conglomerate",
+                   "count":  1
+               }
+}

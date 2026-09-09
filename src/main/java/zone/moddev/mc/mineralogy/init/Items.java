@@ -117,7 +117,7 @@ public class Items {
 	}
 
 	private static <T extends Item> T register(RegisterHelper<Item> registry, String path, T item) {
-		registry.register(new ResourceLocation(Mineralogy.MODID, path), item);
+		registry.register(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, path), item);
 		return item;
 	}
 

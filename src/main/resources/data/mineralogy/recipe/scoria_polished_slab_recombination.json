@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:scoria_smooth_slab"
+                        },
+                        {
+                            "item":  "mineralogy:scoria_smooth_slab"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:scoria_smooth",
+                   "count":  1
+               }
+}

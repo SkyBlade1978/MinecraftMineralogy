@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:gneiss_brick_slab"
+                        },
+                        {
+                            "item":  "mineralogy:gneiss_brick_slab"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:gneiss_brick",
+                   "count":  1
+               }
+}

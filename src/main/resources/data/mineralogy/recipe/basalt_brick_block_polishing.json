@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:basalt_brick"
+                        },
+                        {
+                            "tag":  "c:sands"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:basalt_smooth_brick",
+                   "count":  1
+               }
+}

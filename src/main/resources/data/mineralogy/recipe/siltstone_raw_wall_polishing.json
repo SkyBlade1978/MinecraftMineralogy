@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:siltstone_wall"
+                        },
+                        {
+                            "tag":  "c:sands"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:siltstone_smooth_wall",
+                   "count":  1
+               }
+}

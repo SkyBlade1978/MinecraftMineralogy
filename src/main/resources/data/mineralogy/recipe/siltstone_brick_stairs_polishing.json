@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:siltstone_brick_stairs"
+                        },
+                        {
+                            "tag":  "c:sands"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:siltstone_smooth_brick_stairs",
+                   "count":  1
+               }
+}

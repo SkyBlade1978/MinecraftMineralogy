@@ -1,0 +1,22 @@
+{
+    "type":  "minecraft:crafting_shaped",
+    "category":  "misc",
+    "pattern":  [
+                    "xxx",
+                    "xyx",
+                    "xxx"
+                ],
+    "key":  {
+                "x":  {
+                          "tag":  "mineralogy:slabs/marble/smooth"
+                      },
+                "y":  {
+                          "item":  "minecraft:furnace"
+                      }
+            },
+    "result":  {
+                   "id":  "mineralogy:marble_smooth_furnace",
+                   "count":  1
+               },
+    "show_notification":  true
+}

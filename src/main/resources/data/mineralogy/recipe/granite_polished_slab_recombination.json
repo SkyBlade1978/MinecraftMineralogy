@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "category":  "building",
+    "ingredients":  [
+                        {
+                            "item":  "mineralogy:granite_smooth_slab"
+                        },
+                        {
+                            "item":  "mineralogy:granite_smooth_slab"
+                        }
+                    ],
+    "result":  {
+                   "id":  "mineralogy:granite_smooth",
+                   "count":  1
+               }
+}
