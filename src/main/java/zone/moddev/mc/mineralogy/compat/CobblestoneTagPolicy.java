@@ -1,129 +1,86 @@
 package zone.moddev.mc.mineralogy.compat;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
-import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import zone.moddev.mc.mineralogy.Mineralogy;
 import zone.moddev.mc.mineralogy.MineralogyConfig;
 import zone.moddev.mc.mineralogy.data.Material;
 import zone.moddev.mc.mineralogy.data.MaterialData;
 
-/** Applies the legacy cobblestone option to NeoForge 21.1 block and item tags. */
+/** Applies the legacy cobblestone option to NeoForge 21.11 tags. */
 public final class CobblestoneTagPolicy {
-    private static final ResourceLocation COMMON_COBBLESTONES = ResourceLocation.fromNamespaceAndPath("c", "cobblestones");
-    private static final ResourceLocation COMMON_NORMAL_COBBLESTONES =
-            ResourceLocation.fromNamespaceAndPath("c", "cobblestones/normal");
-    private static final ResourceLocation FORGE_COBBLESTONE = ResourceLocation.fromNamespaceAndPath("forge", "cobblestone");
-    private static final ResourceLocation MINERALOGY_COBBLESTONE =
-            ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "cobblestone_equivalents");
-    private static final ResourceLocation MINERALOGY_STONE_CRAFTING =
-            ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "stone_crafting_materials");
-    private static final ResourceLocation MINERALOGY_STONE_TOOLS =
-            ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "stone_tool_materials");
-    private static final ResourceLocation STONE_CRAFTING_MATERIALS =
-            ResourceLocation.fromNamespaceAndPath("minecraft", "stone_crafting_materials");
-    private static final ResourceLocation STONE_TOOL_MATERIALS =
-            ResourceLocation.fromNamespaceAndPath("minecraft", "stone_tool_materials");
+    private static final Identifier COMMON_COBBLESTONES = id("c", "cobblestones");
+    private static final Identifier COMMON_NORMAL_COBBLESTONES = id("c", "cobblestones/normal");
+    private static final Identifier LEGACY_COBBLESTONE = id("forge", "cobblestone");
+    private static final Identifier MINERALOGY_COBBLESTONE = mineralogyId("cobblestone_equivalents");
+    private static final Identifier MINERALOGY_STONE_CRAFTING = mineralogyId("stone_crafting_materials");
+    private static final Identifier MINERALOGY_STONE_TOOLS = mineralogyId("stone_tool_materials");
+    private static final Identifier STONE_CRAFTING_MATERIALS = id("minecraft", "stone_crafting_materials");
+    private static final Identifier STONE_TOOL_MATERIALS = id("minecraft", "stone_tool_materials");
 
     private CobblestoneTagPolicy() {
     }
 
-    /** Apply after the initial tag load and every server-side data reload. */
+    /** Reapply on clients after receiving the server's tag packet. */
     public static void onTagsUpdated(TagsUpdatedEvent event) {
         if (event.shouldUpdateStaticData()) {
-            apply(event.getRegistryAccess());
-            invalidateRecipeIngredients(ServerLifecycleHooks.getCurrentServer());
+            apply(event.getLookupProvider());
         }
     }
 
-    /** Clear ingredients parsed before the initial server tag update. */
-    public static void onServerAboutToStart(ServerAboutToStartEvent event) {
-        apply(event.getServer().registryAccess());
-        invalidateRecipeIngredients(event.getServer());
-    }
-
-    static void apply(RegistryAccess access) {
-        Registry<Block> blockRegistry = access.registryOrThrow(Registries.BLOCK);
-        Registry<Item> itemRegistry = access.registryOrThrow(Registries.ITEM);
+    /** Rebind the already-loaded named sets on the server or client. */
+    public static void apply(HolderLookup.Provider access) {
+        HolderLookup.RegistryLookup<Block> blockRegistry = access.lookupOrThrow(Registries.BLOCK);
+        HolderLookup.RegistryLookup<Item> itemRegistry = access.lookupOrThrow(Registries.ITEM);
         Set<Holder<Block>> configuredBlocks = rawRockHolders(blockRegistry, Registries.BLOCK);
         Set<Holder<Item>> configuredItems = rawRockHolders(itemRegistry, Registries.ITEM);
         boolean enabled = MineralogyConfig.makeRockCobblestoneEquivilent();
 
-        Map<TagKey<Block>, List<Holder<Block>>> blockTags = snapshot(blockRegistry);
-        updateTag(blockTags, blockRegistry, Registries.BLOCK, COMMON_COBBLESTONES,
+        updateTag(blockRegistry, Registries.BLOCK, COMMON_COBBLESTONES,
                 configuredBlocks, enabled, "chert", "pumice");
-        updateTag(blockTags, blockRegistry, Registries.BLOCK, COMMON_NORMAL_COBBLESTONES,
+        updateTag(blockRegistry, Registries.BLOCK, COMMON_NORMAL_COBBLESTONES,
                 configuredBlocks, enabled, "chert", "pumice");
-        updateTag(blockTags, blockRegistry, Registries.BLOCK, FORGE_COBBLESTONE,
+        updateTag(blockRegistry, Registries.BLOCK, LEGACY_COBBLESTONE,
                 configuredBlocks, enabled, "chert", "pumice");
-        blockRegistry.bindTags(blockTags);
 
-        Map<TagKey<Item>, List<Holder<Item>>> itemTags = snapshot(itemRegistry);
-        updateTag(itemTags, itemRegistry, Registries.ITEM, COMMON_COBBLESTONES,
+        updateTag(itemRegistry, Registries.ITEM, COMMON_COBBLESTONES,
                 configuredItems, enabled, "chert", "pumice");
-        updateTag(itemTags, itemRegistry, Registries.ITEM, COMMON_NORMAL_COBBLESTONES,
+        updateTag(itemRegistry, Registries.ITEM, COMMON_NORMAL_COBBLESTONES,
                 configuredItems, enabled, "chert", "pumice");
-        updateTag(itemTags, itemRegistry, Registries.ITEM, FORGE_COBBLESTONE,
+        updateTag(itemRegistry, Registries.ITEM, LEGACY_COBBLESTONE,
                 configuredItems, enabled, "chert", "pumice");
-        updateTag(itemTags, itemRegistry, Registries.ITEM, MINERALOGY_COBBLESTONE,
+        updateTag(itemRegistry, Registries.ITEM, MINERALOGY_COBBLESTONE,
                 configuredItems, enabled, "chert", "pumice");
-        updateTag(itemTags, itemRegistry, Registries.ITEM, STONE_CRAFTING_MATERIALS,
+        updateTag(itemRegistry, Registries.ITEM, MINERALOGY_STONE_CRAFTING,
                 configuredItems, enabled, "chert", "pumice");
-        updateTag(itemTags, itemRegistry, Registries.ITEM, STONE_TOOL_MATERIALS,
+        updateTag(itemRegistry, Registries.ITEM, MINERALOGY_STONE_TOOLS,
                 configuredItems, enabled, "chert", "pumice");
-        updateTag(itemTags, itemRegistry, Registries.ITEM, MINERALOGY_STONE_CRAFTING,
+        updateTag(itemRegistry, Registries.ITEM, STONE_CRAFTING_MATERIALS,
                 configuredItems, enabled, "chert", "pumice");
-        updateTag(itemTags, itemRegistry, Registries.ITEM, MINERALOGY_STONE_TOOLS,
+        updateTag(itemRegistry, Registries.ITEM, STONE_TOOL_MATERIALS,
                 configuredItems, enabled, "chert", "pumice");
-        itemRegistry.bindTags(itemTags);
 
-        Mineralogy.LOGGER.debug("Applied NeoForge 21.1 cobblestone policy: enabled={}, rocks={}, "
+        Mineralogy.LOGGER.debug("Applied NeoForge 21.11 cobblestone policy: enabled={}, rocks={}, "
                 + "unionItems={}, commonItems={}, craftingItems={}, toolItems={}", enabled,
                 configuredItems.size(), size(itemRegistry, Registries.ITEM, MINERALOGY_COBBLESTONE),
                 size(itemRegistry, Registries.ITEM, COMMON_COBBLESTONES),
                 size(itemRegistry, Registries.ITEM, STONE_CRAFTING_MATERIALS),
                 size(itemRegistry, Registries.ITEM, STONE_TOOL_MATERIALS));
-    }
-
-    private static void invalidateRecipeIngredients(net.minecraft.server.MinecraftServer server) {
-        if (server == null) {
-            return;
-        }
-        int invalidated = 0;
-        for (RecipeHolder<?> holder : server.getRecipeManager().getRecipes()) {
-            for (Ingredient ingredient : holder.value().getIngredients()) {
-                ingredient.itemStacks = null;
-                ingredient.stackingIds = null;
-                invalidated++;
-            }
-        }
-        Mineralogy.LOGGER.debug("Invalidated {} NeoForge recipe ingredient caches after tag rebinding", invalidated);
-    }
-
-    static <T> Map<TagKey<T>, List<Holder<T>>> snapshot(Registry<T> registry) {
-        Map<TagKey<T>, List<Holder<T>>> result = new LinkedHashMap<>();
-        registry.getTags().forEach(pair -> result.put(pair.getFirst(), holders(pair.getSecond())));
-        return result;
     }
 
     private static <T> List<Holder<T>> holders(HolderSet.Named<T> values) {
@@ -132,36 +89,80 @@ public final class CobblestoneTagPolicy {
         return result;
     }
 
-    private static <T> Set<Holder<T>> rawRockHolders(Registry<T> registry,
+    private static <T> Set<Holder<T>> rawRockHolders(HolderLookup.RegistryLookup<T> registry,
             ResourceKey<? extends Registry<T>> registryKey) {
         Set<Holder<T>> values = new LinkedHashSet<>();
         for (Material material : MaterialData.allIncludingRockSalt()) {
-            TagKey<T> tag = TagKey.create(registryKey,
-                    ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "stones/" + material.id()));
-            registry.getTag(tag).ifPresent(named -> named.forEach(values::add));
+            TagKey<T> tag = TagKey.create(registryKey, mineralogyId("stones/" + material.id()));
+            registry.get(tag).ifPresent(named -> named.forEach(values::add));
         }
         return values;
     }
 
-    static <T> void updateTag(Map<TagKey<T>, List<Holder<T>>> tags, Registry<T> registry,
-            ResourceKey<? extends Registry<T>> registryKey, ResourceLocation id,
+    static <T> void updateTag(HolderLookup.RegistryLookup<T> registry,
+            ResourceKey<? extends Registry<T>> registryKey, Identifier id,
             Set<Holder<T>> configured, boolean enabled, String... unconditionalNames) {
         TagKey<T> key = TagKey.create(registryKey, id);
-        Set<Holder<T>> values = new LinkedHashSet<>(tags.getOrDefault(key, List.of()));
+        HolderSet.Named<T> tag = registry.get(key).orElse(null);
+        if (tag == null) {
+            Mineralogy.LOGGER.warn("Cannot update missing compatibility tag {}", key.location());
+            return;
+        }
+        Set<Holder<T>> unconditional = new LinkedHashSet<>();
+        for (String name : unconditionalNames) {
+            ResourceKey<T> valueKey = ResourceKey.create(registryKey, mineralogyId(name));
+            registry.get(valueKey).ifPresent(unconditional::add);
+        }
+        List<Holder<T>> previous = holders(tag);
+        List<Holder<T>> replacement = rebuildValues(previous, configured, enabled, unconditional);
+        tag.bind(replacement);
+        rebindHolderMembership(key, previous, configured, unconditional, replacement);
+    }
+
+    private static <T> void rebindHolderMembership(TagKey<T> key,
+            List<Holder<T>> previous, Set<Holder<T>> configured,
+            Set<Holder<T>> unconditional, List<Holder<T>> replacement) {
+        Set<Holder<T>> affected = new LinkedHashSet<>(previous);
+        affected.addAll(configured);
+        affected.addAll(unconditional);
+        Set<Holder<T>> included = new LinkedHashSet<>(replacement);
+
+        for (Holder<T> holder : affected) {
+            if (!(holder instanceof Holder.Reference<T> reference)) {
+                continue;
+            }
+            Set<TagKey<T>> tags = reference.tags()
+                    .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+            if (included.contains(holder)) {
+                tags.add(key);
+            } else {
+                tags.remove(key);
+            }
+            reference.bindTags(tags);
+        }
+    }
+
+    static <T> List<T> rebuildValues(List<T> existing, Set<T> configured,
+            boolean enabled, Set<T> unconditional) {
+        Set<T> values = new LinkedHashSet<>(existing);
         values.removeAll(configured);
         if (enabled) {
             values.addAll(configured);
         }
-        for (String name : unconditionalNames) {
-            ResourceKey<T> valueKey = ResourceKey.create(registryKey,
-                    ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, name));
-            registry.getHolder(valueKey).ifPresent(values::add);
-        }
-        tags.put(key, new ArrayList<>(values));
+        values.addAll(unconditional);
+        return new ArrayList<>(values);
     }
 
-    private static <T> int size(Registry<T> registry, ResourceKey<? extends Registry<T>> registryKey,
-            ResourceLocation id) {
-        return registry.getTag(TagKey.create(registryKey, id)).map(HolderSet.Named::size).orElse(0);
+    private static <T> int size(HolderLookup.RegistryLookup<T> registry,
+            ResourceKey<? extends Registry<T>> registryKey, Identifier id) {
+        return registry.get(TagKey.create(registryKey, id)).map(HolderSet.Named::size).orElse(0);
+    }
+
+    private static Identifier mineralogyId(String path) {
+        return Identifier.fromNamespaceAndPath(Mineralogy.MODID, path);
+    }
+
+    private static Identifier id(String namespace, String path) {
+        return Identifier.fromNamespaceAndPath(namespace, path);
     }
 }

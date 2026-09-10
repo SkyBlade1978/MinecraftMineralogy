@@ -1,25 +1,19 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "zxz",
-                    "zyz",
-                    "zzz"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:quartzite_smooth"
-                      },
-                "y":  {
-                          "item":  "minecraft:stick"
-                      },
-                "z":  {
-                          "item":  "mineralogy:quartzite_relief_blank"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:quartzite_relief_hammer",
-                   "count":  7
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "zxz",
+    "zyz",
+    "zzz"
+  ],
+  "key": {
+    "x": "mineralogy:quartzite_smooth",
+    "y": "minecraft:stick",
+    "z": "mineralogy:quartzite_relief_blank"
+  },
+  "result": {
+    "id": "mineralogy:quartzite_relief_hammer",
+    "count": 7
+  },
+  "show_notification": true
 }

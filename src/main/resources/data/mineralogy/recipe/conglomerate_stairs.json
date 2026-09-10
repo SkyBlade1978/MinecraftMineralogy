@@ -1,19 +1,17 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "x  ",
-                    "xx ",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/conglomerate"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:conglomerate_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "x  ",
+    "xx ",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:stones/conglomerate"
+  },
+  "result": {
+    "id": "mineralogy:conglomerate_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }

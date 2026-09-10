@@ -1,17 +1,15 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:shale"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:shale_slab",
-                   "count":  6
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx"
+  ],
+  "key": {
+    "x": "mineralogy:shale"
+  },
+  "result": {
+    "id": "mineralogy:shale_slab",
+    "count": 6
+  },
+  "show_notification": true
 }

@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:diabase_smooth_brick_slab"
-                        },
-                        {
-                            "item":  "mineralogy:diabase_smooth_brick_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:diabase_smooth_brick",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:diabase_smooth_brick_slab",
+    "mineralogy:diabase_smooth_brick_slab"
+  ],
+  "result": {
+    "id": "mineralogy:diabase_smooth_brick",
+    "count": 1
+  }
 }

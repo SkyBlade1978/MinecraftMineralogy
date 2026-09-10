@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:rhyolite_brick_stairs"
-                        },
-                        {
-                            "tag":  "c:sands"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:rhyolite_smooth_brick_stairs",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:rhyolite_brick_stairs",
+    "#c:sands"
+  ],
+  "result": {
+    "id": "mineralogy:rhyolite_smooth_brick_stairs",
+    "count": 1
+  }
 }

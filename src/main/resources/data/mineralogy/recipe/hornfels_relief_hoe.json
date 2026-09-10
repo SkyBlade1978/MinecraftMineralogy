@@ -1,37 +1,19 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:hornfels_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:hornfels_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:hornfels_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:hornfels_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:hornfels_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:hornfels_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:hornfels_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:hornfels_relief_blank"
-                        },
-                        {
-                            "item":  "minecraft:stone_hoe"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:hornfels_relief_hoe",
-                   "count":  8
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:hornfels_relief_blank",
+    "mineralogy:hornfels_relief_blank",
+    "mineralogy:hornfels_relief_blank",
+    "mineralogy:hornfels_relief_blank",
+    "mineralogy:hornfels_relief_blank",
+    "mineralogy:hornfels_relief_blank",
+    "mineralogy:hornfels_relief_blank",
+    "mineralogy:hornfels_relief_blank",
+    "minecraft:stone_hoe"
+  ],
+  "result": {
+    "id": "mineralogy:hornfels_relief_hoe",
+    "count": 8
+  }
 }

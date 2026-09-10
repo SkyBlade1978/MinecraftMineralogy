@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:gneiss_relief_left"
-                        },
-                        {
-                            "item":  "mineralogy:gneiss_relief_left"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:gneiss_relief_right",
-                   "count":  2
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:gneiss_relief_left",
+    "mineralogy:gneiss_relief_left"
+  ],
+  "result": {
+    "id": "mineralogy:gneiss_relief_right",
+    "count": 2
+  }
 }

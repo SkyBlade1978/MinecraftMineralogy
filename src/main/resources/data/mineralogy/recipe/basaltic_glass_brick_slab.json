@@ -1,17 +1,15 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:basaltic_glass_brick"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:basaltic_glass_brick_slab",
-                   "count":  6
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx"
+  ],
+  "key": {
+    "x": "mineralogy:basaltic_glass_brick"
+  },
+  "result": {
+    "id": "mineralogy:basaltic_glass_brick_slab",
+    "count": 6
+  },
+  "show_notification": true
 }

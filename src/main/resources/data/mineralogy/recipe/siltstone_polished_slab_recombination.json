@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:siltstone_smooth_slab"
-                        },
-                        {
-                            "item":  "mineralogy:siltstone_smooth_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:siltstone_smooth",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:siltstone_smooth_slab",
+    "mineralogy:siltstone_smooth_slab"
+  ],
+  "result": {
+    "id": "mineralogy:siltstone_smooth",
+    "count": 1
+  }
 }

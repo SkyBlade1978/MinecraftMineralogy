@@ -1,18 +1,16 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:phyllite_stairs"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:phyllite_brick_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": "mineralogy:phyllite_stairs"
+  },
+  "result": {
+    "id": "mineralogy:phyllite_brick_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }

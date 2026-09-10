@@ -3,6 +3,7 @@ package zone.moddev.mc.mineralogy;
 import zone.moddev.mc.mineralogy.compat.CobblestoneTagPolicy;
 import zone.moddev.mc.mineralogy.documentation.DocumentationExporter;
 import zone.moddev.mc.mineralogy.init.MineralogyFluids;
+import zone.moddev.mc.mineralogy.init.MineralogyItemGroups;
 import zone.moddev.mc.mineralogy.migration.LegacyMineralogy6ConfigMigrator;
 import zone.moddev.mc.mineralogy.migration.LegacyOreConfigMigrator;
 import zone.moddev.mc.mineralogy.patching.LegacyWorldDataHook;
@@ -46,8 +47,6 @@ public class Mineralogy {
 		MineralogyFluids.register(modEventBus);
 		NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST,
 				LegacyWorldDataHook::onServerAboutToStart);
-		NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST,
-				CobblestoneTagPolicy::onServerAboutToStart);
 		NeoForge.EVENT_BUS.addListener(CobblestoneTagPolicy::onTagsUpdated);
 	}
 

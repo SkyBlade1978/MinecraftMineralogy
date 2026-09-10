@@ -1,37 +1,19 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:granite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:granite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:granite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:granite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:granite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:granite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:granite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:granite_relief_blank"
-                        },
-                        {
-                            "item":  "minecraft:stone_pickaxe"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:granite_relief_pickaxe",
-                   "count":  8
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:granite_relief_blank",
+    "mineralogy:granite_relief_blank",
+    "mineralogy:granite_relief_blank",
+    "mineralogy:granite_relief_blank",
+    "mineralogy:granite_relief_blank",
+    "mineralogy:granite_relief_blank",
+    "mineralogy:granite_relief_blank",
+    "mineralogy:granite_relief_blank",
+    "minecraft:stone_pickaxe"
+  ],
+  "result": {
+    "id": "mineralogy:granite_relief_pickaxe",
+    "count": 8
+  }
 }

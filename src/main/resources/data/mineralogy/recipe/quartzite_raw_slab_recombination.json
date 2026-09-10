@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:quartzite_slab"
-                        },
-                        {
-                            "item":  "mineralogy:quartzite_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:quartzite",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:quartzite_slab",
+    "mineralogy:quartzite_slab"
+  ],
+  "result": {
+    "id": "mineralogy:quartzite",
+    "count": 1
+  }
 }

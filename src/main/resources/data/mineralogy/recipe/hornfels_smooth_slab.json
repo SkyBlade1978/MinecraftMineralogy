@@ -1,17 +1,15 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:hornfels_smooth"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:hornfels_smooth_slab",
-                   "count":  6
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx"
+  ],
+  "key": {
+    "x": "mineralogy:hornfels_smooth"
+  },
+  "result": {
+    "id": "mineralogy:hornfels_smooth_slab",
+    "count": 6
+  },
+  "show_notification": true
 }

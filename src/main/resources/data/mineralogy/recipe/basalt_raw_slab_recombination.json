@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:basalt_slab"
-                        },
-                        {
-                            "item":  "mineralogy:basalt_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:basalt",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:basalt_slab",
+    "mineralogy:basalt_slab"
+  ],
+  "result": {
+    "id": "mineralogy:basalt",
+    "count": 1
+  }
 }

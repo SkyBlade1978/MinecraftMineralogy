@@ -1,19 +1,17 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "x x",
-                    "   ",
-                    "x x"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:phyllite_relief_blank"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:phyllite_relief_cross",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "x x",
+    "   ",
+    "x x"
+  ],
+  "key": {
+    "x": "mineralogy:phyllite_relief_blank"
+  },
+  "result": {
+    "id": "mineralogy:phyllite_relief_cross",
+    "count": 4
+  },
+  "show_notification": true
 }

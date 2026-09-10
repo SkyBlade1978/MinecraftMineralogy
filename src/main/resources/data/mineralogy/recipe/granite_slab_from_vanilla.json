@@ -1,13 +1,11 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "minecraft:granite_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:granite_slab",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "minecraft:granite_slab"
+  ],
+  "result": {
+    "id": "mineralogy:granite_slab",
+    "count": 1
+  }
 }

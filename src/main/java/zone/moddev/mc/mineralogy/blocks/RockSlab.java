@@ -1,6 +1,7 @@
 package zone.moddev.mc.mineralogy.blocks;
 
 import zone.moddev.mc.mineralogy.Mineralogy;
+import zone.moddev.mc.mineralogy.init.RegistrationProperties;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -8,12 +9,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -25,7 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 public class RockSlab extends Block implements NamedMineralogyBlock {
-	public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.values());
+	public static final EnumProperty<Direction> FACING = EnumProperty.create("facing", Direction.class);
 	private static final double THICKNESS = 8.0D;
 	private static final VoxelShape[] SHAPES = new VoxelShape[Direction.values().length];
 
@@ -52,8 +53,9 @@ public class RockSlab extends Block implements NamedMineralogyBlock {
 
 	public RockSlab(float hardness, float blastResistance, int toolHardnessLevel, SoundType sound, String name,
 			String doubleSlabName) {
-		super(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.STONE).strength(hardness, blastResistance).sound(sound)
-				.requiresCorrectToolForDrops());
+		super(RegistrationProperties.block(
+				BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.STONE)
+						.strength(hardness, blastResistance).sound(sound).requiresCorrectToolForDrops(), name));
 		this.toolHardnessLevel = toolHardnessLevel;
 		this.doubleSlabName = doubleSlabName;
 		this.registryPath = name;
@@ -80,7 +82,7 @@ public class RockSlab extends Block implements NamedMineralogyBlock {
 	}
 
 	@Override
-	public boolean propagatesSkylightDown(BlockState state, BlockGetter world, BlockPos pos) {
+	protected boolean propagatesSkylightDown(BlockState state) {
 		return false;
 	}
 
@@ -96,33 +98,33 @@ public class RockSlab extends Block implements NamedMineralogyBlock {
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack held, BlockState state, Level world, BlockPos pos,
+	protected InteractionResult useItemOn(ItemStack held, BlockState state, Level world, BlockPos pos,
 			Player player, InteractionHand hand, BlockHitResult hit) {
 		Direction facing = hit.getDirection();
 		if (this.doubleSlabName == null || this.doubleSlabName.isEmpty() || facing != state.getValue(FACING)) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 
-		ResourceLocation slabItemName = held.isEmpty() ? null : BuiltInRegistries.ITEM.getKey(held.getItem());
+		Identifier slabItemName = held.isEmpty() ? null : BuiltInRegistries.ITEM.getKey(held.getItem());
 
 		if (!BuiltInRegistries.BLOCK.getKey(this).equals(slabItemName)) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 
-		Block doubleSlab = BuiltInRegistries.BLOCK.get(
-				ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, this.doubleSlabName));
+		Block doubleSlab = BuiltInRegistries.BLOCK.getValue(
+				Identifier.fromNamespaceAndPath(Mineralogy.MODID, this.doubleSlabName));
 		if (!(doubleSlab instanceof DoubleSlab)) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			world.setBlock(pos, doubleSlab.defaultBlockState(), 3);
 			if (!player.isCreative()) {
 				held.shrink(1);
 			}
 		}
 
-		return ItemInteractionResult.sidedSuccess(world.isClientSide);
+		return world.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
 	}
 @Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

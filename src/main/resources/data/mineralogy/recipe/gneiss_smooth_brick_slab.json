@@ -1,17 +1,15 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:gneiss_smooth_brick"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:gneiss_smooth_brick_slab",
-                   "count":  6
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx"
+  ],
+  "key": {
+    "x": "mineralogy:gneiss_smooth_brick"
+  },
+  "result": {
+    "id": "mineralogy:gneiss_smooth_brick_slab",
+    "count": 6
+  },
+  "show_notification": true
 }

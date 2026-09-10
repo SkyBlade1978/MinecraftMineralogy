@@ -7,7 +7,8 @@ import java.nio.file.Path;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -58,12 +59,13 @@ public final class HistoricalOilCompatibilityProbe {
             () -> new BaseFlowingFluid.Flowing(PROPERTIES));
     private static final DeferredHolder<net.minecraft.world.level.block.Block, LiquidBlock> BLOCK = BLOCKS.register("crude_oil",
             () -> new LiquidBlock(source(),
-                    BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable()
-                            .noCollission().strength(100.0F).noLootTable().liquid()
+                    blockProperties(BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable(), "crude_oil")
+                            .noCollision().strength(100.0F).noLootTable().liquid()
                             .pushReaction(PushReaction.DESTROY)));
     private static final DeferredHolder<Item, Item> BUCKET = ITEMS.register("crude_oil_bucket",
             () -> new BucketItem(source(),
-                    new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+                    itemProperties(new Item.Properties(), "crude_oil_bucket")
+                            .craftRemainder(Items.BUCKET).stacksTo(1)));
 
     public HistoricalOilCompatibilityProbe(IEventBus modBus) {
         FLUID_TYPES.register(modBus);
@@ -79,9 +81,9 @@ public final class HistoricalOilCompatibilityProbe {
         Item mineralogyBucket = requireItem("mineralogy", "crude_oil_bucket");
         Item historicalBucket = requireItem(MODID, "crude_oil_bucket");
         TagKey<Fluid> oilTag = TagKey.create(Registries.FLUID,
-                ResourceLocation.fromNamespaceAndPath("c", "crude_oil"));
+                Identifier.fromNamespaceAndPath("c", "crude_oil"));
         TagKey<Item> bucketTag = TagKey.create(Registries.ITEM,
-                ResourceLocation.fromNamespaceAndPath("c", "buckets/crude_oil"));
+                Identifier.fromNamespaceAndPath("c", "buckets/crude_oil"));
 
         boolean distinctFluids = mineralogy != historical;
         boolean distinctBuckets = mineralogyBucket != historicalBucket;
@@ -113,8 +115,8 @@ public final class HistoricalOilCompatibilityProbe {
     }
 
     private static Fluid requireFluid(String namespace, String path) {
-        Fluid result = BuiltInRegistries.FLUID.get(
-                ResourceLocation.fromNamespaceAndPath(namespace, path));
+        Fluid result = BuiltInRegistries.FLUID.getValue(
+                Identifier.fromNamespaceAndPath(namespace, path));
         if (result == null) {
             throw new IllegalStateException("Missing fluid " + namespace + ':' + path);
         }
@@ -122,12 +124,22 @@ public final class HistoricalOilCompatibilityProbe {
     }
 
     private static Item requireItem(String namespace, String path) {
-        Item result = BuiltInRegistries.ITEM.get(
-                ResourceLocation.fromNamespaceAndPath(namespace, path));
+        Item result = BuiltInRegistries.ITEM.getValue(
+                Identifier.fromNamespaceAndPath(namespace, path));
         if (result == null) {
             throw new IllegalStateException("Missing item " + namespace + ':' + path);
         }
         return result;
+    }
+
+    private static BlockBehaviour.Properties blockProperties(BlockBehaviour.Properties properties, String path) {
+        return properties.setId(ResourceKey.create(Registries.BLOCK,
+                Identifier.fromNamespaceAndPath(MODID, path)));
+    }
+
+    private static Item.Properties itemProperties(Item.Properties properties, String path) {
+        return properties.setId(ResourceKey.create(Registries.ITEM,
+                Identifier.fromNamespaceAndPath(MODID, path)));
     }
 
     private static FlowingFluid source() {

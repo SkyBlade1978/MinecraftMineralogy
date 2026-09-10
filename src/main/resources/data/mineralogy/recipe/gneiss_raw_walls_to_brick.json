@@ -1,18 +1,16 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:gneiss_wall"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:gneiss_brick_wall",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": "mineralogy:gneiss_wall"
+  },
+  "result": {
+    "id": "mineralogy:gneiss_brick_wall",
+    "count": 4
+  },
+  "show_notification": true
 }

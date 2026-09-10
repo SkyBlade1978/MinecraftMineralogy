@@ -1,18 +1,16 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/basaltic_glass"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:basaltic_glass_brick",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": "#mineralogy:stones/basaltic_glass"
+  },
+  "result": {
+    "id": "mineralogy:basaltic_glass_brick",
+    "count": 4
+  },
+  "show_notification": true
 }

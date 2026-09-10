@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:basaltic_glass_smooth_slab"
-                        },
-                        {
-                            "item":  "mineralogy:basaltic_glass_smooth_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:basaltic_glass_smooth",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:basaltic_glass_smooth_slab",
+    "mineralogy:basaltic_glass_smooth_slab"
+  ],
+  "result": {
+    "id": "mineralogy:basaltic_glass_smooth",
+    "count": 1
+  }
 }

@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:gabbro_brick_stairs"
-                        },
-                        {
-                            "tag":  "c:sands"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:gabbro_smooth_brick_stairs",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:gabbro_brick_stairs",
+    "#c:sands"
+  ],
+  "result": {
+    "id": "mineralogy:gabbro_smooth_brick_stairs",
+    "count": 1
+  }
 }

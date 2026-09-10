@@ -96,8 +96,7 @@ public class NativeRecipeManagerTest {
         JsonObject recipe = json(new File(MINERALOGY_RECIPE_ROOT, name + ".json"));
         assertEquals(name, "minecraft:crafting_shapeless", recipe.get("type").getAsString());
         assertEquals(name, 1, recipe.getAsJsonArray("ingredients").size());
-        assertEquals(name, source, recipe.getAsJsonArray("ingredients").get(0)
-                .getAsJsonObject().get("item").getAsString());
+        assertEquals(name, source, recipe.getAsJsonArray("ingredients").get(0).getAsString());
         assertEquals(name, result, recipe.getAsJsonObject("result").get("id").getAsString());
         assertEquals(name, 1, resultCount(recipe));
         assertFalse(name, recipe.has("neoforge:conditions"));
@@ -121,6 +120,7 @@ public class NativeRecipeManagerTest {
             }
             return false;
         }
+        if (element.isJsonPrimitive()) return wanted.equals(element.getAsString());
         if (!element.isJsonObject()) return false;
         JsonObject object = element.getAsJsonObject();
         if (wanted.startsWith("#") && object.has("tag")

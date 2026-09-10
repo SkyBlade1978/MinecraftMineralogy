@@ -1,37 +1,19 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:schist_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:schist_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:schist_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:schist_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:schist_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:schist_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:schist_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:schist_relief_blank"
-                        },
-                        {
-                            "item":  "minecraft:stone_sword"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:schist_relief_sword",
-                   "count":  8
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:schist_relief_blank",
+    "mineralogy:schist_relief_blank",
+    "mineralogy:schist_relief_blank",
+    "mineralogy:schist_relief_blank",
+    "mineralogy:schist_relief_blank",
+    "mineralogy:schist_relief_blank",
+    "mineralogy:schist_relief_blank",
+    "mineralogy:schist_relief_blank",
+    "minecraft:stone_sword"
+  ],
+  "result": {
+    "id": "mineralogy:schist_relief_sword",
+    "count": 8
+  }
 }

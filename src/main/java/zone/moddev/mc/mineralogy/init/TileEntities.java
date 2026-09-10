@@ -2,6 +2,7 @@ package zone.moddev.mc.mineralogy.init;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import zone.moddev.mc.mineralogy.Mineralogy;
 import zone.moddev.mc.mineralogy.blocks.RockFurnace;
@@ -16,9 +17,9 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-@EventBusSubscriber(modid = Mineralogy.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Mineralogy.MODID)
 public class TileEntities {
 	public static BlockEntityType<TileEntityRockFurnace> rock_furnace;
 
@@ -34,17 +35,15 @@ public class TileEntities {
 			}
 		}
 
-		rock_furnace = BlockEntityType.Builder
-				.of(TileEntityRockFurnace::new, furnaceBlocks.toArray(new Block[furnaceBlocks.size()]))
-				.build(null);
+		rock_furnace = new BlockEntityType<>(TileEntityRockFurnace::new, Set.copyOf(furnaceBlocks));
 		event.register(Registries.BLOCK_ENTITY_TYPE,
-				ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "rock_furnace"),
+				Identifier.fromNamespaceAndPath(Mineralogy.MODID, "rock_furnace"),
 				() -> rock_furnace);
 	}
 
 	@SubscribeEvent
 	public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, rock_furnace,
+		event.registerBlockEntity(Capabilities.Item.BLOCK, rock_furnace,
 				(furnace, side) -> furnace.getItemHandler(side));
 	}
 
