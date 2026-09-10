@@ -135,7 +135,7 @@ public class GameplayContractTest {
     }
 
 	@Test
-	public void forge61ConstructionReceivesStableIdsBeforeRegistration() throws Exception {
+	public void neoForge261ConstructionReceivesStableIdsBeforeRegistration() throws Exception {
 		String helper = text("src/main/java/zone/moddev/mc/mineralogy/init/RegistrationProperties.java");
 		assertTrue(helper.contains("properties.setId(ResourceKey.create(Registries.BLOCK"));
 		assertTrue(helper.contains("properties.setId(ResourceKey.create(Registries.ITEM"));
@@ -157,7 +157,7 @@ public class GameplayContractTest {
     }
 
     @Test
-    public void neoForge2111UsesModelBlockLayersAndNativeFlowingFluidRendering() throws Exception {
+    public void neoForge261UsesNativeFluidModelRegistration() throws Exception {
         String fluid = text("src/main/java/zone/moddev/mc/mineralogy/init/MineralogyFluids.java");
         assertTrue(fluid.contains("BaseFlowingFluid.Source"));
         assertTrue(fluid.contains("BaseFlowingFluid.Flowing"));
@@ -170,9 +170,12 @@ public class GameplayContractTest {
         assertTrue(bucketModel.contains("\"layer0\": \"mineralogy:items/crude_oil_bucket\""));
         assertFalse(bucketModel.contains("forge:fluid_container"));
         String client = text("src/main/java/zone/moddev/mc/mineralogy/client/ClientSetup.java");
-        assertTrue(client.contains("ItemBlockRenderTypes.setRenderLayer(MineralogyFluids.CRUDE_OIL.get()"));
-        assertTrue(client.contains("ChunkSectionLayer.TRANSLUCENT"));
-        assertFalse(client.contains("setRenderLayer(block"));
+        assertTrue(client.contains("RegisterFluidModelsEvent"));
+        assertTrue(client.contains("FluidModel.Unbaked"));
+        assertTrue(client.contains("new Material(CRUDE_OIL_STILL, true)"));
+        assertTrue(client.contains("new Material(CRUDE_OIL_FLOW, true)"));
+        assertTrue(client.contains("event.register(model, MineralogyFluids.CRUDE_OIL,"));
+        assertFalse(client.contains("ItemBlockRenderTypes.setRenderLayer"));
         for (String model : new String[] { "pane_n", "pane_ne", "pane_ns", "pane_nse", "pane_nsew",
                 "rocksaltlamp", "rocksaltlamp_down", "rocksaltlamp_wall", "rocksaltstreetlamp" }) {
             assertTrue(text("src/main/resources/assets/mineralogy/models/block/" + model + ".json")
@@ -195,6 +198,10 @@ public class GameplayContractTest {
         assertTrue(transformer.contains("SimpleRegionStorage.class"));
         assertTrue(transformer.contains("prepareLegacyChunk"));
         assertTrue(transformer.contains("finalizeLegacyChunk"));
+        assertTrue(transformer.contains("upgradeChunkTag(Lnet/minecraft/nbt/CompoundTag;I"
+                + "Lnet/minecraft/nbt/CompoundTag;I)Lnet/minecraft/nbt/CompoundTag;"));
+        assertTrue(hook.contains("new File(worldDirectory, \"region\")"));
+        assertTrue(hook.contains("dimensions/minecraft/overworld/region"));
 
 		String mappings = text("src/main/java/zone/moddev/mc/mineralogy/patching/PatchHandler.java");
 		assertTrue(mappings.contains("GRASS_PATH"));
@@ -237,6 +244,26 @@ public class GameplayContractTest {
         assertTrue(build.contains("Eclipse must consume only Gradle-processed production resources"));
         assertTrue(build.contains("examples/mineralogy-provider.json"));
         assertTrue(build.contains("Eclipse output is missing ${relative}"));
+    }
+
+    @Test
+    public void minecraft2612UsesJava25WorldItemAndFurnaceApis() throws Exception {
+        String ore = text("src/main/java/zone/moddev/mc/mineralogy/blocks/Ore.java");
+        assertTrue(ore.contains("builder.getLevel().getRandom()"));
+
+        String rock = text("src/main/java/zone/moddev/mc/mineralogy/blocks/Rock.java");
+        assertTrue(rock.contains("ItemInstance toolInstance"));
+        assertTrue(rock.contains("toolInstance instanceof ItemStack tool"));
+
+        String fertilizer = text("src/main/java/zone/moddev/mc/mineralogy/items/MineralFertilizer.java");
+        assertTrue(fertilizer.contains("ItemStack phantomBonemeal = new ItemStack(Items.BONE_MEAL, 27)"));
+
+        String furnace = text("src/main/java/zone/moddev/mc/mineralogy/tileentity/TileEntityRockFurnace.java");
+        assertTrue(furnace.contains("ItemStackTemplate remainder = fuel.getCraftingRemainder()"));
+        assertTrue(furnace.contains("recipe.value().assemble(new SingleRecipeInput(input))"));
+
+        String reload = text("src/main/java/zone/moddev/mc/mineralogy/mixin/ReloadableServerResourcesMixin.java");
+        assertTrue(reload.contains("updateComponentsAndStaticRegistryTags"));
     }
 
     private static String text(String path) throws Exception {

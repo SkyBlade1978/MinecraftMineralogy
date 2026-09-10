@@ -44,13 +44,13 @@ def versionParts = project.mod_version.toString().tokenize('.')
 if (versionParts.size() != 4 || !versionParts.every { it ==~ /\d+/ }) {
     throw new GradleException("mod_version must use Major.Minor.Bug.Target numeric form: ${project.mod_version}")
 }
-if (versionParts[3] != '121112') {
-    throw new GradleException("Mineralogy 1.21.11 NeoForge releases must use target 121112: ${project.mod_version}")
+if (versionParts[3] != '2601022') {
+    throw new GradleException("Mineralogy 26.1.2 NeoForge releases must use target 2601022: ${project.mod_version}")
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
         vendor = JvmVendorSpec.ADOPTIUM
     }
     withSourcesJar()
@@ -64,11 +64,11 @@ tasks.named('sourcesJar', Jar) {
 
 tasks.withType(JavaCompile).configureEach {
     javaCompiler = javaToolchains.compilerFor {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
         vendor = JvmVendorSpec.ADOPTIUM
     }
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
     options.encoding = 'UTF-8'
     options.compilerArgs.addAll(['-Xlint:deprecation', '-Xmaxerrs', '1000'])
 }
@@ -191,7 +191,7 @@ configurations {
 
 dependencies {
     implementation "net.neoforged:neoforge:${project.neo_version}"
-    // NeoForge 21.11 uses official names in both development and production, so the
+    // NeoForge 26.1 uses official names in both development and production, so the
     // exact released OreSpawn artifact is suitable for ordinary runtime use.
     runtimeOnly(orespawnCoordinate) { transitive = false }
     orespawnRelease(orespawnCoordinate) { transitive = false }
@@ -258,7 +258,7 @@ tasks.named('jar', Jar) {
                 'Implementation-Title'  : 'Mineralogy',
                 'Implementation-Version': project.version,
                 'Implementation-Vendor' : 'SkyBlade1978',
-                'Built-On-Java'         : '21',
+                'Built-On-Java'         : '25',
                 'Mineralogy-Loader'      : 'neoforge',
                 'MixinConfigs'           : 'mineralogy.mixins.json',
                 'Built-On'              : "${project.minecraft_version}-${project.neo_version}"
@@ -276,11 +276,11 @@ tasks.register('compileOilCompatibilityFixture', JavaCompile) {
     classpath = files(sourceSets.main.output, sourceSets.main.compileClasspath)
     destinationDirectory = oilCompatibilityClasses
     javaCompiler = javaToolchains.compilerFor {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
         vendor = JvmVendorSpec.ADOPTIUM
     }
     options.encoding = 'UTF-8'
-    options.release = 21
+    options.release = 25
 }
 tasks.register('oilCompatibilityFixtureJar', Jar) {
     dependsOn tasks.named('compileOilCompatibilityFixture')
@@ -301,11 +301,11 @@ tasks.register('compileRecipeIntegrationFixture', JavaCompile) {
     classpath = files(sourceSets.main.output, sourceSets.main.compileClasspath)
     destinationDirectory = recipeIntegrationClasses
     javaCompiler = javaToolchains.compilerFor {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
         vendor = JvmVendorSpec.ADOPTIUM
     }
     options.encoding = 'UTF-8'
-    options.release = 21
+    options.release = 25
 }
 tasks.register('recipeIntegrationFixtureJar', Jar) {
     dependsOn tasks.named('compileRecipeIntegrationFixture')
@@ -323,7 +323,7 @@ tasks.register('runRegionPaletteAudit', JavaExec) {
     classpath = files(recipeIntegrationClasses, sourceSets.main.runtimeClasspath)
     mainClass = 'zone.moddev.mc.mineralogy.recipeprobe.RegionPaletteAudit'
     javaLauncher = javaToolchains.launcherFor {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
         vendor = JvmVendorSpec.ADOPTIUM
     }
     doFirst {
@@ -460,13 +460,13 @@ tasks.register('verifyMavenCoordinates') {
 
 tasks.register('verifyReleaseConfiguration') {
     group = 'verification'
-    description = 'Verifies the exact Mineralogy 1.21.11 NeoForge release identity.'
+    description = 'Verifies the exact Mineralogy 26.1.2 NeoForge release identity.'
     doLast {
-        if (project.mod_version != '6.1.2.121112'
+        if (project.mod_version != '6.1.2.2601022'
                 || project.mod_group != expectedMavenGroup
-                || project.minecraft_version != '1.21.11'
-                || project.neo_version != '21.11.45') {
-            throw new GradleException('Unexpected Mineralogy 1.21.11 NeoForge release identity')
+                || project.minecraft_version != '26.1.2'
+                || project.neo_version != '26.1.2.94') {
+            throw new GradleException('Unexpected Mineralogy 26.1.2 NeoForge release identity')
         }
     }
 }
@@ -475,20 +475,20 @@ tasks.register('verifyReleaseDependencies') {
     group = 'verification'
     description = 'Resolves and verifies the exact released OreSpawn dependency.'
     doLast {
-        if (project.mod_version != '6.1.2.121112'
+        if (project.mod_version != '6.1.2.2601022'
                 || project.minecraft_version != project.mc_version
-                || project.mc_version != '1.21.11'
+                || project.mc_version != '26.1.2'
                 || project.loader_name != 'neoforge'
                 || project.loader_code != '2'
-                || project.java_version != '21'
-                || project.java_toolchain_version != '21.0.7+6'
-                || project.gradle_java_version != '21'
+                || project.java_version != '25'
+                || project.java_toolchain_version != '25.0.3+9'
+                || project.gradle_java_version != '25'
                 || project.curseforge_project_id != '240974') {
             throw new GradleException('Unexpected generic release dispatcher metadata')
         }
-        if (project.orespawn_version != '4.0.16.121112' ||
+        if (project.orespawn_version != '4.0.16.2601022' ||
                 project.orespawn_curse_project_id != '245586' ||
-                project.orespawn_curse_file_id != '8809764') {
+                project.orespawn_curse_file_id != '8809908') {
             throw new GradleException('Unexpected OreSpawn release coordinates')
         }
         File artifact = configurations.orespawnRelease.resolvedConfiguration.resolvedArtifacts
@@ -616,7 +616,7 @@ tasks.register('verifyReleaseArtifacts') {
             def legacyItemModels = names.findAll { it ==~ /assets\/mineralogy\/models\/item\/[^\/]+\.json/ }
             def itemDefinitions = names.findAll { it ==~ /assets\/mineralogy\/items\/[^\/]+\.json/ }
             if (legacyItemModels.size() != 1144 || itemDefinitions.size() != 928) {
-                throw new GradleException('Release jar must contain 1,144 legacy item models and 928 NeoForge 21.11 item definitions')
+                throw new GradleException('Release jar must contain 1,144 legacy item models and 928 NeoForge 26.1.2 item definitions')
             }
             itemDefinitions.each { definitionName ->
                 String id = definitionName.substring(
@@ -627,7 +627,7 @@ tasks.register('verifyReleaseArtifacts') {
                 def definition = new JsonSlurper().parse(zip.getInputStream(zip.getEntry(definitionName)))
                 if (definition.model?.type != 'minecraft:model' ||
                         definition.model?.model != "mineralogy:item/${id}") {
-                    throw new GradleException("Invalid NeoForge 21.11 item definition: ${definitionName}")
+                    throw new GradleException("Invalid NeoForge 26.1.2 item definition: ${definitionName}")
                 }
             }
             def blockModelText = names.findAll {
@@ -687,7 +687,7 @@ tasks.register('verifyReleaseArtifacts') {
                         throw new GradleException("Invalid class header in ${entry.name}")
                     }
                     int major = ((header[6] & 0xff) << 8) | (header[7] & 0xff)
-                    if (major != 65) throw new GradleException("${entry.name} is class version ${major}, expected Java 21 (65)")
+                    if (major != 69) throw new GradleException("${entry.name} is class version ${major}, expected Java 25 (69)")
                 }
                 finally {
                     stream.close()
@@ -702,7 +702,7 @@ tasks.register('verifyReleaseArtifacts') {
                     ?.dimensions?.get('minecraft:overworld')
             if (!provider.rocks.values().every { it.min_y == -64 && it.max_y == 319 }
                     || oil?.min_y != -48 || oil?.max_y != 48) {
-                throw new GradleException('Packaged provider does not use Minecraft 1.21.11 world heights')
+                throw new GradleException('Packaged provider does not use Minecraft 26.1.2 world heights')
             }
             if (provider.rocks['mineralogy:rock/minecraft/basalt']?.block != 'minecraft:basalt' ||
                     provider.rocks['mineralogy:rock/minecraft/tuff']?.block != 'minecraft:tuff' ||
@@ -719,7 +719,7 @@ tasks.register('verifyReleaseArtifacts') {
                         dimension?.host_blocks == ['minecraft:stone', 'minecraft:deepslate'] &&
                                 dimension?.host_tags == []
                     }) {
-                throw new GradleException('Packaged provider does not use the Minecraft 1.21.11 native-rock and deepslate contract')
+                throw new GradleException('Packaged provider does not use the Minecraft 26.1.2 native-rock and deepslate contract')
             }
             byte[] providerBytes = zip.getInputStream(
                     zip.getEntry('data/mineralogy/orespawn/provider.json')).bytes
@@ -741,7 +741,7 @@ tasks.register('verifyReleaseArtifacts') {
                     'data/mineralogy/advancement/mineralogy/all_the_rocks.json')))
             if (allTheRocks.display?.icon?.id != 'mineralogy:basalt'
                     || allTheRocks.display.icon.containsKey('item')) {
-                throw new GradleException('Custom advancement icon must use the Minecraft 1.21.11 item-stack id field')
+                throw new GradleException('Custom advancement icon must use the Minecraft 26.1.2 item-stack id field')
             }
             def verifyAdvancementPredicates = { advancement, String source ->
                 advancement.criteria?.each { criterionName, criterion ->
@@ -754,7 +754,7 @@ tasks.register('verifyReleaseArtifacts') {
                                     ? holderSet.isEmpty() || holderSet.any { !(it instanceof String) || it.isEmpty() }
                                     : !(holderSet instanceof String) || holderSet.isEmpty()
                         }) {
-                            throw new GradleException("Invalid Minecraft 1.21.11 item predicate in ${source}: ${criterionName}")
+                            throw new GradleException("Invalid Minecraft 26.1.2 item predicate in ${source}: ${criterionName}")
                         }
                     }
                 }
@@ -765,7 +765,7 @@ tasks.register('verifyReleaseArtifacts') {
             }.each { entryName ->
                 def advancement = new JsonSlurper().parse(zip.getInputStream(zip.getEntry(entryName)))
                 if (advancement.sends_telemetry_event != false) {
-                    throw new GradleException("Minecraft 1.21.11 recipe advancement must disable telemetry: ${entryName}")
+                    throw new GradleException("Minecraft 26.1.2 recipe advancement must disable telemetry: ${entryName}")
                 }
                 if (advancement.criteria != null) verifyAdvancementPredicates(advancement, entryName)
             }
@@ -861,10 +861,10 @@ tasks.register('verifyReleaseArtifacts') {
                 if (recipe.endsWith('_stonecutting')) {
                     if (!(data.result instanceof Map) || data.result.id == null
                             || data.result.count != 2 || data.containsKey('count')) {
-                        throw new GradleException("Invalid Minecraft 1.21.11 stonecutting result: ${recipe}")
+                        throw new GradleException("Invalid Minecraft 26.1.2 stonecutting result: ${recipe}")
                     }
                 } else if (data.result?.id == null) {
-                    throw new GradleException("Invalid Minecraft 1.21.11 slab result: ${recipe}")
+                    throw new GradleException("Invalid Minecraft 26.1.2 slab result: ${recipe}")
                 }
             }
             def families = ['andesite', 'basalt', 'diorite', 'granite', 'rhyolite',
@@ -938,7 +938,7 @@ tasks.register('verifyReleaseArtifacts') {
             def wallBlockstates = names.findAll { it ==~ /assets\/mineralogy\/blockstates\/.+_wall\.json/ }
             def tallWallModels = names.findAll { it ==~ /assets\/mineralogy\/models\/block\/.+_wall_side_tall\.json/ }
             if (wallBlockstates.size() != 108 || tallWallModels.size() != 108) {
-                throw new GradleException("Release jar must contain all 108 NeoForge 21.11 wall blockstates and tall-side models")
+                throw new GradleException("Release jar must contain all 108 NeoForge 26.1.2 wall blockstates and tall-side models")
             }
         }
         finally {

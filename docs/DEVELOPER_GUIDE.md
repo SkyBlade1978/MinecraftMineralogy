@@ -40,14 +40,15 @@ families additionally use `cobblestone`; chert and pumice always retain that
 identity. Gypsum, chalk, rock salt, and both rock salt lamps retain their
 specialty aliases.
 
-Minecraft 1.21.11's `minecraft:stone_crafting_materials` and
+Minecraft 26.1.2's `minecraft:stone_crafting_materials` and
 `minecraft:stone_tool_materials` item tags include Mineralogy's dynamic union,
 so enabled Mineralogy rocks work in native tool recipes. NeoForge itself also
 uses `c:cobblestones/normal` in several higher-priority vanilla recipe
 overrides. Mineralogy therefore rebuilds that tag as well as the canonical
 `c:cobblestones`, compatibility, vanilla, and Mineralogy block and item tag
 membership after initial tag loading and every data reload. It preserves other
-mods' members. Minecraft 1.21.11 removed the old mutable ingredient caches, so
+mods' members. Minecraft 26.1.2 retains live named holder sets rather than a
+public global ingredient-cache invalidator, so
 Mineralogy updates both each existing named holder set and every affected
 holder's tag membership in place; the holder-set invalidation callbacks make
 the recipe manager observe the new membership immediately.
@@ -61,12 +62,12 @@ native aliases. The access transformer exposes only the package-private holder
 binding methods needed for that targeted update; it changes no game identity
 or recipe behavior by itself.
 
-Minecraft 1.21.11 retains three additional configurable recipes: coast, sentry, and vex
+Minecraft 26.1.2 retains three additional configurable recipes: coast, sentry, and vex
 armor-trim template duplication. They use the same dynamically rebound
 Mineralogy cobblestone union. Their vanilla advancements are intentionally untouched
 because those recipes unlock from owning the template, not from cobblestone.
 
-Minecraft 1.21.11 also owns andesite, basalt, diorite, granite, tuff, and several
+Minecraft 26.1.2 also owns andesite, basalt, diorite, granite, tuff, and several
 matching finishes. Mineralogy's family tags include both native and retained
 legacy identities. Five `data/minecraft/recipe/polished_*.json` overrides move
 the native polished-block route from 2x2 crafting to one exact native block plus
@@ -123,7 +124,7 @@ material and finish so basalt cannot produce a different rock's slab or wall.
 
 ## Crafting Data
 
-All Mineralogy recipes are native Minecraft/NeoForge 1.21.11 JSON under
+All Mineralogy recipes are native Minecraft/NeoForge 26.1.2 JSON under
 `data/mineralogy/recipe/`. Run `scripts/generate-recipes.ps1` after changing
 the recipe matrix; it generates the 27 stone families and global recipes, the
 native slab/stonecutting overrides and compatibility conversions, and the five
@@ -133,7 +134,7 @@ advancement with the same NeoForge conditions and the same exact-item or
 family-tag material predicate as the recipe. Unlocks use direct inventory
 ingredients instead of listening to other recipe unlocks, which would
 recursively reveal an entire construction tree. Polishing uses Minecraft
-1.21.11's advancement requirements matrix to require the matching source plus
+26.1.2's advancement requirements matrix to require the matching source plus
 accepted sand; manually crafting a recipe is the target-native fallback for
 Forge's delayed crafting-output inventory trigger. Rock-furnace advancements
 use the matching slab-family tag as their sole material criterion. They
@@ -160,24 +161,29 @@ The legacy `GENERATE_*` flags can remove registrations on the next start. The
 new issue-121 switches only change creative visibility and Mineralogy-owned
 recipes, so existing content remains loadable.
 
-NeoForge 21.11 converts pre-flattening chunks lazily. Required Mixins expand
+NeoForge 26.1 converts pre-flattening chunks lazily. Required Mixins expand
 Minecraft's fixed legacy state tables before conversion, and the selected-world hook
 installs the complete saved block mapping before Mojang's data fixer. It
 reinstalls that mapping after the client enumerates other old saves, normalizes
 legacy rock-furnace tile IDs, retains sidecar recovery, and protects populated
 chunks from cross-boundary feature writes. The Mixins target exact owners and
 descriptors and fail startup if a required injection point cannot be found.
-The obsolete JavaScript coremod is deliberately absent. Validate both previously
+Minecraft 26.1's four-argument chunk upgrader is intercepted before and after
+conversion, and the discovery pass indexes both historical root `region` files
+and `dimensions/minecraft/overworld/region`. The obsolete JavaScript coremod is
+deliberately absent. Validate both previously
 unloaded occupied furnaces and new chunks at an old-world boundary in the
 reobfuscated jar; a development launch alone cannot prove this path.
 
 ## Building
 
-The build uses NeoGradle 7.1.38 and the Gradle 9.2.1 wrapper on Java 21,
-with an exact Java 21 toolchain for production and test bytecode:
+The build uses NeoGradle 7.1.38 and the Gradle 9.2.1 wrapper on Java 25,
+with an exact Temurin 25.0.3+9 toolchain for production and test bytecode. The
+API-complete decompiler path is enabled because NeoForge 26.1.2's combined
+binary omits public biome accessors required by production sources:
 
 ```powershell
-$env:JAVA_HOME='path-to-a-Java-21-jdk'
+$env:JAVA_HOME='path-to-Temurin-25.0.3+9'
 $env:GRADLE_USER_HOME='D:\MinecraftMineralogy\.gradle-verify-cache'
 .\gradlew.bat clean check build javadoc verifyReleaseConfiguration verifyReleaseDependencies verifyReleaseArtifacts writeReleaseChecksums --no-daemon
 .\gradlew.bat eclipse verifyEclipseProductionClasspath --no-daemon
@@ -189,5 +195,5 @@ OreSpawn in a launcher-like NeoForge installation. The normal jar packages this
 guide under `META-INF/mineralogy/docs/`.
 
 The complete release version is `Major.Minor.Bug.Target`; see
-[Mineralogy Versioning](VERSIONS.md). This branch validates target `121112`
-for Minecraft 1.21.11 NeoForge and does not append CI build numbers.
+[Mineralogy Versioning](VERSIONS.md). This branch validates target `2601022`
+for Minecraft 26.1.2 NeoForge and does not append CI build numbers.

@@ -50,7 +50,7 @@ public class ResourceContractTest {
         assertFalse(text.contains("metadata"));
         assertTrue(text.contains("minecraft:deepslate"));
         assertTrue(text.contains("\"host_blocks\""));
-        assertFalse("NeoForge 21.11 common setup must not resolve unbound host tags",
+        assertFalse("NeoForge 26.1 common setup must not resolve unbound host tags",
                 text.contains("minecraft:stone_ore_replaceables")
                         || text.contains("minecraft:deepslate_ore_replaceables"));
         for (Map.Entry<String, JsonElement> entry : provider.getAsJsonObject("rocks").entrySet()) {
@@ -129,7 +129,7 @@ public class ResourceContractTest {
     }
 
     @Test
-    public void advancementsUseMinecraft1206HolderSetPredicateSchema() throws Exception {
+    public void advancementsUseMinecraft2612HolderSetPredicateSchema() throws Exception {
         File mineralogy = new File(ROOT, "data/mineralogy/advancement");
         for (File file : jsonFiles(mineralogy)) {
             JsonObject advancement = json(file);
@@ -454,15 +454,15 @@ public class ResourceContractTest {
     }
 
     @Test
-    public void neoForge211ResourcesRetainNativeWallsTagsAndPackFormats() throws Exception {
+    public void neoForge261ResourcesRetainNativeWallsTagsAndPackFormats() throws Exception {
         JsonObject pack = json(new File(ROOT, "pack.mcmeta"));
-        assertEquals(94, pack.getAsJsonObject("pack").get("max_format").getAsInt());
+        assertEquals(101, pack.getAsJsonObject("pack").get("max_format").getAsInt());
         JsonArray dataMinimum = pack.getAsJsonObject("pack").getAsJsonArray("min_format");
-        assertEquals(94, dataMinimum.get(0).getAsInt());
+        assertEquals(101, dataMinimum.get(0).getAsInt());
         assertEquals(1, dataMinimum.get(1).getAsInt());
         JsonObject resourcePack = json(new File("resourcepack/x16/pack.mcmeta"));
-        assertEquals(75, resourcePack.getAsJsonObject("pack").get("min_format").getAsInt());
-        assertEquals(75, resourcePack.getAsJsonObject("pack").get("max_format").getAsInt());
+        assertEquals(84, resourcePack.getAsJsonObject("pack").get("min_format").getAsInt());
+        assertEquals(84, resourcePack.getAsJsonObject("pack").get("max_format").getAsInt());
 
         File blockstates = new File(ROOT, "assets/mineralogy/blockstates");
         File[] wallStates = blockstates.listFiles((dir, name) -> name.endsWith("_wall.json"));
@@ -537,12 +537,15 @@ public class ResourceContractTest {
     }
 
     @Test
-    public void integrationFixturesUsePack34AndSingularDataDirectories() throws Exception {
+    public void integrationFixturesUseDataFormat101AndSingularDataDirectories() throws Exception {
         for (String sourceSet : Arrays.asList("recipeIntegrationTest", "oilCompatibilityTest")) {
             File fixtureRoot = new File("src/" + sourceSet + "/resources");
             JsonObject pack = json(new File(fixtureRoot, "pack.mcmeta"));
-            assertEquals(sourceSet, 34,
-                    pack.getAsJsonObject("pack").get("pack_format").getAsInt());
+            assertEquals(sourceSet, 101,
+                    pack.getAsJsonObject("pack").get("max_format").getAsInt());
+            JsonArray minimum = pack.getAsJsonObject("pack").getAsJsonArray("min_format");
+            assertEquals(sourceSet, 101, minimum.get(0).getAsInt());
+            assertEquals(sourceSet, 1, minimum.get(1).getAsInt());
             assertFalse(sourceSet, new File(fixtureRoot, "data/c/tags/items").exists());
             assertFalse(sourceSet, new File(fixtureRoot, "data/c/tags/fluids").exists());
             assertFalse(sourceSet, new File(fixtureRoot, "data/forge/tags/items").exists());
@@ -663,8 +666,8 @@ public class ResourceContractTest {
     @Test
     public void oilAndBuildMetadataUseStableTargetIdentities() throws Exception {
         String properties = new String(Files.readAllBytes(new File("gradle.properties").toPath()), StandardCharsets.UTF_8);
-        assertTrue(properties.contains("mod_version=6.1.2.121112"));
-        assertTrue(properties.contains("orespawn_curse_file_id=8809764"));
+        assertTrue(properties.contains("mod_version=6.1.2.2601022"));
+        assertTrue(properties.contains("orespawn_curse_file_id=8809908"));
         String build = new String(Files.readAllBytes(new File("build.gradle").toPath()), StandardCharsets.UTF_8);
         assertTrue(build.contains("runtimeOnly(orespawnCoordinate)"));
         assertTrue(build.contains("https://maven.moddev.zone/releases"));
