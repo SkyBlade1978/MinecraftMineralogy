@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:rhyolite_smooth_slab"
-                        },
-                        {
-                            "item":  "mineralogy:rhyolite_smooth_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:rhyolite_smooth",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:rhyolite_smooth_slab",
+    "mineralogy:rhyolite_smooth_slab"
+  ],
+  "result": {
+    "id": "mineralogy:rhyolite_smooth",
+    "count": 1
+  }
 }

@@ -1,37 +1,19 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:siltstone_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:siltstone_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:siltstone_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:siltstone_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:siltstone_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:siltstone_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:siltstone_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:siltstone_relief_blank"
-                        },
-                        {
-                            "item":  "minecraft:stone_sword"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:siltstone_relief_sword",
-                   "count":  8
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:siltstone_relief_blank",
+    "mineralogy:siltstone_relief_blank",
+    "mineralogy:siltstone_relief_blank",
+    "mineralogy:siltstone_relief_blank",
+    "mineralogy:siltstone_relief_blank",
+    "mineralogy:siltstone_relief_blank",
+    "mineralogy:siltstone_relief_blank",
+    "mineralogy:siltstone_relief_blank",
+    "minecraft:stone_sword"
+  ],
+  "result": {
+    "id": "mineralogy:siltstone_relief_sword",
+    "count": 8
+  }
 }

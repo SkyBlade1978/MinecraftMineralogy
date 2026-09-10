@@ -1,22 +1,18 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "misc",
-    "pattern":  [
-                    "xxx",
-                    "xyx",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:slabs/scoria/smooth"
-                      },
-                "y":  {
-                          "item":  "minecraft:furnace"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:scoria_smooth_furnace",
-                   "count":  1
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "xxx",
+    "xyx",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:slabs/scoria/smooth",
+    "y": "minecraft:furnace"
+  },
+  "result": {
+    "id": "mineralogy:scoria_smooth_furnace",
+    "count": 1
+  },
+  "show_notification": true
 }

@@ -4,7 +4,7 @@ import zone.moddev.mc.mineralogy.Mineralogy;
 import zone.moddev.mc.mineralogy.MineralogyConfig;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -13,14 +13,14 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 /** Registers the exact historical IDs as NeoForge registry aliases. */
 public final class PatchHandler {
-    private static final ResourceLocation SAPROLITE = mineralogyId("saprolite");
-    private static final ResourceLocation PUMMICE = mineralogyId("pummice");
-    private static final ResourceLocation LIMESTONE = mineralogyId("limestone");
-    private static final ResourceLocation PUMICE = mineralogyId("pumice");
-    private static final ResourceLocation GRASS_PATH = minecraftId("grass_path");
-    private static final ResourceLocation DIRT_PATH = minecraftId("dirt_path");
-    private static final ResourceLocation SWEET_BERRIES_PICK = minecraftId("item.sweet_berries.pick_from_bush");
-    private static final ResourceLocation SWEET_BERRY_BUSH_PICK = minecraftId("block.sweet_berry_bush.pick_berries");
+    private static final Identifier SAPROLITE = mineralogyId("saprolite");
+    private static final Identifier PUMMICE = mineralogyId("pummice");
+    private static final Identifier LIMESTONE = mineralogyId("limestone");
+    private static final Identifier PUMICE = mineralogyId("pumice");
+    private static final Identifier GRASS_PATH = minecraftId("grass_path");
+    private static final Identifier DIRT_PATH = minecraftId("dirt_path");
+    private static final Identifier SWEET_BERRIES_PICK = minecraftId("item.sweet_berries.pick_from_bush");
+    private static final Identifier SWEET_BERRY_BUSH_PICK = minecraftId("block.sweet_berry_bush.pick_berries");
 
     private static final DeferredRegister<Block> BLOCK_ALIASES =
             DeferredRegister.create(BuiltInRegistries.BLOCK, Mineralogy.MODID);
@@ -48,11 +48,11 @@ public final class PatchHandler {
         SOUND_ALIASES.register(modBus);
     }
 
-    private static ResourceLocation mineralogyId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, path);
+    private static Identifier mineralogyId(String path) {
+        return Identifier.fromNamespaceAndPath(Mineralogy.MODID, path);
     }
 
-    private static ResourceLocation minecraftId(String path) {
-        return ResourceLocation.fromNamespaceAndPath("minecraft", path);
+    private static Identifier minecraftId(String path) {
+        return Identifier.fromNamespaceAndPath("minecraft", path);
     }
 }

@@ -1,18 +1,16 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/quartzite"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:quartzite_wall",
-                   "count":  6
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:stones/quartzite"
+  },
+  "result": {
+    "id": "mineralogy:quartzite_wall",
+    "count": 6
+  },
+  "show_notification": true
 }

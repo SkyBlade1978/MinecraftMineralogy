@@ -1,18 +1,16 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/diorite/smooth"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:diorite_smooth_brick",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": "#mineralogy:stones/diorite/smooth"
+  },
+  "result": {
+    "id": "mineralogy:diorite_smooth_brick",
+    "count": 4
+  },
+  "show_notification": true
 }

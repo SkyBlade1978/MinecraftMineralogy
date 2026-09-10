@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:pegmatite_wall"
-                        },
-                        {
-                            "tag":  "c:sands"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:pegmatite_smooth_wall",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:pegmatite_wall",
+    "#c:sands"
+  ],
+  "result": {
+    "id": "mineralogy:pegmatite_smooth_wall",
+    "count": 1
+  }
 }

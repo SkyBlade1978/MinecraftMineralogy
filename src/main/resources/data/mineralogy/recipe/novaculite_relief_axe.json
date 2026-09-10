@@ -1,37 +1,19 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:novaculite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:novaculite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:novaculite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:novaculite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:novaculite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:novaculite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:novaculite_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:novaculite_relief_blank"
-                        },
-                        {
-                            "item":  "minecraft:stone_axe"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:novaculite_relief_axe",
-                   "count":  8
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:novaculite_relief_blank",
+    "mineralogy:novaculite_relief_blank",
+    "mineralogy:novaculite_relief_blank",
+    "mineralogy:novaculite_relief_blank",
+    "mineralogy:novaculite_relief_blank",
+    "mineralogy:novaculite_relief_blank",
+    "mineralogy:novaculite_relief_blank",
+    "mineralogy:novaculite_relief_blank",
+    "minecraft:stone_axe"
+  ],
+  "result": {
+    "id": "mineralogy:novaculite_relief_axe",
+    "count": 8
+  }
 }

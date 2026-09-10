@@ -8,6 +8,7 @@ import zone.moddev.mc.mineralogy.migration.LegacyMineralogy6ConfigMigrator;
 import zone.moddev.mc.mineralogy.migration.LegacyOreConfigMigrator;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -333,9 +334,12 @@ public class ConfigurationAndMigrationTest {
         Files.delete(output.resolve("PLAYER_GUIDE.md"));
         assertEquals(1, DocumentationExporter.exportMissing(output));
         assertArrayEquals(edited, Files.readAllBytes(readme));
-        assertArrayEquals(Files.readAllBytes(new File(
-                "src/main/resources/data/mineralogy/orespawn/provider.json").toPath()),
-                Files.readAllBytes(output.resolve("examples/mineralogy-provider.json")));
+        try (InputStream bundledProvider = ConfigurationAndMigrationTest.class.getResourceAsStream(
+                "/data/mineralogy/orespawn/provider.json")) {
+            assertNotNull(bundledProvider);
+            assertArrayEquals(bundledProvider.readAllBytes(),
+                    Files.readAllBytes(output.resolve("examples/mineralogy-provider.json")));
+        }
         try (Stream<Path> files = Files.walk(output)) {
             assertFalse(files.anyMatch(path -> path.getFileName().toString().endsWith(".tmp")));
         }

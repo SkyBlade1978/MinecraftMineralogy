@@ -1,25 +1,19 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "zxz",
-                    "zyz",
-                    "zzz"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:dolomite_smooth"
-                      },
-                "y":  {
-                          "item":  "minecraft:stick"
-                      },
-                "z":  {
-                          "item":  "mineralogy:dolomite_relief_blank"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:dolomite_relief_hammer",
-                   "count":  7
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "zxz",
+    "zyz",
+    "zzz"
+  ],
+  "key": {
+    "x": "mineralogy:dolomite_smooth",
+    "y": "minecraft:stick",
+    "z": "mineralogy:dolomite_relief_blank"
+  },
+  "result": {
+    "id": "mineralogy:dolomite_relief_hammer",
+    "count": 7
+  },
+  "show_notification": true
 }

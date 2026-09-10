@@ -1,5 +1,7 @@
 package zone.moddev.mc.mineralogy.blocks;
 
+import zone.moddev.mc.mineralogy.init.RegistrationProperties;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -7,7 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Mirror;
@@ -18,17 +20,19 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.Level;
 
 import net.minecraft.util.RandomSource;
 
 public class RockSaltStreetLamp extends Block implements NamedMineralogyBlock {
-	public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.values());
+	public static final EnumProperty<Direction> FACING = EnumProperty.create("facing", Direction.class);
 	private static final VoxelShape STANDING_SHAPE = Block.box(6.4D, 0.0D, 6.4D, 9.6D, 28.8D, 9.6D);
 
 	public RockSaltStreetLamp() {
-		super(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.IRON_BLOCK).strength(1.0F)
-				.lightLevel(state -> 15).sound(SoundType.METAL));
+		super(RegistrationProperties.block(
+				BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.IRON_BLOCK).strength(1.0F)
+						.lightLevel(state -> 15).sound(SoundType.METAL), "rocksaltstreetlamp"));
 		this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.UP));
 	}
 
@@ -53,8 +57,9 @@ public class RockSaltStreetLamp extends Block implements NamedMineralogyBlock {
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction facing, BlockState facingState,
-			LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
+	protected BlockState updateShape(BlockState state, LevelReader world, ScheduledTickAccess ticks,
+			BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState,
+			RandomSource random) {
 		return !state.canSurvive(world, currentPos) ? Blocks.AIR.defaultBlockState() : state;
 	}
 

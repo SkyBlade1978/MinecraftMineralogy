@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:limestone_smooth_brick_slab"
-                        },
-                        {
-                            "item":  "mineralogy:limestone_smooth_brick_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:limestone_smooth_brick",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:limestone_smooth_brick_slab",
+    "mineralogy:limestone_smooth_brick_slab"
+  ],
+  "result": {
+    "id": "mineralogy:limestone_smooth_brick",
+    "count": 1
+  }
 }

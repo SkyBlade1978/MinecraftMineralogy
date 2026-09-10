@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:rock_salt_relief_left"
-                        },
-                        {
-                            "item":  "mineralogy:rock_salt_relief_left"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:rock_salt_relief_right",
-                   "count":  2
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:rock_salt_relief_left",
+    "mineralogy:rock_salt_relief_left"
+  ],
+  "result": {
+    "id": "mineralogy:rock_salt_relief_right",
+    "count": 2
+  }
 }

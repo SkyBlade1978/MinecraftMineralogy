@@ -1,10 +1,8 @@
 {
-    "type":  "minecraft:stonecutting",
-    "ingredient":  {
-                       "item":  "minecraft:polished_tuff"
-                   },
-    "result":  {
-                   "id":  "mineralogy:tuff_smooth_slab",
-                   "count":  2
-               }
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:polished_tuff",
+  "result": {
+    "id": "mineralogy:tuff_smooth_slab",
+    "count": 2
+  }
 }

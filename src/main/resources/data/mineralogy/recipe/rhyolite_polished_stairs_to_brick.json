@@ -1,18 +1,16 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:rhyolite_smooth_stairs"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:rhyolite_smooth_brick_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": "mineralogy:rhyolite_smooth_stairs"
+  },
+  "result": {
+    "id": "mineralogy:rhyolite_smooth_brick_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }

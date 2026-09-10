@@ -126,16 +126,16 @@ public final class RegionPaletteAudit {
 
 	private static void auditChunk(CompoundTag chunk, Audit audit) {
 		audit.chunks++;
-		ListTag sections = chunk.getList("sections", Tag.TAG_COMPOUND);
+		ListTag sections = chunk.getListOrEmpty("sections");
 		Map<Integer, CompoundTag> sectionsByY = new HashMap<>();
 		boolean containsOil = false;
 		for (int sectionIndex = 0; sectionIndex < sections.size(); sectionIndex++) {
-			CompoundTag section = sections.getCompound(sectionIndex);
-			sectionsByY.put((int) section.getByte("Y"), section);
-			CompoundTag blockStates = section.getCompound("block_states");
-			ListTag palette = blockStates.getList("palette", Tag.TAG_COMPOUND);
+			CompoundTag section = sections.getCompoundOrEmpty(sectionIndex);
+			sectionsByY.put((int) section.getByteOr("Y", (byte) 0), section);
+			CompoundTag blockStates = section.getCompoundOrEmpty("block_states");
+			ListTag palette = blockStates.getListOrEmpty("palette");
 			for (int paletteIndex = 0; paletteIndex < palette.size(); paletteIndex++) {
-				String name = palette.getCompound(paletteIndex).getString("Name");
+				String name = palette.getCompoundOrEmpty(paletteIndex).getStringOr("Name", "");
 				containsOil |= "mineralogy:crude_oil".equals(name);
 				audit.paletteEntries++;
 				if (audit.targets.containsKey(name)) audit.targets.merge(name, 1L, Long::sum);
@@ -143,28 +143,28 @@ public final class RegionPaletteAudit {
 			}
 		}
 		if (containsOil) auditOilCover(sectionsByY, audit);
-		auditRockFurnaces(chunk.getList("block_entities", Tag.TAG_COMPOUND), audit);
+		auditRockFurnaces(chunk.getListOrEmpty("block_entities"), audit);
 	}
 
 	private static void auditRockFurnaces(ListTag blockEntities, Audit audit) {
 		for (int index = 0; index < blockEntities.size(); index++) {
-			CompoundTag blockEntity = blockEntities.getCompound(index);
-			if (!"mineralogy:rock_furnace".equals(blockEntity.getString("id"))) continue;
+			CompoundTag blockEntity = blockEntities.getCompoundOrEmpty(index);
+			if (!"mineralogy:rock_furnace".equals(blockEntity.getStringOr("id", ""))) continue;
 			Map<String, Object> furnace = new LinkedHashMap<>();
-			furnace.put("id", blockEntity.getString("id"));
-			furnace.put("x", blockEntity.getInt("x"));
-			furnace.put("y", blockEntity.getInt("y"));
-			furnace.put("z", blockEntity.getInt("z"));
+			furnace.put("id", blockEntity.getStringOr("id", ""));
+			furnace.put("x", blockEntity.getIntOr("x", 0));
+			furnace.put("y", blockEntity.getIntOr("y", 0));
+			furnace.put("z", blockEntity.getIntOr("z", 0));
 			furnace.put("burn_time", numericValue(blockEntity, "BurnTime", "burn_time"));
 			furnace.put("cook_time", numericValue(blockEntity, "CookTime", "cook_time"));
 			furnace.put("cook_total", numericValue(blockEntity, "CookTimeTotal", "cook_time_total"));
 			List<Map<String, Object>> items = new ArrayList<>();
-			ListTag itemTags = blockEntity.getList("Items", Tag.TAG_COMPOUND);
+			ListTag itemTags = blockEntity.getListOrEmpty("Items");
 			for (int itemIndex = 0; itemIndex < itemTags.size(); itemIndex++) {
-				CompoundTag item = itemTags.getCompound(itemIndex);
+				CompoundTag item = itemTags.getCompoundOrEmpty(itemIndex);
 				Map<String, Object> value = new LinkedHashMap<>();
 				value.put("slot", numericValue(item, "Slot", "slot"));
-				value.put("id", item.getString("id"));
+				value.put("id", item.getStringOr("id", ""));
 				value.put("count", numericValue(item, "Count", "count"));
 				items.add(value);
 			}
@@ -174,13 +174,13 @@ public final class RegionPaletteAudit {
 	}
 
 	private static int numericValue(CompoundTag tag, String legacyName, String currentName) {
-		return tag.contains(currentName, Tag.TAG_ANY_NUMERIC) ? tag.getInt(currentName) : tag.getInt(legacyName);
+		return tag.contains(currentName) ? tag.getIntOr(currentName, 0) : tag.getIntOr(legacyName, 0);
 	}
 
 	private static void auditOilCover(Map<Integer, CompoundTag> sectionsByY, Audit audit) {
 		Map<Integer, String[]> decoded = new HashMap<>();
 		for (Map.Entry<Integer, CompoundTag> entry : sectionsByY.entrySet()) {
-			decoded.put(entry.getKey(), decodeSection(entry.getValue().getCompound("block_states")));
+			decoded.put(entry.getKey(), decodeSection(entry.getValue().getCompoundOrEmpty("block_states")));
 		}
 		Map<Integer, Integer> highestOilByColumn = new HashMap<>();
 		for (Map.Entry<Integer, String[]> entry : decoded.entrySet()) {
@@ -214,21 +214,21 @@ public final class RegionPaletteAudit {
 	}
 
 	private static String[] decodeSection(CompoundTag blockStates) {
-		ListTag palette = blockStates.getList("palette", Tag.TAG_COMPOUND);
+		ListTag palette = blockStates.getListOrEmpty("palette");
 		String[] names = new String[palette.size()];
 		for (int index = 0; index < palette.size(); index++) {
-			names[index] = palette.getCompound(index).getString("Name");
+			names[index] = palette.getCompoundOrEmpty(index).getStringOr("Name", "");
 		}
 		String[] states = new String[4096];
 		if (names.length == 0) return states;
-		if (names.length == 1 || !blockStates.contains("data", Tag.TAG_LONG_ARRAY)) {
+		if (names.length == 1 || !blockStates.contains("data")) {
 			java.util.Arrays.fill(states, names[0]);
 			return states;
 		}
 		int bits = Math.max(4, 32 - Integer.numberOfLeadingZeros(names.length - 1));
 		int valuesPerLong = 64 / bits;
 		long mask = (1L << bits) - 1L;
-		long[] data = blockStates.getLongArray("data");
+		long[] data = blockStates.getLongArray("data").orElseGet(() -> new long[0]);
 		for (int index = 0; index < states.length; index++) {
 			int longIndex = index / valuesPerLong;
 			if (longIndex >= data.length) break;

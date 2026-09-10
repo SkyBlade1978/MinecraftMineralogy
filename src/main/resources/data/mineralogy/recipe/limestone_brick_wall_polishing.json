@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:limestone_brick_wall"
-                        },
-                        {
-                            "tag":  "c:sands"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:limestone_smooth_brick_wall",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:limestone_brick_wall",
+    "#c:sands"
+  ],
+  "result": {
+    "id": "mineralogy:limestone_smooth_brick_wall",
+    "count": 1
+  }
 }

@@ -1,19 +1,17 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "x  ",
-                    "xx ",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/basalt/smooth_brick"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:basalt_smooth_brick_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "x  ",
+    "xx ",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:stones/basalt/smooth_brick"
+  },
+  "result": {
+    "id": "mineralogy:basalt_smooth_brick_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }

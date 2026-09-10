@@ -1,21 +1,21 @@
 [![Discord](https://img.shields.io/badge/Discord-MMD-green.svg?style=flat&logo=Discord)](https://discord.moddev.zone)
 [![CurseForge downloads](https://cf.way2muchnoise.eu/full_minecraft-mineralogy_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/minecraft-mineralogy)
 [![Supported Minecraft versions](https://cf.way2muchnoise.eu/versions/Minecraft_minecraft-mineralogy_all.svg)](https://www.curseforge.com/minecraft/mc-mods/minecraft-mineralogy)
-[![Build, test, and audit](https://github.com/MinecraftModDevelopmentMods/MinecraftMineralogy/actions/workflows/ci.yml/badge.svg?branch=master-1.21.1-neo)](https://github.com/MinecraftModDevelopmentMods/MinecraftMineralogy/actions/workflows/ci.yml?query=branch%3Amaster-1.21.1-neo)
+[![Build, test, and audit](https://github.com/MinecraftModDevelopmentMods/MinecraftMineralogy/actions/workflows/ci.yml/badge.svg?branch=master-1.21.11-neo)](https://github.com/MinecraftModDevelopmentMods/MinecraftMineralogy/actions/workflows/ci.yml?query=branch%3Amaster-1.21.11-neo)
 
-# Mineralogy 6 for Minecraft 1.21.1
+# Mineralogy 6 for Minecraft 1.21.11
 
 Mineralogy adds real-world rock families, matching construction blocks,
 mineral ores and dusts, rock furnaces, drywall, rock-salt lighting, fertilizer,
 and crude oil. OreSpawn 4 is the sole terrain, strata, ore, and deposit engine;
 Mineralogy no longer installs a parallel world generator.
 
-This branch builds Mineralogy `6.1.2.121012` for NeoForge `21.1.247` and is built
-and tested against OreSpawn `4.0.16.121012`. Its declared compatibility range is
+This branch builds Mineralogy `6.1.2.121112` for NeoForge `21.11.45` and is built
+and tested against OreSpawn `4.0.16.121112`. Its declared compatibility range is
 OreSpawn `[4.0.6,5.0.0)`. Install both mods on clients and servers.
 
 This is the NeoForge build. It is intentionally maintained separately from the
-Forge 1.21.1 branch; use the jar that matches the loader in your modpack.
+Forge 1.21.11 branch; use the jar that matches the loader in your modpack.
 
 ## Configuration and help
 

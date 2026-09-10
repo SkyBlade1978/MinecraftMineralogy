@@ -1,19 +1,17 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "x  ",
-                    "xx ",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/siltstone/smooth_brick"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:siltstone_smooth_brick_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "x  ",
+    "xx ",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:stones/siltstone/smooth_brick"
+  },
+  "result": {
+    "id": "mineralogy:siltstone_smooth_brick_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }

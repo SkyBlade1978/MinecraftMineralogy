@@ -1,18 +1,16 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/slate/smooth"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:slate_smooth_brick",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": "#mineralogy:stones/slate/smooth"
+  },
+  "result": {
+    "id": "mineralogy:slate_smooth_brick",
+    "count": 4
+  },
+  "show_notification": true
 }

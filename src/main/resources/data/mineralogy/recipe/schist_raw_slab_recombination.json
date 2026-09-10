@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:schist_slab"
-                        },
-                        {
-                            "item":  "mineralogy:schist_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:schist",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:schist_slab",
+    "mineralogy:schist_slab"
+  ],
+  "result": {
+    "id": "mineralogy:schist",
+    "count": 1
+  }
 }

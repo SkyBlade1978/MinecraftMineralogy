@@ -1,17 +1,15 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:granite_brick"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:granite_brick_slab",
-                   "count":  6
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xxx"
+  ],
+  "key": {
+    "x": "mineralogy:granite_brick"
+  },
+  "result": {
+    "id": "mineralogy:granite_brick_slab",
+    "count": 6
+  },
+  "show_notification": true
 }

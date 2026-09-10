@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:limestone_slab"
-                        },
-                        {
-                            "item":  "mineralogy:limestone_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:limestone",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:limestone_slab",
+    "mineralogy:limestone_slab"
+  ],
+  "result": {
+    "id": "mineralogy:limestone",
+    "count": 1
+  }
 }

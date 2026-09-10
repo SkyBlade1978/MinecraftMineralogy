@@ -1,18 +1,16 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "xx",
-                    "xx"
-                ],
-    "key":  {
-                "x":  {
-                          "item":  "mineralogy:siltstone_smooth_wall"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:siltstone_smooth_brick_wall",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "xx",
+    "xx"
+  ],
+  "key": {
+    "x": "mineralogy:siltstone_smooth_wall"
+  },
+  "result": {
+    "id": "mineralogy:siltstone_smooth_brick_wall",
+    "count": 4
+  },
+  "show_notification": true
 }

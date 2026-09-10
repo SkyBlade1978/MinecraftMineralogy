@@ -1,19 +1,17 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "x  ",
-                    "xx ",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/shale"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:shale_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "x  ",
+    "xx ",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:stones/shale"
+  },
+  "result": {
+    "id": "mineralogy:shale_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }

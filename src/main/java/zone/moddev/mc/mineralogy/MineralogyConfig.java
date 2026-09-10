@@ -19,7 +19,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLPaths;
@@ -34,8 +34,8 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
  */
 public final class MineralogyConfig {
     public static final String FILE_NAME = "mineralogy-common.toml";
-    private static final ResourceLocation CONFIG_CONDITION_ID =
-            ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, "config");
+    private static final Identifier CONFIG_CONDITION_ID =
+            Identifier.fromNamespaceAndPath(Mineralogy.MODID, "config");
     private static DeferredRegister<MapCodec<? extends ICondition>> conditionCodecs;
 
     private static boolean smeltableGravel = true;

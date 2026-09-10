@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:andesite"
-                        },
-                        {
-                            "item":  "minecraft:sand"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:andesite_smooth",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:andesite",
+    "minecraft:sand"
+  ],
+  "result": {
+    "id": "mineralogy:andesite_smooth",
+    "count": 1
+  }
 }

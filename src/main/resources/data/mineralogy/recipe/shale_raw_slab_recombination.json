@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:shale_slab"
-                        },
-                        {
-                            "item":  "mineralogy:shale_slab"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:shale",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:shale_slab",
+    "mineralogy:shale_slab"
+  ],
+  "result": {
+    "id": "mineralogy:shale",
+    "count": 1
+  }
 }

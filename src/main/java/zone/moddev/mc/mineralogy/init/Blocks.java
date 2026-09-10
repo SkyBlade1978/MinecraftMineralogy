@@ -28,14 +28,14 @@ import zone.moddev.mc.mineralogy.data.MaterialData;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegisterEvent.RegisterHelper;
 
-@EventBusSubscriber(modid = Mineralogy.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Mineralogy.MODID)
 public class Blocks {
 
     public static Rock andesite = null;
@@ -452,7 +452,7 @@ public class Blocks {
 		if (path == null || path.isEmpty()) {
 			throw new IllegalArgumentException("Mineralogy block has an empty registry path: " + block.getClass());
 		}
-		registry.register(ResourceLocation.fromNamespaceAndPath(Mineralogy.MODID, path), block);
+		registry.register(Identifier.fromNamespaceAndPath(Mineralogy.MODID, path), block);
 		bindLegacyBlockField(path, block);
 		return block;
 	}

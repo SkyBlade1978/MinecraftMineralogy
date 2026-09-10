@@ -1,16 +1,12 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:schist_wall"
-                        },
-                        {
-                            "tag":  "c:sands"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:schist_smooth_wall",
-                   "count":  1
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:schist_wall",
+    "#c:sands"
+  ],
+  "result": {
+    "id": "mineralogy:schist_smooth_wall",
+    "count": 1
+  }
 }

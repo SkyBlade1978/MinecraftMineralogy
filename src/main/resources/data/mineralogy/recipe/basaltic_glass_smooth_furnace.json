@@ -1,22 +1,18 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "misc",
-    "pattern":  [
-                    "xxx",
-                    "xyx",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:slabs/basaltic_glass/smooth"
-                      },
-                "y":  {
-                          "item":  "minecraft:furnace"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:basaltic_glass_smooth_furnace",
-                   "count":  1
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "xxx",
+    "xyx",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:slabs/basaltic_glass/smooth",
+    "y": "minecraft:furnace"
+  },
+  "result": {
+    "id": "mineralogy:basaltic_glass_smooth_furnace",
+    "count": 1
+  },
+  "show_notification": true
 }

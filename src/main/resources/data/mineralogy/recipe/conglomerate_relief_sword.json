@@ -1,37 +1,19 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "category":  "building",
-    "ingredients":  [
-                        {
-                            "item":  "mineralogy:conglomerate_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:conglomerate_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:conglomerate_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:conglomerate_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:conglomerate_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:conglomerate_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:conglomerate_relief_blank"
-                        },
-                        {
-                            "item":  "mineralogy:conglomerate_relief_blank"
-                        },
-                        {
-                            "item":  "minecraft:stone_sword"
-                        }
-                    ],
-    "result":  {
-                   "id":  "mineralogy:conglomerate_relief_sword",
-                   "count":  8
-               }
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mineralogy:conglomerate_relief_blank",
+    "mineralogy:conglomerate_relief_blank",
+    "mineralogy:conglomerate_relief_blank",
+    "mineralogy:conglomerate_relief_blank",
+    "mineralogy:conglomerate_relief_blank",
+    "mineralogy:conglomerate_relief_blank",
+    "mineralogy:conglomerate_relief_blank",
+    "mineralogy:conglomerate_relief_blank",
+    "minecraft:stone_sword"
+  ],
+  "result": {
+    "id": "mineralogy:conglomerate_relief_sword",
+    "count": 8
+  }
 }

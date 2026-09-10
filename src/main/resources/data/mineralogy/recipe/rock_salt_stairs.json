@@ -1,19 +1,17 @@
 {
-    "type":  "minecraft:crafting_shaped",
-    "category":  "building",
-    "pattern":  [
-                    "x  ",
-                    "xx ",
-                    "xxx"
-                ],
-    "key":  {
-                "x":  {
-                          "tag":  "mineralogy:stones/rock_salt"
-                      }
-            },
-    "result":  {
-                   "id":  "mineralogy:rock_salt_stairs",
-                   "count":  4
-               },
-    "show_notification":  true
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "x  ",
+    "xx ",
+    "xxx"
+  ],
+  "key": {
+    "x": "#mineralogy:stones/rock_salt"
+  },
+  "result": {
+    "id": "mineralogy:rock_salt_stairs",
+    "count": 4
+  },
+  "show_notification": true
 }
