@@ -48,6 +48,6 @@ public class Ore extends Block implements NamedMineralogyBlock {
 	@Override
 	public List<ItemStack> getDrops(BlockState state, Builder builder) {
 		return Collections.singletonList(new ItemStack(getItemDropped(),
-				builder.getLevel().random.nextInt(dropRange) + dropAdduct));
+				builder.getLevel().getRandom().nextInt(dropRange) + dropAdduct));
 	}
 }

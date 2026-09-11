@@ -1,3 +1,31 @@
+Mineralogy 6.1.2.2601022 for Minecraft 26.1.2 NeoForge
+
+- Ported the accepted NeoForge 1.21.11 product to Minecraft 26.1.2 and
+  NeoForge 26.1.2.94 while preserving every registry, block-entity, NBT,
+  provider, configuration, migration, recipe, locale, guide, crude-oil,
+  relief, mining, furnace, creative-tab, texture, and legacy-world identity.
+- Adapted loot tools to Minecraft 26.1's `ItemInstance`, fertilizer helper
+  stacks to post-registration construction, rock-furnace crafting remainders
+  to `ItemStackTemplate`, and furnace recipe assembly to the target signature.
+  Existing furnace contents, fuel, burn/cook progress, and state synchronization
+  remain intact.
+- Registered crude-oil rendering through NeoForge 26.1's native fluid-model
+  event and retained the accepted native texture synchronization for andesite,
+  diorite, granite, basalt, and tuff.
+- Retargeted the legacy conversion Mixins to the four-argument chunk upgrader,
+  moved tag rebinding to the target reload hook, and indexed both legacy root
+  region files and Minecraft 26.1's Overworld dimension-region layout. All
+  18,192 mappings, selected-world restoration, sidecars, protected chunks, and
+  legacy furnace normalization remain intact.
+- Regenerated and audited the existing 1,433 recipe/advancement pairs for the
+  target codecs without obsolete stonecutting groups. The 18 slab bridges, 48
+  Minecraft recipe overrides, 21 advancement overrides, 19 configurable
+  cobblestone routes, tuff matrix, and stone-spear compatibility are unchanged.
+- Updated metadata, CI, documentation, release checks, and the exact dependency
+  pin for Minecraft 26.1.2, NeoForge 26.1.2.94, OreSpawn 4.0.16.2601022,
+  Java 25, resource format 84, and data format 101.1. Mineralogy still
+  registers no world generator.
+
 Mineralogy 6.1.2.121112 for Minecraft 1.21.11 NeoForge
 
 - Ported the accepted NeoForge 1.21.1 product to Minecraft 1.21.11 and
