@@ -65,7 +65,9 @@ public class WorkflowContractTest {
         assertTrue(staging.contains("sha256sum"));
         assertTrue(codeql.contains("github/codeql-action/init@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28"));
         assertTrue(codeql.contains("Install exact Java 25"));
-        assertTrue(codeql.contains("clean classes --no-daemon --stacktrace --max-workers=2"));
+        assertFalse(codeql.contains("clean classes"));
+        assertTrue(codeql.contains("./gradlew clean --no-daemon --stacktrace --max-workers=2"));
+        assertTrue(codeql.contains("./gradlew classes --no-daemon --stacktrace --max-workers=2"));
         assertFalse(codeql.contains("Mavenizer"));
         assertTrue(wrapper.contains("gradle/actions/wrapper-validation@9c971963bec38e04b3d30dcc455b5382be2fdbfb"));
     }
